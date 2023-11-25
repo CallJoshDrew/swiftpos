@@ -1,13 +1,14 @@
 import React from "react";
+import Link from "next/link";
 
 export default function SideNav() {
   return (
-      <div className="row-span-6 col-span-1 py-10 flex flex-col justify-between">
+      <div className="row-span-6 col-span-2 py-10 flex flex-col justify-between">
         <div>
           <div className="text-green-800 text-center font-bold text-xl">
             POS SYSTEM
           </div>
-          <button className="bg-green-800 rounded-lg px-6 py-4 flex flex-col items-center mx-auto my-2 w-40">
+          <Link href="/tables" className="bg-green-800 rounded-lg px-6 py-4 flex flex-col items-center mx-auto my-2 w-40">
             <svg
               className="w-10 h-10 text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -22,8 +23,8 @@ export default function SideNav() {
               />
             </svg>
             <div className="text-white text-xl">Tables</div>
-          </button>
-          <button className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
+          </Link>
+          <Link href="/menu" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
             <svg
               className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -40,8 +41,8 @@ export default function SideNav() {
             <div className="text-black text-xl group-hover:text-white">
               Menu
             </div>
-          </button>
-          <button className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
+          </Link>
+          <Link href="/"className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
             <svg
               className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +59,8 @@ export default function SideNav() {
             <div className="text-black text-xl group-hover:text-white">
               Sales
             </div>
-          </button>
-          <button className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
+          </Link>
+          <Link href="/" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
             <svg
               className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -81,9 +82,9 @@ export default function SideNav() {
             <div className="text-black text-xl group-hover:text-white">
               Setting
             </div>
-          </button>
+          </Link>
         </div>
-        <button className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
+        <Link href="/" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-green-800">
           <svg
             className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +101,7 @@ export default function SideNav() {
           <div className="text-black text-xl group-hover:text-white">
             Logout
           </div>
-        </button>
+        </Link>
       </div>
   );
 }

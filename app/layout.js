@@ -1,6 +1,7 @@
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import SideNav from "./components/sideNav";
+import TableDetails from "./components/tableDetails";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -16,9 +17,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <div className="bg-white min-h-screen grid grid-rows-6 grid-flow-col">
+        <div className="bg-white min-h-screen grid grid-rows-6 grid-cols-12">
           <SideNav />
           {children}
+          {/* <div className="row-span-1 col-span-7 bg-pink-300">Footer</div>    */}
+          <TableDetails />
         </div>
       </body>
     </html>
