@@ -16,7 +16,7 @@ function TableDetails() {
             <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
           </svg>
         </div>
-        <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700" />
+        <hr className="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700" />
         <div className="flex flex-col gap-4">
           <div className="flex border rounded-md p-2 shadow-sm">
             <Image
@@ -123,7 +123,7 @@ function TableDetails() {
               <div className="text-gray-600 text-sm">Tax</div>
               <div className="text-gray-600 text-sm">0</div>
             </div>
-            <hr class="h-px my-6 bg-black border-dashed" />
+            <hr className="h-px my-6 bg-black border-dashed" />
             <div className="flex justify-between items-center">
               <div className="text-gray-600 text-base font-bold">Total</div>
               <div className="text-gray-600 text-base font-bold">RM 27.00</div>
