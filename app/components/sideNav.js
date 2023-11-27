@@ -3,14 +3,14 @@ import Link from "next/link";
 
 export default function SideNav() {
   return (
-      <div className="row-span-6 col-span-2 py-10 flex flex-col items-center relative">
-        <div className="fixed">
-          <div className="text-green-800 text-center font-bold text-xl">
+      <div className="py-10 w-1/6 flex-auto relative">
+        <div className="fixed flex flex-col w-1/6 px-6">
+          <div className="text-green-800 text-center font-bold text-sm">
             POS SYSTEM
           </div>
-          <Link href="/tables" className="bg-green-800 rounded-lg px-6 py-4 flex flex-col items-center mx-auto my-2 w-40 group hover:bg-yellow-500">
+          <Link href="/tables" className="bg-green-800 rounded-lg py-4 px-6 flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
             <svg
-              className="w-10 h-10 text-white"
+              className="w-8 h-8 text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -22,11 +22,11 @@ export default function SideNav() {
                 d="M10.5 19.5h3m-6.75 2.25h10.5a2.25 2.25 0 002.25-2.25v-15a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 4.5v15a2.25 2.25 0 002.25 2.25z"
               />
             </svg>
-            <div className="text-white text-xl">Tables</div>
+            <div className="text-white text-sm">Tables</div>
           </Link>
-          <Link href="/menu" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-yellow-500">
+          <Link href="/menu" className="rounded-lg py-4 px-6 flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
             <svg
-              className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
+              className="w-8 h-8 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -38,13 +38,13 @@ export default function SideNav() {
                 d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
               />
             </svg>
-            <div className="text-black text-xl group-hover:text-white">
+            <div className="text-black text-sm group-hover:text-white">
               Menu
             </div>
           </Link>
-          <Link href="/"className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-yellow-500">
+          <Link href="/"className="rounded-lg py-4 px-6  flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
             <svg
-              className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
+              className="w-8 h-8 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -56,13 +56,13 @@ export default function SideNav() {
                 d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <div className="text-black text-xl group-hover:text-white">
+            <div className="text-black text-sm group-hover:text-white">
               Sales
             </div>
           </Link>
-          <Link href="/" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-yellow-500">
+          <Link href="/" className="rounded-lg py-4 px-6  flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
             <svg
-              className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
+              className="w-8 h-8 text-green-800 group-hover:text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -79,15 +79,15 @@ export default function SideNav() {
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-            <div className="text-black text-xl group-hover:text-white">
+            <div className="text-black text-sm group-hover:text-white">
               Setting
             </div>
           </Link>
         </div>
-        <div className="fixed bottom-0">
-        <Link href="/" className="rounded-lg px-6 py-4 flex flex-col items-center m-auto my-2 w-40 group hover:bg-yellow-500">
+        <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
+        <Link href="/" className="rounded-lg py-4 px-6  flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
           <svg
-            className="w-10 h-10 mr-1 text-green-800 group-hover:text-white"
+            className="w-8 h-8 text-green-800 group-hover:text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -99,7 +99,7 @@ export default function SideNav() {
               d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
             />
           </svg>
-          <div className="text-black text-xl group-hover:text-white">
+          <div className="text-black text-sm group-hover:text-white">
             Logout
           </div>
         </Link></div>

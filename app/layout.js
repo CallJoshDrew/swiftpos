@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <div className="bg-white min-h-screen grid grid-rows-6 grid-cols-12">
+        <div className="bg-white min-h-screen flex">
           <SideNav />
           {children}
           {/* <div className="row-span-1 col-span-7 bg-pink-300">Footer</div>    */}

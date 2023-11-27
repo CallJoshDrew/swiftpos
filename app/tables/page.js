@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Tables() {
   return (
-    <div className="row-span-5 col-span-7 bg-gray-200 grid grid-cols-3 gap-10 grid-rows-4 py-10 px-10">
+    <div className=" bg-gray-200 w-3/6 flex-auto grid grid-cols-3 gap-10 grid-rows-5 pt-20 px-10">
       <button className="group hover:bg-yellow-500 bg-green-800 rounded-lg text-white flex items-center justify-center flex-col">
         <div className="text-xl group-hover:text-black">Table 1</div>
         <div className="text-lg group-hover:text-black">Seated</div>
