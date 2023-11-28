@@ -33,7 +33,7 @@ export default function SideNav() {
           <div className="text-white text-sm text-center">吹水站</div>
         </Link>
         <Link
-          href="/menu"
+          href="/takeAway"
           className="rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
           {/* <svg
             className="w-8 h-8 text-green-800 group-hover:text-white"
@@ -68,7 +68,7 @@ export default function SideNav() {
           <div className="text-black text-sm group-hover:text-white">打包</div>
         </Link>
         <Link
-          href="/"
+          href="/salesReport"
           className="rounded-lg py-4 px-4  flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
           {/* <svg
             className="w-8 h-8 text-green-800 group-hover:text-white"
@@ -103,7 +103,7 @@ export default function SideNav() {
           </div>
         </Link>
         <Link
-          href="/"
+          href="/setting"
           className="rounded-lg py-4 px-4  flex flex-col items-center mx-auto my-1 w-5/6 group hover:bg-yellow-500">
           <svg
             className="w-8 h-8 text-green-800 group-hover:text-white"
@@ -122,7 +122,6 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-
           {/* <svg
             className="w-8 h-8 text-green-800 group-hover:text-white"
             xmlns="http://www.w3.org/2000/svg"

@@ -1,38 +1,42 @@
 import Image from "next/image";
 import React from "react";
+import CartDetails from "../components/cartDetails";
 
-export default function Menu() {
+export default function TakeAway() {
   return (
-    <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-      <div className="grid grid-cols-5 grid-rows-1 gap-4">
-        <button className="group hover:bg-yellow-500 bg-green-700 rounded-lg text-white flex items-center justify-center flex-col py-4">
-          <div className="text-lg group-hover:text-black">All</div>
-          <div className="text-xs group-hover:text-black">40 items</div>
-        </button>
-        <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-          <div className="text-lg text-black group-hover:text-white">Main</div>
-          <div className="text-xs text-black group-hover:text-white">
-            20 items
-          </div>
-        </button>
-        <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-          <div className="text-lg text-black group-hover:text-white">
-            Drinxs
-          </div>
-          <div className="text-xs text-black group-hover:text-white">
-            20 items
-          </div>
-        </button>
-        <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-          <div className="text-lg text-black group-hover:text-white">
-            Cakes
-          </div>
-          <div className="text-xs text-black group-hover:text-white">
-            20 items
-          </div>
-        </button>
-      </div>
-      {/* card begins here */}
+    <>
+      <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
+        <div className="grid grid-cols-5 grid-rows-1 gap-4">
+          <button className="group hover:bg-yellow-500 bg-green-700 rounded-lg text-white flex items-center justify-center flex-col py-4">
+            <div className="text-lg group-hover:text-black">All</div>
+            <div className="text-xs group-hover:text-black">40 items</div>
+          </button>
+          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
+            <div className="text-lg text-black group-hover:text-white">
+              Main
+            </div>
+            <div className="text-xs text-black group-hover:text-white">
+              20 items
+            </div>
+          </button>
+          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
+            <div className="text-lg text-black group-hover:text-white">
+              Drinxs
+            </div>
+            <div className="text-xs text-black group-hover:text-white">
+              20 items
+            </div>
+          </button>
+          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
+            <div className="text-lg text-black group-hover:text-white">
+              Cakes
+            </div>
+            <div className="text-xs text-black group-hover:text-white">
+              20 items
+            </div>
+          </button>
+        </div>
+        {/* card begins here */}
         <div className="group rounded-lg flex flex-wrap justify-start gap-x-4">
           <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
             <Image
@@ -142,8 +146,9 @@ export default function Menu() {
               </button>
             </div>
           </div>
-          
         </div>
       </div>
+      <CartDetails />
+    </>
   );
 }

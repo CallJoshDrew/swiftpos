@@ -1,12 +1,12 @@
 import Image from "next/image";
 import React from "react";
 
-export default function TableDetails() {
+export default function CartDetails() {
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6">
         <div className="rounded-lg px-2 flex my-1 justify-between">
-          <div className="text-green-800 text-lg font-bold">Table 1</div>
+          <div className="text-green-800 text-lg font-bold">Take Away</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -136,3 +136,5 @@ export default function TableDetails() {
     </div>
   );
 }
+
+
