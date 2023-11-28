@@ -47,7 +47,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
@@ -65,7 +65,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
@@ -83,7 +83,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
@@ -101,7 +101,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
@@ -119,7 +119,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
@@ -137,7 +137,7 @@ export default function Menu() {
                 5 Bean Chili Stew
               </span>
               <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-xs w-full p-1 rounded-md mt-4">
+              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
                 add to table
               </button>
             </div>
