@@ -20,7 +20,7 @@ export default function Setting() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
+    <form onSubmit={handleSubmit} name="NewCategory" className="flex flex-col space-y-2">
       <div className="text-md px-1">Add New Category</div>
       <div className="flex space-x-2">
         <input

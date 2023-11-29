@@ -1,65 +1,71 @@
 "use client";
-import { useState } from 'react';
+import { useState } from "react";
+
+import { UserData } from "../data/page";
+import Daychart from "../components/dayChart";
+import WeekChart from "../components/weekChart";
+import MonthChart from "../components/monthChart";
 
 export default function SalesReport() {
-  const [selected, setSelected] = useState('today');
-
-  const data = {
-    today: [
-      { transactions: 1, sales: 120 },
-      { transactions: 2, sales: 130 },
-      { transactions: 3, sales: 125 },
-      { transactions: 4, sales: 145 },
-      { transactions: 5, sales: 150 },
-      { transactions: 6, sales: 140 },
-      { transactions: 7, sales: 150 },
-    ],
-    weekly: [
-      { transactions: 70, sales: 800 },
-      { transactions: 75, sales: 850 },
-      { transactions: 72, sales: 870 },
-      { transactions: 80, sales: 860 },
-    ],
-    monthly: [
-      { transactions: 300, sales: 3500 },
-    ],
-  };
-
-  const maxSales = Math.max(...data.monthly.map((item) => item.sales));
+  const [selected, setSelected] = useState("today");
 
   return (
-    <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-10 px-4">
-    <div className="bg-gray-100 text-black p-4">
-      <h1 className="text-2xl mb-4">Sales Report</h1>
-      <div className="flex space-x-4 mb-4">
-        <button
-          onClick={() => setSelected('today')}
-          className={`py-2 px-4 rounded-md ${selected === 'today' ? 'bg-green-600 text-white' : 'bg-white text-black'}`}
-        >
-          Today
-        </button>
-        <button
-          onClick={() => setSelected('weekly')}
-          className={`py-2 px-4 rounded-md ${selected === 'weekly' ? 'bg-green-600 text-white' : 'bg-white text-black'}`}
-        >
-          Weekly
-        </button>
-        <button
-          onClick={() => setSelected('monthly')}
-          className={`py-2 px-4 rounded-md ${selected === 'monthly' ? 'bg-green-600 text-white' : 'bg-white text-black'}`}
-        >
-          Monthly
-        </button>
+    <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-10 px-6">
+      <div className="w-1/4 p-2 bg-white rounded-md flex items-center">
+        <svg
+          className="w-12 h-12 text-green-800 group-hover:text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor">
+          <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />
+          <path
+            fillRule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v.816a3.836 3.836 0 00-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 01-.921-.421l-.879-.66a.75.75 0 00-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 001.5 0v-.81a4.124 4.124 0 001.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 00-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 00.933-1.175l-.415-.33a3.836 3.836 0 00-1.719-.755V6z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <div className="flex flex-col py-2 px-4">
+          <div className="text-gray-500 text-sm">Total Sales</div>
+          <div className="text-gray-500 text-md text-green-700">RM 88,888</div>
+        </div>
       </div>
-      <div className="space-y-4">
-        {data[selected].map((item, index) => (
-          <div key={index} className="flex items-end space-x-2">
-            <div style={{ height: `${(item.sales / maxSales) * 100}%`, width: '10px' }} className="bg-green-600" />
-            <div>{`Transactions: ${item.transactions}, Sales: ${item.sales}`}</div>
-          </div>
-        ))}
+      <div className="bg-gray-100 text-black py-4">
+        <h1 className="text-2xl mb-4">Sales Report</h1>
+        <div className="flex space-x-4 mb-4">
+          <button
+            onClick={() => setSelected("today")}
+            className={`py-2 px-4 rounded-md ${
+              selected === "today"
+                ? "bg-green-600 text-white"
+                : "bg-white text-black"
+            }`}>
+            Today
+          </button>
+          <button
+            onClick={() => setSelected("weekly")}
+            className={`py-2 px-4 rounded-md ${
+              selected === "weekly"
+                ? "bg-green-600 text-white"
+                : "bg-white text-black"
+            }`}>
+            Weekly
+          </button>
+          <button
+            onClick={() => setSelected("monthly")}
+            className={`py-2 px-4 rounded-md ${
+              selected === "monthly"
+                ? "bg-green-600 text-white"
+                : "bg-white text-black"
+            }`}>
+            Monthly
+          </button>
+        </div>
+        <div className="space-y-4">
+          {selected === "today" && <Daychart UserData={UserData.today} />}
+          {selected === "weekly" && <WeekChart UserData={UserData.weekly} />}
+          {selected === "monthly" && <MonthChart UserData={UserData.monthly} />}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
