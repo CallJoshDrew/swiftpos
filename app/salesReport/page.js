@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { UserData } from "../data/page";
+import { UserData } from "../data/userData";
 import Daychart from "../components/dayChart";
 import WeekChart from "../components/weekChart";
 import MonthChart from "../components/monthChart";
