@@ -1,152 +1,75 @@
-import Image from "next/image";
-import React from "react";
+"use client"
+import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
+import MenuCard from "../components/menuCard";
+
+function CategoryButton({
+  category,
+  itemCount,
+  selectedCategory,
+  setSelectedCategory,
+}) {
+  const isSelected = selectedCategory === category;
+  return (
+    <button
+      className={`rounded-lg flex items-center justify-center flex-col py-4 ${
+        isSelected ? "bg-green-700 text-white" : "bg-white text-black"
+      }`}
+      onClick={() => setSelectedCategory(category)}>
+      <div className="text-lg">{category}</div>
+      <div className="text-xs">{itemCount} items</div>
+    </button>
+  );
+}
 
 export default function TakeAway() {
+  const [menu, setMenu] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((response) => response.json())
+      .then((data) => setMenu(data));
+  }, []);
+
+  let itemCounts = menu.reduce((counts, item) => {
+    counts[item.category] = (counts[item.category] || 0) + 1;
+    return counts;
+  }, {});
+
+  console.log(itemCounts);
+
   return (
     <>
       <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
         <div className="grid grid-cols-5 grid-rows-1 gap-4">
-          <button className="group hover:bg-yellow-500 bg-green-700 rounded-lg text-white flex items-center justify-center flex-col py-4">
-            <div className="text-lg group-hover:text-black">All</div>
-            <div className="text-xs group-hover:text-black">40 items</div>
-          </button>
-          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-            <div className="text-lg text-black group-hover:text-white">
-              Main
-            </div>
-            <div className="text-xs text-black group-hover:text-white">
-              20 items
-            </div>
-          </button>
-          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-            <div className="text-lg text-black group-hover:text-white">
-              Drinxs
-            </div>
-            <div className="text-xs text-black group-hover:text-white">
-              20 items
-            </div>
-          </button>
-          <button className="group hover:bg-yellow-500 bg-white rounded-lg text-white flex items-center justify-center flex-col py-4">
-            <div className="text-lg text-black group-hover:text-white">
-              Cakes
-            </div>
-            <div className="text-xs text-black group-hover:text-white">
-              20 items
-            </div>
-          </button>
+          <CategoryButton
+            category="All"
+            itemCount={menu.length}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+          <CategoryButton
+            category="Main"
+            itemCount={itemCounts["Main"] || 0}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+          <CategoryButton
+            category="Drinks"
+            itemCount={itemCounts["Drinks"] || 0}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+          <CategoryButton
+            category="Cakes"
+            itemCount={itemCounts["Cakes"] || 0}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
         </div>
         {/* card begins here */}
-        <div className="group rounded-lg flex flex-wrap justify-start gap-x-4">
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-          <div className="rounded-lg my-2 bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
-            <Image
-              src="/sample.png"
-              alt="stew"
-              width="100"
-              height="100"
-              className="sm:h24 w-32 object-cover m-2 rounded-lg"
-            />
-            <div className="my-3 mx-2">
-              <span className="text-xs font-bold text-gray-500 ml-1">
-                5 Bean Chili Stew
-              </span>
-              <span className="block text-green-800 text-xs ml-1">RM 9.00</span>
-              <button className="block bg-[#cce9d4] text-black text-xs w-full p-1 rounded-md mt-4">
-                add to table
-              </button>
-            </div>
-          </div>
-        </div>
+        <MenuCard menu={menu} selectedCategory={selectedCategory} />
       </div>
       <CartDetails />
     </>

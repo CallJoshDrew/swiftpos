@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-export default function TableDetails({table}) {
+export default function TableDetails({table, setSelectMenu}) {
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6">
@@ -102,7 +102,7 @@ export default function TableDetails({table}) {
           </div>
         </div>
         <div className="relative mb-10">
-          <button>
+          <button onClick={() => setSelectMenu(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
