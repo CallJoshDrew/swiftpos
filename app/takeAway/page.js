@@ -28,6 +28,7 @@ export default function TakeAway() {
   const [cartItems, setCartItems] = useState([]);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [taxRate, setTaxRate] = useState(0.1);
+  const [selectMenu, setSelectMenu] = useState(false);
   console.log("Calling from TakeAway", cartItems); // Should log []
 
   useEffect(() => {
@@ -45,48 +46,56 @@ export default function TakeAway() {
 
   return (
     <>
-      <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-        <div className="grid grid-cols-5 grid-rows-1 gap-4">
-          <CategoryButton
-            category="All"
-            itemCount={menu.length}
+      {selectMenu ? (
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
+          <div className="grid grid-cols-5 grid-rows-1 gap-4">
+            <CategoryButton
+              category="All"
+              itemCount={menu.length}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            <CategoryButton
+              category="Main"
+              itemCount={itemCounts["Main"] || 0}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            <CategoryButton
+              category="Drinks"
+              itemCount={itemCounts["Drinks"] || 0}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            <CategoryButton
+              category="Cakes"
+              itemCount={itemCounts["Cakes"] || 0}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+          </div>
+          {/* card begins here */}
+          <MenuCard
+            menu={menu}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-          <CategoryButton
-            category="Main"
-            itemCount={itemCounts["Main"] || 0}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-          <CategoryButton
-            category="Drinks"
-            itemCount={itemCounts["Drinks"] || 0}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-          <CategoryButton
-            category="Cakes"
-            itemCount={itemCounts["Cakes"] || 0}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            isOrderPlaced={isOrderPlaced}
           />
         </div>
-        {/* card begins here */}
-        <MenuCard
-          menu={menu}
-          selectedCategory={selectedCategory}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-          isOrderPlaced={isOrderPlaced}
-        />
-      </div>
+      ) : (
+        <div className="bg-gray-200 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
+          TRUE
+        </div>
+      )}
       <CartDetails
         cartItems={cartItems}
         setCartItems={setCartItems}
         taxRate={taxRate}
         isOrderPlaced={isOrderPlaced}
         setIsOrderPlaced={setIsOrderPlaced}
+        selectMenu={selectMenu}
+        setSelectMenu={setSelectMenu}
       />
     </>
   );

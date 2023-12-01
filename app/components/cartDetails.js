@@ -1,7 +1,15 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
-export default function CartDetails({ cartItems, taxRate, setCartItems, isOrderPlaced, setIsOrderPlaced }) {
+export default function CartDetails({
+  cartItems,
+  taxRate,
+  setCartItems,
+  isOrderPlaced,
+  setIsOrderPlaced,
+  selectMenu,
+  setSelectMenu,
+}) {
   // console.log("Calling from cartDetails", cartItems);
   console.log(taxRate);
   let subtotal = 0;
@@ -48,16 +56,35 @@ export default function CartDetails({ cartItems, taxRate, setCartItems, isOrderP
               viewBox="0 0 24 24"
               fill="currentColor"
               className="w-7 h-7 text-green-800"
-              onClick={() => setIsOrderPlaced(false)}>
+              onClick={() => {
+                setIsOrderPlaced(false);
+                setSelectMenu(true);
+              }}>
               <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
               <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
             </svg>
+          ) : selectMenu ? (
+            cartItems.length === 0 ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-8 h-8 text-red-700"
+                onClick={() => setSelectMenu(false)}>
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : null
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-8 h-8 text-green-700">
+              className="w-8 h-8 text-green-700"
+              onClick={() => setSelectMenu(!selectMenu)}>
               <path
                 fillRule="evenodd"
                 d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
@@ -66,7 +93,7 @@ export default function CartDetails({ cartItems, taxRate, setCartItems, isOrderP
             </svg>
           )}
         </div>
-        <hr className="h-px mt-4 mb-5 bg-gray-200 border-0 dark:bg-gray-700" />
+        <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
             <div
@@ -161,7 +188,10 @@ export default function CartDetails({ cartItems, taxRate, setCartItems, isOrderP
           cartItems.length > 0 ? (
             <button
               className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={() => setIsOrderPlaced(!isOrderPlaced)}>
+              onClick={() => {
+                setIsOrderPlaced(!isOrderPlaced);
+                setSelectMenu(false);
+              }}>
               Place Order
             </button>
           ) : (
@@ -172,8 +202,7 @@ export default function CartDetails({ cartItems, taxRate, setCartItems, isOrderP
             </button>
           )
         ) : (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
+          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
             Done
           </button>
         )}
