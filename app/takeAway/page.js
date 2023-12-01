@@ -26,7 +26,8 @@ export default function TakeAway() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
-  const [taxRate, setTaxRate] = useState(0.10);
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [taxRate, setTaxRate] = useState(0.1);
   console.log("Calling from TakeAway", cartItems); // Should log []
 
   useEffect(() => {
@@ -77,9 +78,16 @@ export default function TakeAway() {
           selectedCategory={selectedCategory}
           cartItems={cartItems}
           setCartItems={setCartItems}
+          isOrderPlaced={isOrderPlaced}
         />
       </div>
-      <CartDetails cartItems={cartItems} setCartItems={setCartItems} taxRate={taxRate}/>
+      <CartDetails
+        cartItems={cartItems}
+        setCartItems={setCartItems}
+        taxRate={taxRate}
+        isOrderPlaced={isOrderPlaced}
+        setIsOrderPlaced={setIsOrderPlaced}
+      />
     </>
   );
 }

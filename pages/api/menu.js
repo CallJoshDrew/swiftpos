@@ -1,7 +1,7 @@
 let menu = [
     { id: 1, name: "Kono Mee (Campur)", category: "Main", price:8.00, isAdded: false },
     { id: 2, name: "Goreng Kering (Campur)", category: "Main", price:9.00, isAdded: false  },
-    { id: 3, name: "Goreng Basah (Campur)", category: "Drinks", price:8.00, isAdded: false  },
+    { id: 3, name: "Goreng Basah fewfaewf(Campur)", category: "Drinks", price:8.00, isAdded: false  },
     { id: 4, name: "Goreng Laksa (Campur)", category: "Drinks", price:10.00, isAdded: false  },
     { id: 5, name: "Lo Mee (Campur)", category: "Cakes", price:10.00, isAdded: false  },
     { id: 6, name: "Watan (Campur)", category: "Cakes", price:10.00, isAdded: false  },
