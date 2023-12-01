@@ -85,41 +85,40 @@ export default function TakeAway() {
         </div>
       ) : (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 ">
-  <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-    Today Order
-  </div>
-  <div className="rounded-lg overflow-hidden border shadow-sm">
-    <table className="table-auto w-full">
-      <thead>
-        <tr className="bg-green-800 text-white text-center">
-          <th className="px-4 py-4 border-b font-light">ID</th>
-          <th className="px-4 py-4 border-b font-light text-left">
-            P.0.
-          </th>
-          <th className="px-4 py-4 border-b font-light">Price</th>
-          <th className="px-4 py-4 border-b font-light">Qty</th>
-          <th className="px-4 py-4 border-b font-light">When</th>
-        </tr>
-      </thead>
-      <tbody>
-        {cartItems.map((item) => (
-          <tr
-            key={item.id}
-            className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
-            <td className="border px-4 py-2">{item.id}</td>
-            <td className="border px-4 py-2 text-left">{item.name}</td>
-            <td className="border px-4 py-2">
-              RM {(item.price * item.quantity).toFixed(2)}
-            </td>
-            <td className="border px-4 py-2">{item.quantity}</td>
-            <td className="border px-4 py-2">{item.orderTime}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
+          <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
+            Today Order
+          </div>
+          <div className="rounded-lg overflow-hidden border shadow-sm">
+            <table className="table-auto w-full">
+              <thead>
+                <tr className="bg-green-800 text-white text-center">
+                  <th className="px-4 py-4 border-b font-light">ID</th>
+                  <th className="px-4 py-4 border-b font-light text-left">
+                    P.0.
+                  </th>
+                  <th className="px-4 py-4 border-b font-light">Price</th>
+                  <th className="px-4 py-4 border-b font-light">Qty</th>
+                  <th className="px-4 py-4 border-b font-light">When</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartItems.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
+                    <td className="border px-4 py-2">{item.id}</td>
+                    <td className="border px-4 py-2 text-left">{item.name}</td>
+                    <td className="border px-4 py-2">
+                      RM {(item.price * item.quantity).toFixed(2)}
+                    </td>
+                    <td className="border px-4 py-2">{item.quantity}</td>
+                    <td className="border px-4 py-2">{item.orderTime}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
       <CartDetails
         cartItems={cartItems}

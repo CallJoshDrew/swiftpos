@@ -94,6 +94,47 @@ export default function CartDetails({
           )}
         </div>
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
+        <div className="bg-gray-100 py-4 px-5 rounded-md">
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Subtotal</div>
+            <div className="text-gray-600 text-sm">
+              RM {subtotal.toFixed(2)}
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Tax</div>
+            <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
+          </div>
+          <hr className="h-px my-6 bg-black border-dashed" />
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-base font-bold">Total</div>
+            <div className="text-gray-600 text-base font-bold">
+              RM {total.toFixed(2)}
+            </div>
+          </div>
+        </div>
+        {!isOrderPlaced ? (
+          cartItems.length > 0 ? (
+            <button
+              className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              onClick={() => {
+                setIsOrderPlaced(!isOrderPlaced);
+                setSelectMenu(false);
+              }}>
+              Place Order
+            </button>
+          ) : (
+            <button
+              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              disabled>
+              Empty Cart
+            </button>
+          )
+        ) : (
+          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
+            Done
+          </button>
+        )}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
             <div
@@ -165,47 +206,7 @@ export default function CartDetails({
             </div>
           ))}
         </div>
-        <div className="bg-gray-100 py-4 px-5 rounded-md">
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">
-              RM {subtotal.toFixed(2)}
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Tax</div>
-            <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
-          </div>
-          <hr className="h-px my-6 bg-black border-dashed" />
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-base font-bold">Total</div>
-            <div className="text-gray-600 text-base font-bold">
-              RM {total.toFixed(2)}
-            </div>
-          </div>
-        </div>
-        {!isOrderPlaced ? (
-          cartItems.length > 0 ? (
-            <button
-              className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={() => {
-                setIsOrderPlaced(!isOrderPlaced);
-                setSelectMenu(false);
-              }}>
-              Place Order
-            </button>
-          ) : (
-            <button
-              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              disabled>
-              Empty Cart
-            </button>
-          )
-        ) : (
-          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
-            Done
-          </button>
-        )}
+        
       </div>
     </div>
   );
