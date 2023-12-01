@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
@@ -25,6 +25,9 @@ function CategoryButton({
 export default function TakeAway() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [cartItems, setCartItems] = useState([]);
+  const [taxRate, setTaxRate] = useState(0.10);
+  console.log("Calling from TakeAway", cartItems); // Should log []
 
   useEffect(() => {
     fetch("/api/menu")
@@ -69,9 +72,14 @@ export default function TakeAway() {
           />
         </div>
         {/* card begins here */}
-        <MenuCard menu={menu} selectedCategory={selectedCategory} />
+        <MenuCard
+          menu={menu}
+          selectedCategory={selectedCategory}
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+        />
       </div>
-      <CartDetails />
+      <CartDetails cartItems={cartItems} setCartItems={setCartItems} taxRate={taxRate}/>
     </>
   );
 }

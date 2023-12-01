@@ -1,14 +1,45 @@
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState } from "react";
+import Image from "next/image";
 
-function MenuItem({ item, addedItems, setAddedItems, itemCounts, setItemCounts }) {
+function MenuItem({
+  item,
+  addedItems,
+  setAddedItems,
+  itemCounts,
+  setItemCounts,
+  cartItems,
+  setCartItems,
+}) {
   const isAdded = addedItems.includes(item.id);
 
+  //   const handleClick = () => {
+  //     if (isAdded) {
+  //       setAddedItems(addedItems.filter((id) => id !== item.id));
+  //       setCartItems(cartItems.filter((cartItem) => cartItem.id !== item.id));
+  //     } else {
+  //       setAddedItems([...addedItems, item.id]);
+  //       setCartItems([...cartItems, { ...item, quantity: 1 }]);
+  //     }
+  //     console.log("Calling from menuCard", cartItems);
+  //   };
+
   const handleClick = () => {
-    if (isAdded) {
-      setAddedItems(addedItems.filter((id) => id !== item.id));
+    const existingCartItem = cartItems.find(
+      (cartItem) => cartItem.id === item.id
+    );
+
+    if (existingCartItem) {
+      // If the item is already in the cart, increase its quantity
+      setCartItems(
+        cartItems.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
+      );
     } else {
-      setAddedItems([...addedItems, item.id]);
+      // If the item is not in the cart, add it with a quantity of 1
+      setCartItems([...cartItems, { ...item, quantity: 1 }]);
     }
   };
 
@@ -35,10 +66,10 @@ function MenuItem({ item, addedItems, setAddedItems, itemCounts, setItemCounts }
       />
       <div className="mb-10 mx-2">
         <div className="text-xs text-gray-600 ml-1">{item.name}</div>
-        <div className="block text-green-800 text-xs ml-1">{item.price}</div>
+        <div className="block text-green-800 text-xs ml-1">RM{item.price.toFixed(2)}</div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
-        {isAdded ? (
+        {/* {isAdded ? (
           <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md">
             <div className="flex items-center gap-x-1">
             <svg
@@ -73,19 +104,24 @@ function MenuItem({ item, addedItems, setAddedItems, itemCounts, setItemCounts }
               Add
             </button>
           </div>
-        ) : (
-          <button
-            className="block bg-[#cce9d4] text-black text-xs p-1 rounded-md w-full"
-            onClick={handleClick}>
-            add to table
-          </button>
-        )}
+        ) : ( */}
+        <button
+          className="block bg-[#cce9d4] text-black text-xs p-1 rounded-md w-full"
+          onClick={handleClick}>
+          add to table
+        </button>
+        {/* )} */}
       </div>
     </div>
   );
 }
 
-export default function MenuCard({ menu, selectedCategory }) {
+export default function MenuCard({
+  menu,
+  selectedCategory,
+  cartItems,
+  setCartItems,
+}) {
   const [addedItems, setAddedItems] = useState([]);
   const [itemCounts, setItemCounts] = useState({});
 
@@ -103,11 +139,10 @@ export default function MenuCard({ menu, selectedCategory }) {
           setAddedItems={setAddedItems}
           itemCounts={itemCounts}
           setItemCounts={setItemCounts}
+          cartItems={cartItems}
+          setCartItems={setCartItems}
         />
       ))}
     </div>
   );
 }
-
-              
-              
