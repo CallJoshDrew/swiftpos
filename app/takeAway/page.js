@@ -29,7 +29,9 @@ export default function TakeAway() {
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [taxRate, setTaxRate] = useState(0.1);
   const [selectMenu, setSelectMenu] = useState(false);
-  console.log("Calling from TakeAway", cartItems); // Should log []
+  const [orders, setOrders] = useState([]);
+  const [orderCounter, setOrderCounter] = useState(1);
+  const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
   useEffect(() => {
     fetch("/api/menu")
@@ -37,12 +39,26 @@ export default function TakeAway() {
       .then((data) => setMenu(data));
   }, []);
 
+  useEffect(() => {
+    const today = new Date().toDateString();
+    if (today !== currentDate) {
+      setOrderCounter(1);
+      setCurrentDate(today);
+    }
+  }, [currentDate]);
+
   let itemCounts = menu.reduce((counts, item) => {
     counts[item.category] = (counts[item.category] || 0) + 1;
     return counts;
   }, {});
 
-  console.log(itemCounts);
+  const handleRowClick = (id) => {
+    // Find the order with the clicked ID
+    const order = orders.find((order) => order.id === id);
+
+    // Set cartItems to the items of the order
+    setCartItems(order.items);
+  };
 
   return (
     <>
@@ -92,27 +108,43 @@ export default function TakeAway() {
             <table className="table-auto w-full">
               <thead>
                 <tr className="bg-green-800 text-white text-center">
-                  <th className="px-4 py-4 border-b font-light">ID</th>
-                  <th className="px-4 py-4 border-b font-light text-left">
-                    P.0.
+                  <th className="px-4 py-4 border-b font-light">Order ID</th>
+                  <th className="px-4 py-4 border-b font-light text-right">
+                    RM
                   </th>
-                  <th className="px-4 py-4 border-b font-light">Price</th>
                   <th className="px-4 py-4 border-b font-light">Qty</th>
-                  <th className="px-4 py-4 border-b font-light">When</th>
+                  <th className="px-4 py-4 border-b font-light">Order Time</th>
+                  <th className="px-4 py-4 border-b font-light">Details</th>
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
+                {orders.map((order) => (
                   <tr
-                    key={item.id}
+                    key={order.id}
                     className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
-                    <td className="border px-4 py-2">{item.id}</td>
-                    <td className="border px-4 py-2 text-left">{item.name}</td>
                     <td className="border px-4 py-2">
-                      RM {(item.price * item.quantity).toFixed(2)}
+                        {order.id}
                     </td>
-                    <td className="border px-4 py-2">{item.quantity}</td>
-                    <td className="border px-4 py-2">{item.orderTime}</td>
+                    <td className="border px-4 py-2 text-right">
+                      {order.totalPrice.toFixed(2)}
+                    </td>
+                    <td className="border px-4 py-2">{order.quantity}</td>
+                    <td className="border px-4 py-2">{order.timestamp}</td>
+                    <td className="border px-4 py-2">
+                      <button onClick={() => handleRowClick(order.id)}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-6 h-6 text-green-800 pt-1">
+                          <path
+                            fillRule="evenodd"
+                            d="M12 1.5a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V2.25A.75.75 0 0112 1.5zM5.636 4.136a.75.75 0 011.06 0l1.592 1.591a.75.75 0 01-1.061 1.06l-1.591-1.59a.75.75 0 010-1.061zm12.728 0a.75.75 0 010 1.06l-1.591 1.592a.75.75 0 01-1.06-1.061l1.59-1.591a.75.75 0 011.061 0zm-6.816 4.496a.75.75 0 01.82.311l5.228 7.917a.75.75 0 01-.777 1.148l-2.097-.43 1.045 3.9a.75.75 0 01-1.45.388l-1.044-3.899-1.601 1.42a.75.75 0 01-1.247-.606l.569-9.47a.75.75 0 01.554-.68zM3 10.5a.75.75 0 01.75-.75H6a.75.75 0 010 1.5H3.75A.75.75 0 013 10.5zm14.25 0a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H18a.75.75 0 01-.75-.75zm-8.962 3.712a.75.75 0 010 1.061l-1.591 1.591a.75.75 0 11-1.061-1.06l1.591-1.592a.75.75 0 011.06 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -128,6 +160,9 @@ export default function TakeAway() {
         setIsOrderPlaced={setIsOrderPlaced}
         selectMenu={selectMenu}
         setSelectMenu={setSelectMenu}
+        setOrders={setOrders}
+        orderCounter={orderCounter}
+        setOrderCounter={setOrderCounter}
       />
     </>
   );

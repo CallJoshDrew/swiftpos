@@ -9,9 +9,11 @@ export default function CartDetails({
   setIsOrderPlaced,
   selectMenu,
   setSelectMenu,
+  setOrders,
+  orderCounter, 
+  setOrderCounter
 }) {
-  // console.log("Calling from cartDetails", cartItems);
-  console.log(taxRate);
+  
   let subtotal = 0;
   let tax = 0;
   let total = 0;
@@ -45,6 +47,63 @@ export default function CartDetails({
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     //return all the items that are not equal to the id provided(which is the item which need to be removed)
   };
+
+  const handleOrder = () => {
+    setIsOrderPlaced(!isOrderPlaced);
+    setSelectMenu(false);
+  
+    // Get the current date and time
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed in JavaScript
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+  
+    // Generate the ID
+    const id = `${year}${month}${day}${hours}${minutes}${orderCounter}`;
+  
+    // Convert the timestamp to a readable format
+    const timestamp = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kuala_Lumpur' })
+  
+    // Calculate the total price and quantity of all items in the cart
+    let subtotal = 0;
+    let totalQuantity = 0;
+    cartItems.forEach(item => {
+      subtotal += item.price * item.quantity;
+      totalQuantity += item.quantity;
+    });
+  
+    // Calculate tax and total price
+    const tax = subtotal * taxRate; // Assuming a tax rate of 6%
+    const totalPrice = subtotal + tax;
+  
+    // Create a new order object
+    const order = {
+      id, // Use the generated ID
+      timestamp, // Use the formatted timestamp
+      items: cartItems, // Save the details of each item
+      subtotal,
+      tax,
+      totalPrice,
+      quantity: totalQuantity
+    };
+  
+    // Add the new order to the orders array
+    setOrders(prevOrders => [...prevOrders, order]);
+  
+    console.log(order);
+  
+    // Increment the order counter
+    setOrderCounter(orderCounter + 1);
+  
+    // Clear the cartItems array
+    setCartItems([]);
+  };
+  
+  
+  
+  
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6 space-y-4">
@@ -94,47 +153,7 @@ export default function CartDetails({
           )}
         </div>
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
-        <div className="bg-gray-100 py-4 px-5 rounded-md">
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">
-              RM {subtotal.toFixed(2)}
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Tax</div>
-            <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
-          </div>
-          <hr className="h-px my-6 bg-black border-dashed" />
-          <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-base font-bold">Total</div>
-            <div className="text-gray-600 text-base font-bold">
-              RM {total.toFixed(2)}
-            </div>
-          </div>
-        </div>
-        {!isOrderPlaced ? (
-          cartItems.length > 0 ? (
-            <button
-              className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={() => {
-                setIsOrderPlaced(!isOrderPlaced);
-                setSelectMenu(false);
-              }}>
-              Place Order
-            </button>
-          ) : (
-            <button
-              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              disabled>
-              Empty Cart
-            </button>
-          )
-        ) : (
-          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
-            Done
-          </button>
-        )}
+        {/* Each item card */}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
             <div
@@ -206,7 +225,45 @@ export default function CartDetails({
             </div>
           ))}
         </div>
-        
+        {/* Subtotal, Tax and Total Section */}
+        <div className="bg-gray-100 py-4 px-5 rounded-md">
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Subtotal</div>
+            <div className="text-gray-600 text-sm">
+              RM {subtotal.toFixed(2)}
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Tax</div>
+            <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
+          </div>
+          <hr className="h-px my-6 bg-black border-dashed" />
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-base font-bold">Total</div>
+            <div className="text-gray-600 text-base font-bold">
+              RM {total.toFixed(2)}
+            </div>
+          </div>
+        </div>
+        {!isOrderPlaced ? (
+          cartItems.length > 0 ? (
+            <button
+              className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              onClick={handleOrder}>
+              Place Order
+            </button>
+          ) : (
+            <button
+              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              disabled>
+              Empty Cart
+            </button>
+          )
+        ) : (
+          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
+            Done
+          </button>
+        )}
       </div>
     </div>
   );
