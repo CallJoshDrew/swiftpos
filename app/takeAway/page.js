@@ -26,9 +26,12 @@ export default function TakeAway() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [taxRate, setTaxRate] = useState(0.1);
-  const [selectMenu, setSelectMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showEditBtn, setShowEditBtn] = useState(true);
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
   const [orders, setOrders] = useState([]);
   const [orderCounter, setOrderCounter] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
@@ -52,17 +55,22 @@ export default function TakeAway() {
     return counts;
   }, {});
 
-  const handleRowClick = (id) => {
+  const handleDetailBtn = (id) => {
+    setShowEditBtn(false);
+    setShowDetails(true);
+  
     // Find the order with the clicked ID
     const order = orders.find((order) => order.id === id);
-
-    // Set cartItems to the items of the order
-    setCartItems(order.items);
+  
+    // Add the order id to each item and set cartItems to the items of the order
+    const itemsWithOrderId = order.items.map(item => ({ ...item, orderId: order.id }));
+    setCartItems(itemsWithOrderId);
   };
+  
 
   return (
     <>
-      {selectMenu ? (
+      {showMenu ? (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
           <div className="grid grid-cols-5 grid-rows-1 gap-4">
             <CategoryButton
@@ -96,7 +104,7 @@ export default function TakeAway() {
             selectedCategory={selectedCategory}
             cartItems={cartItems}
             setCartItems={setCartItems}
-            isOrderPlaced={isOrderPlaced}
+            showEditBtn={showEditBtn}
           />
         </div>
       ) : (
@@ -131,7 +139,7 @@ export default function TakeAway() {
                     <td className="border px-4 py-2">{order.quantity}</td>
                     <td className="border px-4 py-2">{order.timestamp}</td>
                     <td className="border px-4 py-2">
-                      <button onClick={() => handleRowClick(order.id)}>
+                      <button onClick={() => handleDetailBtn(order.id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
@@ -156,10 +164,14 @@ export default function TakeAway() {
         cartItems={cartItems}
         setCartItems={setCartItems}
         taxRate={taxRate}
-        isOrderPlaced={isOrderPlaced}
-        setIsOrderPlaced={setIsOrderPlaced}
-        selectMenu={selectMenu}
-        setSelectMenu={setSelectMenu}
+        showEditBtn={showEditBtn}
+        setShowEditBtn={setShowEditBtn}
+        showMenu={showMenu}
+        setShowMenu={setShowMenu}
+        orderCompleted={orderCompleted} 
+        setOrderCompleted={setOrderCompleted}
+        showDetails={showDetails}
+        setShowDetails={setShowDetails}
         setOrders={setOrders}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
