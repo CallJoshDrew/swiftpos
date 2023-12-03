@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
+import toast from 'react-hot-toast';
+
 
 function CategoryButton({
   category,
@@ -74,7 +76,8 @@ export default function TakeAway() {
     setShowMenu(false);
     setCartItems([]);
   };
-
+  
+  
   return (
     <>
       {showMenu ? (
@@ -144,12 +147,13 @@ export default function TakeAway() {
             <table className="table-auto w-full">
               <thead>
                 <tr className="bg-green-800 text-white text-center">
+                  <th className="px-4 py-4 border-b font-light">Status</th>
                   <th className="px-4 py-4 border-b font-light">Order ID</th>
+                  {/* <th className="px-4 py-4 border-b font-light">Order ID <div>(Date - Time - ID)</div></th> */}
                   <th className="px-4 py-4 border-b font-light text-right">
                     RM
                   </th>
                   <th className="px-4 py-4 border-b font-light">Qty</th>
-                  <th className="px-4 py-4 border-b font-light">Order Time</th>
                   <th className="px-4 py-4 border-b font-light">Details</th>
                 </tr>
               </thead>
@@ -158,12 +162,15 @@ export default function TakeAway() {
                   <tr
                     key={order.id}
                     className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
+                    <td className="border px-4 py-2">
+                      <button onClick={()=> {toast.success('Completed!'); console.log("clicked");}} 
+                      className="text-green-800 rounded-md text-sm underline">{order.status}</button>
+                    </td>
                     <td className="border px-4 py-2">{order.id}</td>
                     <td className="border px-4 py-2 text-right">
                       {order.totalPrice.toFixed(2)}
                     </td>
                     <td className="border px-4 py-2">{order.quantity}</td>
-                    <td className="border px-4 py-2">{order.timestamp}</td>
                     <td className="border px-4 py-2">
                       <button onClick={() => handleDetailBtn(order.id)}>
                         <svg

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import toast from "react-hot-toast";
 
 export default function CartDetails({
   cartItems,
@@ -72,7 +73,7 @@ export default function CartDetails({
       const minutes = String(now.getMinutes()).padStart(2, "0");
 
       // Generate the ID
-      id = `${year}${month}${day}${hours}${minutes}${orderCounter}`;
+      id = `${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
 
       // Increment the order counter
       setOrderCounter(orderCounter + 1);
@@ -107,6 +108,7 @@ export default function CartDetails({
       tax,
       totalPrice,
       quantity: totalQuantity,
+      status: "Completed",
     };
 
     // If an order with the same ID already exists, update it. Otherwise, add a new order.
@@ -118,12 +120,18 @@ export default function CartDetails({
         updatedOrders[orderIndex] = order;
         return updatedOrders;
       } else {
-        // Add a new order
-        return [...prevOrders, order];
+        // Add a new order at the beginning of the array
+        return [order, ...prevOrders];
       }
     });
 
     console.log(order);
+    toast.success(
+      "Order Success",
+      {
+        duration: 2000,
+      }
+    );
 
     // Clear the cartItems array
     setCartItems([]);
@@ -136,33 +144,41 @@ export default function CartDetails({
           <div className="text-green-800 text-lg font-bold">Take Away</div>
 
           {showDetails && cartItems.length > 0 && !showEditBtn && (
-            <div  onClick={() => {
-              setShowMenu(true);
-              setShowEditBtn(true);
-              setOrderCompleted(false);
-              setShowDetails(false);
-            }}>
+            <div
+              onClick={() => {
+                setShowMenu(true);
+                setShowEditBtn(true);
+                setOrderCompleted(false);
+                setShowDetails(false);
+              }}>
               <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-            <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-5 h-5 text-white cursor-pointer">
-              <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-              <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-            </svg>
-            </div>
+                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
+                  Edit
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5 text-white cursor-pointer">
+                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                </svg>
+              </div>
             </div>
           )}
 
-          {cartItems.length > 0 && orderCompleted == false && showDetails == false && (
-            <button
-              className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-              onClick={() => {setShowMenu(false); setCartItems([]);}}>
-              Cancel
-            </button>
-          )}
+          {cartItems.length > 0 &&
+            orderCompleted == false &&
+            showDetails == false && (
+              <button
+                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
+                onClick={() => {
+                  setShowMenu(false);
+                  setCartItems([]);
+                }}>
+                Close
+              </button>
+            )}
 
           {/* <svg
               xmlns="http://www.w3.org/2000/svg"
