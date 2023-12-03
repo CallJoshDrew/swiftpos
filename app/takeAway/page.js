@@ -58,20 +58,37 @@ export default function TakeAway() {
   const handleDetailBtn = (id) => {
     setShowEditBtn(false);
     setShowDetails(true);
-  
+
     // Find the order with the clicked ID
     const order = orders.find((order) => order.id === id);
-  
+
     // Add the order id to each item and set cartItems to the items of the order
-    const itemsWithOrderId = order.items.map(item => ({ ...item, orderId: order.id }));
+    const itemsWithOrderId = order.items.map((item) => ({
+      ...item,
+      orderId: order.id,
+    }));
     setCartItems(itemsWithOrderId);
   };
-  
+
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+    setCartItems([]);
+  };
 
   return (
     <>
       {showMenu ? (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
+          <div className="flex justify-between w-full">
+            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
+              Our Menu
+            </div>
+            <button
+              className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
+              onClick={() => handleCloseMenu()}>
+              x Close Menu
+            </button>
+          </div>
           <div className="grid grid-cols-5 grid-rows-1 gap-4">
             <CategoryButton
               category="All"
@@ -109,8 +126,19 @@ export default function TakeAway() {
         </div>
       ) : (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 ">
-          <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-            Today Order
+          <div className="flex justify-between w-full">
+            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
+              Today Order
+            </div>
+            <button
+              className="text-xs py-2 px-4 bg-green-800 text-white rounded-md"
+              onClick={() => {
+                setShowMenu(true);
+                setCartItems([]);
+                setShowEditBtn(true);
+              }}>
+              + New Order
+            </button>
           </div>
           <div className="rounded-lg overflow-hidden border shadow-sm">
             <table className="table-auto w-full">
@@ -130,9 +158,7 @@ export default function TakeAway() {
                   <tr
                     key={order.id}
                     className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
-                    <td className="border px-4 py-2">
-                        {order.id}
-                    </td>
+                    <td className="border px-4 py-2">{order.id}</td>
                     <td className="border px-4 py-2 text-right">
                       {order.totalPrice.toFixed(2)}
                     </td>
@@ -168,7 +194,7 @@ export default function TakeAway() {
         setShowEditBtn={setShowEditBtn}
         showMenu={showMenu}
         setShowMenu={setShowMenu}
-        orderCompleted={orderCompleted} 
+        orderCompleted={orderCompleted}
         setOrderCompleted={setOrderCompleted}
         showDetails={showDetails}
         setShowDetails={setShowDetails}

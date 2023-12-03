@@ -53,13 +53,13 @@ export default function CartDetails({
 
   const handleOrder = () => {
     setShowMenu(false);
-  
+
     // Get the current date and time
     const now = new Date();
-  
+
     // Check if an order ID already exists in cartItems
-    const existingOrder = cartItems.find(item => item.orderId);
-  
+    const existingOrder = cartItems.find((item) => item.orderId);
+
     // Use the existing ID if it exists, otherwise generate a new one
     let id;
     if (existingOrder) {
@@ -70,14 +70,14 @@ export default function CartDetails({
       const day = String(now.getDate()).padStart(2, "0");
       const hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
-  
+
       // Generate the ID
       id = `${year}${month}${day}${hours}${minutes}${orderCounter}`;
-  
+
       // Increment the order counter
       setOrderCounter(orderCounter + 1);
     }
-  
+
     // Convert the timestamp to a readable format
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -85,7 +85,7 @@ export default function CartDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     });
-  
+
     // Calculate the total price and quantity of all items in the cart
     let subtotal = 0;
     let totalQuantity = 0;
@@ -93,11 +93,11 @@ export default function CartDetails({
       subtotal += item.price * item.quantity;
       totalQuantity += item.quantity;
     });
-  
+
     // Calculate tax and total price
     const tax = subtotal * taxRate; // Assuming a tax rate of 6%
     const totalPrice = subtotal + tax;
-  
+
     // Create a new order object
     const order = {
       id, // Use the existing or generated ID
@@ -108,7 +108,7 @@ export default function CartDetails({
       totalPrice,
       quantity: totalQuantity,
     };
-  
+
     // If an order with the same ID already exists, update it. Otherwise, add a new order.
     setOrders((prevOrders) => {
       const orderIndex = prevOrders.findIndex((order) => order.id === id);
@@ -122,56 +122,73 @@ export default function CartDetails({
         return [...prevOrders, order];
       }
     });
-  
+
     console.log(order);
-  
+
     // Clear the cartItems array
     setCartItems([]);
   };
-  
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6 space-y-4">
-        <div className="rounded-lg px-2 flex my-1 justify-between">
+        <div className="rounded-lg px-2 flex my-1 justify-between items-center">
           <div className="text-green-800 text-lg font-bold">Take Away</div>
-          {showDetails ? (
+
+          {showDetails && cartItems.length > 0 && !showEditBtn && (
+            <div  onClick={() => {
+              setShowMenu(true);
+              setShowEditBtn(true);
+              setOrderCompleted(false);
+              setShowDetails(false);
+            }}>
+              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+            <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-7 h-7 text-green-800"
-              onClick={() => {
-                setShowMenu(true);
-                setShowEditBtn(true);
-                setOrderCompleted(false);
-                setShowDetails(false);
-              }}>
+              className="w-5 h-5 text-white cursor-pointer">
               <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
               <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
             </svg>
-          ) : showMenu ? (
-            <svg
+            </div>
+            </div>
+          )}
+
+          {cartItems.length > 0 && orderCompleted == false && showDetails == false && (
+            <button
+              className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
+              onClick={() => {setShowMenu(false); setCartItems([]);}}>
+              Cancel
+            </button>
+          )}
+
+          {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
               className="w-8 h-8 text-red-700"
-              onClick={() => {setShowMenu(false); }}>
-                {/* setShowEditBtn(false); setOrderCompleted(true); */}
+              onClick={() => {
+                setShowMenu(false);
+                setShowEditBtn(false);
+                setOrderCompleted(true);
+              }}>
               <path
                 fillRule="evenodd"
                 d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
                 clipRule="evenodd"
               />
             </svg>
-          ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
               className="w-8 h-8 text-green-700"
               onClick={() => {
-                setShowMenu(!showMenu);
+                setShowMenu(true);
+                setShowDetails(false);
+                setShowEditBtn(true);
               }}>
               <path
                 fillRule="evenodd"
@@ -179,7 +196,7 @@ export default function CartDetails({
                 clipRule="evenodd"
               />
             </svg>
-          )}
+             */}
         </div>
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
         {/* Each item card */}
