@@ -40,23 +40,23 @@ export default function TakeAway() {
 
   //Modal//
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrderID, setSelectedOrderID] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
-  const handleButtonClick = (orderId) => () => {
-    const order = orders.find((order) => order.id === orderId);
-    setSelectedOrderId(orderId);
+  const handleButtonClick = (orderID) => () => {
+    const order = orders.find((order) => order.id === orderID);
+    setSelectedOrderID(orderID);
     setSelectedStatus(order.status); // Set the selectedStatus state to the status of the selected order
     setModalOpen(true);
   };
 
-  const handleModalClose = (orderId, selectedStatus) => {
+  const handleModalClose = (orderID, selectedStatus) => {
     setModalOpen(false);
 
     // Update the order status in the orders array
     setOrders(
       orders.map((order) =>
-        order.id === orderId ? { ...order, status: selectedStatus } : order
+        order.id === orderID ? { ...order, status: selectedStatus } : order
       )
     );
   };
@@ -87,13 +87,13 @@ export default function TakeAway() {
 
     // Find the order with the clicked ID
     const order = orders.find((order) => order.id === id);
-
     // Add the order id to each item and set cartItems to the items of the order
-    const itemsWithOrderId = order.items.map((item) => ({
+    const itemsWithOrderID = order.items.map((item) => ({
       ...item,
-      orderId: order.id,
+      orderID: order.id,
     }));
-    setCartItems(itemsWithOrderId);
+    let orderID = order.id;
+    setCartItems(itemsWithOrderID);
     console.log(cartItems);
   };
 
@@ -243,7 +243,7 @@ export default function TakeAway() {
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        orderId={selectedOrderId}
+        orderID={selectedOrderID}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
       />

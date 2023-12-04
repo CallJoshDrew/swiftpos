@@ -59,12 +59,12 @@ export default function CartDetails({
     const now = new Date();
 
     // Check if an order ID already exists in cartItems
-    const existingOrder = cartItems.find((item) => item.orderId);
+    const existingOrder = cartItems.find((item) => item.orderID);
 
     // Use the existing ID if it exists, otherwise generate a new one
     let id;
     if (existingOrder) {
-      id = existingOrder.orderId;
+      id = existingOrder.orderID;
     } else {
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
@@ -126,12 +126,9 @@ export default function CartDetails({
     });
 
     console.log(order);
-    toast.success(
-      "Order Success",
-      {
-        duration: 2000,
-      }
-    );
+    toast.success("Successfully Added", {
+      duration: 3000,
+    });
 
     // Clear the cartItems array
     setCartItems([]);
@@ -139,9 +136,16 @@ export default function CartDetails({
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
-      <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6 space-y-4">
+      <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
         <div className="rounded-lg px-2 flex my-1 justify-between items-center">
-          <div className="text-green-800 text-lg font-bold">Take Away</div>
+          <div className="flex flex-col space-y-0">
+            <div className="text-green-800 text-lg font-bold leading-none">
+              Take Away
+            </div>
+            <div className="text-green-800 text-sm">
+              {cartItems.length > 0 ? cartItems[0].orderID : "No items in cart"}
+            </div>
+          </div>
           {showDetails && cartItems.length > 0 && !showEditBtn && (
             <div
               onClick={() => {
@@ -178,9 +182,7 @@ export default function CartDetails({
               </button>
             )}
         </div>
-        {cartItems.length > 0 && cartItems.map((item) => (
-  <div key={item.id}>{item.id}</div>
-))}
+
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
         {/* Each item card */}
         <div className="flex flex-col gap-4">
@@ -255,7 +257,7 @@ export default function CartDetails({
           ))}
         </div>
         {/* Subtotal, Tax and Total Section */}
-        <div className="bg-gray-100 py-4 px-5 rounded-md">
+        <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>
             <div className="text-gray-600 text-sm">
@@ -284,7 +286,7 @@ export default function CartDetails({
           <button
             className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             onClick={handleOrder}>
-            Place Order
+            Place Order & Print
           </button>
         ) : orderCompleted && cartItems.length > 0 ? (
           <button
@@ -299,26 +301,6 @@ export default function CartDetails({
             Completed
           </button>
         ) : null}
-
-        {/* {!showEditBtn ? (
-          cartItems.length > 0 ? (
-            <button
-              className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handleOrder}>
-              Place Order
-            </button>
-          ) : (
-            <button
-              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              disabled>
-              Empty Cart
-            </button>
-          )
-        ) : (
-          <button className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
-            Done
-          </button>
-        )} */}
       </div>
     </div>
   );

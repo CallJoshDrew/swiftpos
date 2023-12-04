@@ -1,10 +1,11 @@
 // components/Modal.js
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Modal({
   isOpen,
   onClose,
-  orderId,
+  orderID,
   selectedStatus,
   setSelectedStatus,
 }) {
@@ -13,7 +14,10 @@ export default function Modal({
   };
 
   const handleSubmit = () => {
-    onClose(orderId, selectedStatus);
+    onClose(orderID, selectedStatus);
+    toast.success("Status Changed Successfully'", {
+      duration: 3000,
+    });
   };
 
   if (!isOpen) {
@@ -25,8 +29,8 @@ export default function Modal({
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded shadow-lg text-center">
-          <div className="flex bg-gray-700 rounded-md text-white p-4">
-            <div className="text-xl">Order ID: {orderId}</div>
+          <div className="flex bg-gray-700 rounded-md text-white py-2 px-4">
+            <div className="text-xl">Order ID: {orderID}</div>
             {/* <div className="text-xl mb-4">{selectedStatus}</div> */}
           </div>
           <form className="flex justify-between px-2 my-3 items-center">
