@@ -1,7 +1,13 @@
 // components/Modal.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-export default function Modal({ isOpen, onClose, orderId, selectedStatus, setSelectedStatus }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  orderId,
+  selectedStatus,
+  setSelectedStatus,
+}) {
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
@@ -20,40 +26,37 @@ export default function Modal({ isOpen, onClose, orderId, selectedStatus, setSel
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded shadow-lg text-center">
           <div className="flex bg-gray-700 rounded-md text-white p-4">
-          <div className="text-xl">Order ID: {orderId}</div>
-          {/* <div className="text-xl mb-4">{selectedStatus}</div> */}
+            <div className="text-xl">Order ID: {orderId}</div>
+            {/* <div className="text-xl mb-4">{selectedStatus}</div> */}
           </div>
-          <div className="flex justify-center space-x-4 my-3">
-            <label className="text-lg">
-              <input 
-                type="radio" 
-                value="Completed" 
-                checked={selectedStatus === 'Completed'} 
-                onChange={handleStatusChange}
-              />
-              Completed
-            </label>
-            <label className="text-lg">
-              <input 
-                type="radio" 
-                value="Cancel" 
-                checked={selectedStatus === 'Cancel'} 
-                onChange={handleStatusChange}
-              />
-              Cancel Order
-            </label>
-          </div>
+          <form className="flex justify-between px-2 my-3 items-center">
+            <input
+              type="radio"
+              value="Completed"
+              checked={selectedStatus === "Completed"}
+              onChange={handleStatusChange}
+              className="form-checkbox h-4 w-4 rounded-full ring-1 ring-black text-white checked:text-green-800 focus:ring-1 mr-1"
+            />
+            <label className="text-lg text-black mr-2">Completed</label>
+            <input
+              type="radio"
+              value="Cancel"
+              checked={selectedStatus === "Cancel"}
+              onChange={handleStatusChange}
+              className="form-checkbox h-4 w-4 rounded-full ring-1 ring-black text-white checked:text-green-800 focus:ring-1 ml-2 mr-1"
+            />
+            <label className="text-lg text-black">Cancel Order</label>
+          </form>
+
           <div>
-            <button 
-              className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded" 
-              onClick={handleSubmit}
-            >
+            <button
+              className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
+              onClick={handleSubmit}>
               Change
             </button>
-            <button 
-              className="bg-red-700 text-sm text-white font-bold py-2 px-4 rounded" 
-              onClick={onClose}
-            >
+            <button
+              className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
+              onClick={onClose}>
               Cancel
             </button>
           </div>
