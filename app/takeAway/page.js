@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
-import toast from 'react-hot-toast';
-
+import toast from "react-hot-toast";
+import Modal from "../components/statusModal";
 
 function CategoryButton({
   category,
@@ -38,6 +38,30 @@ export default function TakeAway() {
   const [orderCounter, setOrderCounter] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
+  //Modal//
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const handleButtonClick = (orderId) => () => {
+    const order = orders.find((order) => order.id === orderId);
+    setSelectedOrderId(orderId);
+    setSelectedStatus(order.status); // Set the selectedStatus state to the status of the selected order
+    setModalOpen(true);
+  };
+
+  const handleModalClose = (orderId, selectedStatus) => {
+    setModalOpen(false);
+
+    // Update the order status in the orders array
+    setOrders(
+      orders.map((order) =>
+        order.id === orderId ? { ...order, status: selectedStatus } : order
+      )
+    );
+  };
+  // end of Modal //
+
   useEffect(() => {
     fetch("/api/menu")
       .then((response) => response.json())
@@ -70,14 +94,14 @@ export default function TakeAway() {
       orderId: order.id,
     }));
     setCartItems(itemsWithOrderId);
+    console.log(cartItems);
   };
 
   const handleCloseMenu = () => {
     setShowMenu(false);
     setCartItems([]);
   };
-  
-  
+
   return (
     <>
       {showMenu ? (
@@ -128,7 +152,7 @@ export default function TakeAway() {
           />
         </div>
       ) : (
-        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 ">
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
           <div className="flex justify-between w-full">
             <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
               Today Order
@@ -163,8 +187,15 @@ export default function TakeAway() {
                     key={order.id}
                     className="bg-white text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200">
                     <td className="border px-4 py-2">
-                      <button onClick={()=> {toast.success('Completed!'); console.log("clicked");}} 
-                      className="text-green-800 rounded-md text-sm underline">{order.status}</button>
+                      <button
+                        onClick={handleButtonClick(order.id)}
+                        className={`rounded-md text-sm underline ${
+                          order.status === "Completed"
+                            ? "text-green-800"
+                            : "text-red-700"
+                        }`}>
+                        {order.status}
+                      </button>
                     </td>
                     <td className="border px-4 py-2">{order.id}</td>
                     <td className="border px-4 py-2 text-right">
@@ -208,6 +239,13 @@ export default function TakeAway() {
         setOrders={setOrders}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
+      />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        orderId={selectedOrderId}
+        selectedStatus={selectedStatus}
+        setSelectedStatus={setSelectedStatus}
       />
     </>
   );

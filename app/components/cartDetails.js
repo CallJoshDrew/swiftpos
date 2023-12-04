@@ -142,7 +142,6 @@ export default function CartDetails({
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-10 px-6 space-y-4">
         <div className="rounded-lg px-2 flex my-1 justify-between items-center">
           <div className="text-green-800 text-lg font-bold">Take Away</div>
-
           {showDetails && cartItems.length > 0 && !showEditBtn && (
             <div
               onClick={() => {
@@ -166,7 +165,6 @@ export default function CartDetails({
               </div>
             </div>
           )}
-
           {cartItems.length > 0 &&
             orderCompleted == false &&
             showDetails == false && (
@@ -179,41 +177,10 @@ export default function CartDetails({
                 Close
               </button>
             )}
-
-          {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-8 h-8 text-red-700"
-              onClick={() => {
-                setShowMenu(false);
-                setShowEditBtn(false);
-                setOrderCompleted(true);
-              }}>
-              <path
-                fillRule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-8 h-8 text-green-700"
-              onClick={() => {
-                setShowMenu(true);
-                setShowDetails(false);
-                setShowEditBtn(true);
-              }}>
-              <path
-                fillRule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                clipRule="evenodd"
-              />
-            </svg>
-             */}
         </div>
+        {cartItems.length > 0 && cartItems.map((item) => (
+  <div key={item.id}>{item.id}</div>
+))}
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
         {/* Each item card */}
         <div className="flex flex-col gap-4">
