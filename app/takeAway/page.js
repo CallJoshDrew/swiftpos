@@ -82,6 +82,7 @@ export default function TakeAway() {
   }, {});
 
   const handleDetailBtn = (id) => {
+    setSelectedOrderID(id);
     setShowEditBtn(false);
     setShowDetails(true);
 
@@ -92,7 +93,6 @@ export default function TakeAway() {
       ...item,
       orderID: order.id,
     }));
-    let orderID = order.id;
     setCartItems(itemsWithOrderID);
     console.log(cartItems);
   };
@@ -239,6 +239,7 @@ export default function TakeAway() {
         setOrders={setOrders}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
+        orderID={selectedOrderID}
       />
       <Modal
         isOpen={isModalOpen}

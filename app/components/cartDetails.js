@@ -17,6 +17,7 @@ export default function CartDetails({
   setOrders,
   orderCounter,
   setOrderCounter,
+  orderID,
 }) {
   let subtotal = 0;
   let tax = 0;
@@ -143,7 +144,7 @@ export default function CartDetails({
               Take Away
             </div>
             <div className="text-green-800 text-sm">
-              {cartItems.length > 0 ? cartItems[0].orderID : "No items in cart"}
+              {cartItems.length > 0 ? orderID : "No items in cart"}
             </div>
           </div>
           {showDetails && cartItems.length > 0 && !showEditBtn && (
@@ -182,7 +183,6 @@ export default function CartDetails({
               </button>
             )}
         </div>
-
         <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
         {/* Each item card */}
         <div className="flex flex-col gap-4">
