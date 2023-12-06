@@ -17,7 +17,10 @@ export default function CartDetails({
   setOrders,
   orderCounter,
   setOrderCounter,
-  orderID,
+  orderID, //this is selectOrderID
+  setSelectedOrderID,
+  orderTime,
+  setOrderTime,
 }) {
   let subtotal = 0;
   let tax = 0;
@@ -49,8 +52,17 @@ export default function CartDetails({
     );
   };
   const handleRemove = (id) => {
+    // Remove the item from the cart
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    //return all the items that are not equal to the id provided(which is the item which need to be removed)
+  
+    // Check if the cart is empty
+    if (cartItems.length === 1) {
+      // If the cart is empty after removing the item, remove the order
+      setOrders((prevOrders) => prevOrders.filter((order) => order.id !== orderID));
+      setSelectedOrderID(null); // Clear the selected order ID
+      setShowMenu(false);
+      setOrderCounter(orderCounter -1);
+    }
   };
 
   const handleOrder = () => {
@@ -74,12 +86,14 @@ export default function CartDetails({
       const minutes = String(now.getMinutes()).padStart(2, "0");
 
       // Generate the ID
-      id = `${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+      id = `TA-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
 
-      // Increment the order counter
+      // Increment the order counter for the next order
       setOrderCounter(orderCounter + 1);
+      
     }
-
+    setSelectedOrderID(id);
+    setShowEditBtn(false);
     // Convert the timestamp to a readable format
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -87,7 +101,7 @@ export default function CartDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     });
-
+    setOrderTime(timestamp);
     // Calculate the total price and quantity of all items in the cart
     let subtotal = 0;
     let totalQuantity = 0;
@@ -132,7 +146,7 @@ export default function CartDetails({
     });
 
     // Clear the cartItems array
-    setCartItems([]);
+    // setCartItems([]);
   };
 
   return (
@@ -144,7 +158,7 @@ export default function CartDetails({
               Take Away
             </div>
             <div className="text-green-800 text-sm">
-              {cartItems.length > 0 ? orderID : "No items in cart"}
+              {!showMenu && cartItems.length > 0 ? orderID : null}
             </div>
           </div>
           {showDetails && cartItems.length > 0 && !showEditBtn && (
@@ -172,7 +186,8 @@ export default function CartDetails({
           )}
           {cartItems.length > 0 &&
             orderCompleted == false &&
-            showDetails == false && (
+            showDetails == false &&
+            showEditBtn && (
               <button
                 className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
                 onClick={() => {
@@ -183,7 +198,16 @@ export default function CartDetails({
               </button>
             )}
         </div>
-        <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
+        <hr className="h-px bg-gray-200 border-0" />
+        {cartItems.length > 0 ? (
+        <div className="flex space-y-0 px-2 items-center space-x-2">
+          <div className="text-green-800 text-sm font-bold leading-none">
+            Order Time
+          </div>
+          <div className="text-green-800 text-sm">
+            {orderTime}
+          </div>
+        </div>) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
@@ -288,13 +312,7 @@ export default function CartDetails({
             onClick={handleOrder}>
             Place Order & Print
           </button>
-        ) : orderCompleted && cartItems.length > 0 ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Empty Cart
-          </button>
-        ) : showDetails && cartItems.length > 0 ? (
+        ) : cartItems.length > 0 ? (
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>
