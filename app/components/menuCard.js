@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 function MenuItem({
   item,
@@ -29,33 +30,26 @@ function MenuItem({
         // If the item is not in the cart, add it with a quantity of 1
         setCartItems([...cartItems, { ...item, quantity: 1 }]);
       }
-    }
-  };
-  
-  const increaseCount = () => {
-    setItemCounts({ ...itemCounts, [item.id]: (itemCounts[item.id] || 1) + 1 });
-  };
-
-  const decreaseCount = () => {
-    if (itemCounts[item.id] > 0) {
-      setItemCounts({ ...itemCounts, [item.id]: itemCounts[item.id] - 1 });
+      toast.success("Added to Cart", {
+        duration: 2000,
+      });
     }
   };
 
   return (
     <div
       key={item.id}
-      className="flex flex-col relative rounded-lg bg-white border-2 border-gray-100 shadow-sm overflow-hidden cursor-pointer hover:border-green-600">
+      className="flex flex-col items-center relative rounded-lg bg-white border-2 border-gray-100 shadow-sm cursor-pointer hover:border-green-600 pt-3 h-[200px]">
       <Image
-        src="/sample.png"
+        src={item.image}
         alt={item.name}
         width="100"
         height="100"
-        className="sm:h24 w-32 object-cover m-2 rounded-lg"
+        className="h-24 w-32 object-cover rounded-lg"
       />
-      <div className="mb-10 mx-2">
-        <div className="text-xs text-gray-600 ml-1">{item.name}</div>
-        <div className="block text-green-800 text-xs ml-1">RM {item.price.toFixed(2)}</div>
+      <div className="flex flex-col flex-start w-full px-3 py-1">
+        <div className="text-xs text-gray-600">{item.name}</div>
+        <div className="text-green-800 text-xs">RM {item.price.toFixed(2)}</div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
         <button
@@ -82,7 +76,7 @@ export default function MenuCard({
   }
 
   return (
-    <div className="group rounded-lg grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2">
       {menu.map((item) => (
         <MenuItem
           key={item.id}

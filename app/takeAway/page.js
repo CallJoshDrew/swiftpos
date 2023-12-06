@@ -37,7 +37,7 @@ export default function TakeAway() {
   const [orders, setOrders] = useState([]);
   const [orderCounter, setOrderCounter] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [orderTime, setOrderTime] = useState('');
+  const [orderTime, setOrderTime] = useState("");
 
   //Modal//
   const [isModalOpen, setModalOpen] = useState(false);
@@ -108,42 +108,44 @@ export default function TakeAway() {
     <>
       {showMenu ? (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-          <div className="flex justify-between w-full">
-            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-              Our Menu
+          {/* <div className="fixed bg-gray-100 top=0 z-10 w-1/2 pt-10 py-4"> */}
+            <div className="flex justify-between w-full">
+              <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
+                Our Menu
+              </div>
+              <button
+                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
+                onClick={() => handleCloseMenu()}>
+                x Close Menu
+              </button>
             </div>
-            <button
-              className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-              onClick={() => handleCloseMenu()}>
-              x Close Menu
-            </button>
-          </div>
-          <div className="grid grid-cols-5 grid-rows-1 gap-4">
-            <CategoryButton
-              category="All"
-              itemCount={menu.length}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Main"
-              itemCount={itemCounts["Main"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Drinks"
-              itemCount={itemCounts["Drinks"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Cakes"
-              itemCount={itemCounts["Cakes"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-          </div>
+            <div className="grid grid-cols-5 grid-rows-1 gap-4">
+              <CategoryButton
+                category="All"
+                itemCount={menu.length}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+              <CategoryButton
+                category="Cakes"
+                itemCount={itemCounts["Cakes"] || 0}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+              <CategoryButton
+                category="Dish"
+                itemCount={itemCounts["Dish"] || 0}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+              <CategoryButton
+                category="Drinks"
+                itemCount={itemCounts["Drinks"] || 0}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+            </div>
+          {/* </div> */}
           {/* card begins here */}
           <MenuCard
             menu={menu}
@@ -176,9 +178,7 @@ export default function TakeAway() {
                   <th className="px-4 py-4 border-b font-light">No.</th>
                   <th className="px-4 py-4 border-b font-light">Time</th>
                   <th className="px-4 py-4 border-b font-light">Qty</th>
-                  <th className="px-4 py-4 border-b font-light">
-                    Price (RM)
-                  </th>
+                  <th className="px-4 py-4 border-b font-light">Price (RM)</th>
                   <th className="px-4 py-4 border-b font-light">Status</th>
                   {/* <th className="px-4 py-4 border-b font-light">Details</th> */}
                 </tr>
@@ -191,7 +191,9 @@ export default function TakeAway() {
                       order.id === selectedOrderID ? "bg-gray-100" : "bg-white"
                     } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
                     onClick={() => handleDetailBtn(order.id)}>
-                    <td className="border px-4 py-2">{orders.length - index}</td>
+                    <td className="border px-4 py-2">
+                      {orders.length - index}
+                    </td>
                     <td className="border px-4 py-2">{order.timestamp}</td>
                     <td className="border px-4 py-2">{order.quantity}</td>
                     <td className="border px-4 py-2">

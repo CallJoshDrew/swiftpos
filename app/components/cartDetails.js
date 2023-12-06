@@ -54,15 +54,9 @@ export default function CartDetails({
   const handleRemove = (id) => {
     // Remove the item from the cart
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  
-    // Check if the cart is empty
-    if (cartItems.length === 1) {
-      // If the cart is empty after removing the item, remove the order
-      setOrders((prevOrders) => prevOrders.filter((order) => order.id !== orderID));
-      setSelectedOrderID(null); // Clear the selected order ID
-      setShowMenu(false);
-      setOrderCounter(orderCounter -1);
-    }
+    toast.success("Item is removed!", {
+      duration: 2000,
+    });
   };
 
   const handleOrder = () => {
@@ -142,7 +136,7 @@ export default function CartDetails({
 
     console.log(order);
     toast.success("Successfully Added", {
-      duration: 3000,
+      duration: 2000,
     });
 
     // Clear the cartItems array
@@ -216,11 +210,11 @@ export default function CartDetails({
               className="flex flex-col border rounded-md p-2 shadow-sm">
               <div className="flex relative">
                 <Image
-                  src="/sample.png"
+                  src={item.image}
                   alt="stew"
                   width="100"
                   height="100"
-                  className="sm:h-20 w-20 object-cover rounded-lg"
+                  className="sm:h-18 w-20 object-cover rounded-lg"
                 />
                 <div className="flex flex-col py-1 px-4">
                   <div className="text-black text-base leading-4">
