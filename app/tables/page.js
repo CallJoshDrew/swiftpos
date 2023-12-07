@@ -2,28 +2,9 @@
 import React, { useState, useEffect } from "react";
 import TableDetails from "../components/tableDetails";
 import MenuCard from "../components/menuCard";
-
-function CategoryButton({
-  category,
-  itemCount,
-  selectedCategory,
-  setSelectedCategory,
-}) {
-  const isSelected = selectedCategory === category;
-  return (
-    <button
-      className={`rounded-lg flex items-center justify-center flex-col py-4 ${
-        isSelected ? "bg-green-700 text-white" : "bg-white text-black"
-      }`}
-      onClick={() => setSelectedCategory(category)}>
-      <div className="text-lg">{category}</div>
-      <div className="text-xs">{itemCount} items</div>
-    </button>
-  );
-}
+import CategoryButton from "../components/categoryButton";
 
 export default function Tables() {
-  const [selectedTable, setSelectedTable] = useState("1");
   const [showMenu, setShowMenu] = useState(false);
   const [taxRate, setTaxRate] = useState(0.1);
   const [menu, setMenu] = useState([]);
@@ -35,12 +16,60 @@ export default function Tables() {
 
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date().toDateString());
+  const [orderTime, setOrderTime] = useState("");
+  const [selectedOrderID, setSelectedOrderID] = useState(null);
+
+  const [tables, setTables] = useState(
+    Array.from({ length: 12 }, () => ({
+      occupied: false,
+      orderID: null,
+      order: [],
+    }))
+  );
+  const [selectedTable, setSelectedTable] = useState(null);
+
+  const selectTable = (tableIndex) => {
+    setSelectedTable(tableIndex);
+    setShowDetails(true);
+    // Only show the menu if the table is occupied
+    if (tables[tableIndex].occupied === false) {
+      setShowMenu(true);
+      setShowEditBtn(true);
+    }
+  
+    if (tables[tableIndex].order && tables[tableIndex].order.items) {
+      // Add the order ID to each item
+      const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
+        ...item,
+        orderID: tables[tableIndex].order.id,
+      }));
+  
+      // Update the cart items
+      setSelectedOrderID(tables[tableIndex].order.id);
+      setCartItems(itemsWithOrderID);
+      setShowEditBtn(false);
+    } else {
+      // Reset cartItems and selectedOrderID when an empty table is selected
+      setSelectedOrderID(null);
+      setCartItems([]);
+    }
+  };
+  
 
   useEffect(() => {
     fetch("/api/menu")
       .then((response) => response.json())
       .then((data) => setMenu(data));
   }, []);
+
+  useEffect(() => {
+    const today = new Date().toDateString();
+    if (today !== currentDate) {
+      setOrderCounter(1);
+      setCurrentDate(today);
+    }
+  }, [currentDate]);
 
   let itemCounts = menu.reduce((counts, item) => {
     counts[item.category] = (counts[item.category] || 0) + 1;
@@ -55,7 +84,7 @@ export default function Tables() {
   return (
     <>
       {showMenu ? (
-        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4 ">
           <div className="flex justify-between w-full">
             <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
               Our Menu
@@ -102,88 +131,35 @@ export default function Tables() {
           />
         </div>
       ) : (
-        <div className="bg-gray-200 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
-          <div className="text-lg p-2 mb-1 font-medium text-black">
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
+          <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">
             Select Table
           </div>
           <div className="grid grid-cols-3 gap-10 grid-rows-5 ">
-            <button
-              className="group hover:bg-green-800 bg-yellow-500 rounded-lg text-white flex items-center justify-center flex-col py-4"
-              onClick={() => setSelectedTable("1")}>
-              <div className="text-md group-hover:text-white">Table 1</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-white rounded-lg text-black items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("2")}>
-              <div className="text-md group-hover:text-white">Table 2</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("3")}>
-              <div className="text-md group-hover:text-white">Table 3</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-white rounded-lg text-black items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("4")}>
-              <div className="text-md group-hover:text-white">Table 4</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-white rounded-lg text-black items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("5")}>
-              <div className="text-md group-hover:text-white">Table 5</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("6")}>
-              <div className="text-md group-hover:text-white">Table 6</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-white rounded-lg text-black items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("7")}>
-              <div className="text-md group-hover:text-white">Table 7</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("8")}>
-              <div className="text-md group-hover:text-white">Table 8</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("9")}>
-              <div className="text-md group-hover:text-white">Table 9</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-white rounded-lg text-black items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("10")}>
-              <div className="text-md group-hover:text-white">Table 10</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("11")}>
-              <div className="text-md group-hover:text-white">Table 11</div>
-              <div className="text-sm group-hover:text-white">Seated</div>
-            </button>
-            <button
-              className="group  hover:bg-green-800 bg-yellow-500 rounded-lg text-white  items-center flex justify-center flex-col"
-              onClick={() => setSelectedTable("12")}>
-              <div className="text-md group-hover:text-white">Table 12</div>
-              <div className="text-sm group-hover:text-white">Empty</div>
-            </button>
+            {tables.map((table, index) => (
+              <button
+                key={index}
+                className={`${
+                  index === selectedTable
+                    ? "bg-green-800 text-white"
+                    : table.occupied === false
+                    ? "bg-white text-black"
+                    : "bg-yellow-500 text-white"
+                } rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
+                onClick={() => selectTable(index)}>
+                <div className="text-md ">Table {index + 1}</div>
+                <div className="text-sm ">
+                  {table.occupied ? "seated" : "empty"}
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       )}
       <TableDetails
-        table={selectedTable}
+        tables={tables}
+        setTables={setTables}
+        tableNumber={selectedTable + 1}
         cartItems={cartItems}
         setCartItems={setCartItems}
         showMenu={showMenu}
@@ -198,6 +174,10 @@ export default function Tables() {
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
         setOrders={setOrders}
+        orderID={selectedOrderID}
+        setSelectedOrderID={setSelectedOrderID}
+        orderTime={orderTime}
+        setOrderTime={setOrderTime}
       />
     </>
   );

@@ -56,6 +56,8 @@ export default function CartDetails({
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
+      position:"bottom-center",
+      reverseOrder:false,
     });
   };
 
@@ -137,6 +139,8 @@ export default function CartDetails({
     console.log(order);
     toast.success("Successfully Added", {
       duration: 2000,
+      position:"bottom-center",
+      reverseOrder:false,
     });
 
     // Clear the cartItems array
@@ -152,7 +156,7 @@ export default function CartDetails({
               Take Away
             </div>
             <div className="text-green-800 text-sm">
-              {!showMenu && cartItems.length > 0 ? orderID : null}
+              {cartItems.length > 0 ? orderID : null}
             </div>
           </div>
           {showDetails && cartItems.length > 0 && !showEditBtn && (

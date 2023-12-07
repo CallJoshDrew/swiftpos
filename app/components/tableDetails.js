@@ -3,21 +3,27 @@ import React from "react";
 import toast from "react-hot-toast";
 
 export default function TableDetails({
-  table,
-  taxRate,
+  tables,
+  setTables,
+  tableNumber,
   cartItems,
-  setCartItems,
+  taxRate,
   showMenu,
   setShowMenu,
+  setCartItems,
   showEditBtn,
   setShowEditBtn,
   orderCompleted,
   setOrderCompleted,
   showDetails,
   setShowDetails,
+  setOrders,
   orderCounter,
   setOrderCounter,
-  setOrders,
+  orderID, //this is selectOrderID
+  setSelectedOrderID,
+  orderTime,
+  setOrderTime,
 }) {
   let subtotal = 0;
   let tax = 0;
@@ -49,9 +55,15 @@ export default function TableDetails({
     );
   };
   const handleRemove = (id) => {
+    // Remove the item from the cart
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    //return all the items that are not equal to the id provided(which is the item which need to be removed)
+    toast.success("Item is removed!", {
+      duration: 2000,
+      position: "bottom-center",
+      reverseOrder: false,
+    });
   };
+
   const handleOrder = () => {
     setShowMenu(false);
 
@@ -73,12 +85,13 @@ export default function TableDetails({
       const minutes = String(now.getMinutes()).padStart(2, "0");
 
       // Generate the ID
-      id = `${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+      id = `DINE-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
 
-      // Increment the order counter
+      // Increment the order counter for the next order
       setOrderCounter(orderCounter + 1);
     }
-
+    setSelectedOrderID(id);
+    setShowEditBtn(false);
     // Convert the timestamp to a readable format
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -86,7 +99,7 @@ export default function TableDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     });
-
+    setOrderTime(timestamp);
     // Calculate the total price and quantity of all items in the cart
     let subtotal = 0;
     let totalQuantity = 0;
@@ -125,44 +138,90 @@ export default function TableDetails({
       }
     });
 
-    console.log(order);
-    toast.success("Successfully Added", {
-      duration: 3000,
+    // Update the order ID and status of the selected table
+    setTables((prevTables) => {
+      const updatedTables = [...prevTables];
+      updatedTables[tableNumber - 1] = {
+        ...updatedTables[tableNumber - 1],
+        orderID: id,
+        occupied: true,
+        order,
+      };
+      return updatedTables;
     });
 
-    // Clear the cartItems array
-    setCartItems([]);
+    console.log(tables);
+    toast.success("Successfully Added", {
+      duration: 2000,
+      position: "bottom-center",
+      reverseOrder: false,
+    });
   };
+
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
-        <div className="rounded-lg px-2 flex my-1 justify-between">
-          <div className="flex items-center">
-            <div className="text-green-800 text-xl font-bold">Table</div>
-            <div className="bg-green-800 text-white px-3 py-1 rounded-full text-sm ml-2">
-              {table}
-            </div>
-          </div>
-          <div
-            onClick={() => {
-              setShowMenu(true);
-            }}>
-            <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-              <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
-                Edit
+        <div className="rounded-lg px-2 flex my-1 justify-between items-center">
+          <div className="flex">
+            <div className="flex flex-col">
+              <div className="flex items-center">
+                <div className="text-green-800 text-xl font-bold">Table</div>
+                <div className="bg-green-800 text-white px-2 py-1 rounded-full text-xs ml-2">
+                  {tableNumber}
+                </div>
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-5 h-5 text-white cursor-pointer">
-                <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-              </svg>
+              <div className="text-green-800 text-sm">
+              {cartItems.length > 0 ? orderID : null}
+            </div>
             </div>
           </div>
+          {showDetails && cartItems.length > 0 && !showEditBtn && (
+            <div
+              onClick={() => {
+                setShowMenu(true);
+                setShowEditBtn(true);
+                setOrderCompleted(false);
+                setShowDetails(false);
+              }}>
+              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
+                  Edit
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5 text-white cursor-pointer">
+                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                </svg>
+              </div>
+            </div>
+          )}
+          {cartItems.length > 0 &&
+            orderCompleted == false &&
+            showDetails == false &&
+            showEditBtn && (
+              <button
+                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
+                onClick={() => {
+                  setShowMenu(false);
+                  setCartItems([]);
+                }}>
+                Close
+              </button>
+            )}
         </div>
-        <hr className="h-px mt-4 mb-5 bg-gray-200 border-0" />
+        <hr className="h-px bg-gray-200 border-0" />
+        {cartItems.length > 0 ? (
+          <div className="flex space-y-0 px-2 items-center space-x-2">
+            <div className="text-green-800 text-sm font-bold leading-none">
+              Order Time
+            </div>
+            <div className="text-green-800 text-sm">{orderTime}</div>
+          </div>
+        ) : null}
+        {/* Each item card */}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
             <div
@@ -170,11 +229,11 @@ export default function TableDetails({
               className="flex flex-col border rounded-md p-2 shadow-sm">
               <div className="flex relative">
                 <Image
-                  src="/sample.png"
+                  src={item.image}
                   alt="stew"
                   width="100"
                   height="100"
-                  className="sm:h-20 w-20 object-cover rounded-lg"
+                  className="sm:h-18 w-20 object-cover rounded-lg"
                 />
                 <div className="flex flex-col py-1 px-4">
                   <div className="text-black text-base leading-4">
@@ -266,13 +325,7 @@ export default function TableDetails({
             onClick={handleOrder}>
             Place Order & Print
           </button>
-        ) : orderCompleted && cartItems.length > 0 ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Empty Cart
-          </button>
-        ) : showDetails && cartItems.length > 0 ? (
+        ) : cartItems.length > 0 ? (
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>

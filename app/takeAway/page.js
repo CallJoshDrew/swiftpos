@@ -2,27 +2,8 @@
 import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
-import toast from "react-hot-toast";
 import Modal from "../components/statusModal";
-
-function CategoryButton({
-  category,
-  itemCount,
-  selectedCategory,
-  setSelectedCategory,
-}) {
-  const isSelected = selectedCategory === category;
-  return (
-    <button
-      className={`rounded-lg flex items-center justify-center flex-col py-4 ${
-        isSelected ? "bg-green-700 text-white" : "bg-white text-black"
-      }`}
-      onClick={() => setSelectedCategory(category)}>
-      <div className="text-lg">{category}</div>
-      <div className="text-xs">{itemCount} items</div>
-    </button>
-  );
-}
+import CategoryButton from "../components/categoryButton";
 
 export default function TakeAway() {
   const [menu, setMenu] = useState([]);
@@ -107,8 +88,8 @@ export default function TakeAway() {
   return (
     <>
       {showMenu ? (
-        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-          {/* <div className="fixed bg-gray-100 top=0 z-10 w-1/2 pt-10 py-4"> */}
+       <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
+       {/* <div className="fixed bg-gray-100 top=0 z-10 w-1/2 pt-10 py-4"> */}
             <div className="flex justify-between w-full">
               <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
                 Our Menu

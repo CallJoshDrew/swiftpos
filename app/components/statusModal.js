@@ -16,7 +16,9 @@ export default function Modal({
   const handleSubmit = () => {
     onClose(orderID, selectedStatus);
     toast.success("Status Changed Successfully'", {
-      duration: 3000,
+      duration: 2000,
+      position:"bottom-center",
+      reverseOrder:false,
     });
   };
 
