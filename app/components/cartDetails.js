@@ -12,8 +12,6 @@ export default function CartDetails({
   setShowEditBtn,
   orderCompleted,
   setOrderCompleted,
-  showDetails,
-  setShowDetails,
   setOrders,
   orderCounter,
   setOrderCounter,
@@ -159,13 +157,12 @@ export default function CartDetails({
               {cartItems.length > 0 ? orderID : null}
             </div>
           </div>
-          {showDetails && cartItems.length > 0 && !showEditBtn && (
+          {cartItems.length > 0 && !showEditBtn && (
             <div
               onClick={() => {
                 setShowMenu(true);
                 setShowEditBtn(true);
                 setOrderCompleted(false);
-                setShowDetails(false);
               }}>
               <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                 <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
@@ -184,7 +181,6 @@ export default function CartDetails({
           )}
           {cartItems.length > 0 &&
             orderCompleted == false &&
-            showDetails == false &&
             showEditBtn && (
               <button
                 className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"

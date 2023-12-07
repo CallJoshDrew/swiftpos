@@ -13,7 +13,6 @@ export default function TakeAway() {
   const [showMenu, setShowMenu] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(true);
   const [orderCompleted, setOrderCompleted] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
   const [orders, setOrders] = useState([]);
   const [orderCounter, setOrderCounter] = useState(1);
@@ -66,7 +65,6 @@ export default function TakeAway() {
   const handleDetailBtn = (id) => {
     setSelectedOrderID(id);
     setShowEditBtn(false);
-    setShowDetails(true);
 
     // Find the order with the clicked ID
     const order = orders.find((order) => order.id === id);
@@ -210,8 +208,6 @@ export default function TakeAway() {
         setShowMenu={setShowMenu}
         orderCompleted={orderCompleted}
         setOrderCompleted={setOrderCompleted}
-        showDetails={showDetails}
-        setShowDetails={setShowDetails}
         setOrders={setOrders}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}

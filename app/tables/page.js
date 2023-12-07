@@ -12,7 +12,6 @@ export default function Tables() {
   const [cartItems, setCartItems] = useState([]);
   const [showEditBtn, setShowEditBtn] = useState(true);
   const [orderCompleted, setOrderCompleted] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
@@ -31,9 +30,11 @@ export default function Tables() {
 
   const selectTable = (tableIndex) => {
     setSelectedTable(tableIndex);
-    setShowDetails(true);
     // Only show the menu if the table is occupied
-    if (tables[tableIndex].occupied === false) {
+    if (tables[tableIndex].occupied) {
+      setOrderCompleted(true);
+    } else {
+      setOrderCompleted(false);
       setShowMenu(true);
       setShowEditBtn(true);
     }
@@ -149,7 +150,7 @@ export default function Tables() {
                 onClick={() => selectTable(index)}>
                 <div className="text-md ">Table {index + 1}</div>
                 <div className="text-sm ">
-                  {table.occupied ? "seated" : "empty"}
+                  {table.occupied ? "Seated" : "Empty"}
                 </div>
               </button>
             ))}
@@ -169,8 +170,6 @@ export default function Tables() {
         setShowEditBtn={setShowEditBtn}
         orderCompleted={orderCompleted}
         setOrderCompleted={setOrderCompleted}
-        showDetails={showDetails}
-        setShowDetails={setShowDetails}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
         setOrders={setOrders}

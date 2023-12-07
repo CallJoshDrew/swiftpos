@@ -15,8 +15,6 @@ export default function TableDetails({
   setShowEditBtn,
   orderCompleted,
   setOrderCompleted,
-  showDetails,
-  setShowDetails,
   setOrders,
   orderCounter,
   setOrderCounter,
@@ -91,6 +89,8 @@ export default function TableDetails({
       setOrderCounter(orderCounter + 1);
     }
     setSelectedOrderID(id);
+    setOrderCompleted(true);
+    console.log(orderCompleted);
     setShowEditBtn(false);
     // Convert the timestamp to a readable format
     const timestamp = now.toLocaleTimeString("en-US", {
@@ -121,7 +121,7 @@ export default function TableDetails({
       tax,
       totalPrice,
       quantity: totalQuantity,
-      status: "Completed",
+      status: "Placed Order",
     };
 
     // If an order with the same ID already exists, update it. Otherwise, add a new order.
@@ -175,13 +175,12 @@ export default function TableDetails({
             </div>
             </div>
           </div>
-          {showDetails && cartItems.length > 0 && !showEditBtn && (
+          {cartItems.length > 0 && !showEditBtn && (
             <div
               onClick={() => {
                 setShowMenu(true);
                 setShowEditBtn(true);
                 setOrderCompleted(false);
-                setShowDetails(false);
               }}>
               <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                 <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
@@ -200,13 +199,14 @@ export default function TableDetails({
           )}
           {cartItems.length > 0 &&
             orderCompleted == false &&
-            showDetails == false &&
             showEditBtn && (
               <button
                 className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
                 onClick={() => {
                   setShowMenu(false);
-                  setCartItems([]);
+                  setShowEditBtn(false);
+                  setOrderCompleted(true);
+                  // setCartItems([]);
                 }}>
                 Close
               </button>
@@ -319,19 +319,24 @@ export default function TableDetails({
             disabled>
             Empty Cart
           </button>
-        ) : showMenu && !orderCompleted ? (
+        ) : !orderCompleted ? (
           <button
             className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             onClick={handleOrder}>
             Place Order & Print
           </button>
-        ) : cartItems.length > 0 ? (
+        ) : orderCompleted ? (
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>
-            Completed
+            Order Accepted
           </button>
         ) : null}
+        {cartItems.length > 0 && orderCompleted && !showEditBtn && (
+          <button
+            className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
+            Make Payment
+          </button>)}
       </div>
     </div>
   );
