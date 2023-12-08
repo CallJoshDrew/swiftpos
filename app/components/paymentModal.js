@@ -16,7 +16,7 @@ export default function PaymentModal({
     onClose(orderID, paymentStatus);
     toast.success("Status Changed Successfully'", {
       duration: 2000,
-      position:"bottom-center",
+      position:"top-left",
       reverseOrder:false,
     });
   };

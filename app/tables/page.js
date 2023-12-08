@@ -44,7 +44,7 @@ export default function Tables() {
   // end of Modal //
 
   const [tables, setTables] = useState(
-    Array.from({ length: 12 }, () => ({
+    Array.from({ length: 18 }, () => ({
       occupied: false,
       orderID: null,
       order: [],
@@ -131,7 +131,7 @@ export default function Tables() {
           <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">
             Select Table
           </div>
-          <div className="grid grid-cols-3 gap-10 grid-rows-5 ">
+          <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
             {tables.map((table, index) => (
               <button
                 key={index}

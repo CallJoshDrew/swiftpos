@@ -30,7 +30,7 @@ function MenuItem({
       }
       toast.success("Added to Cart", {
         duration: 2000,
-        position:"bottom-center",
+        position:"top-left",
         reverseOrder:false,
       });
     }

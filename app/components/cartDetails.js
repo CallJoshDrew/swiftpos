@@ -54,7 +54,7 @@ export default function CartDetails({
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
-      position:"bottom-center",
+      position:"top-left",
       reverseOrder:false,
     });
   };
@@ -136,8 +136,8 @@ export default function CartDetails({
 
     console.log(order);
     toast.success("Successfully Added", {
-      duration: 2000,
-      position:"bottom-center",
+      duration: 3000,
+      position:"top-left",
       reverseOrder:false,
     });
 
