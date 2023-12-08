@@ -22,6 +22,7 @@ export default function TableDetails({
   setSelectedOrderID,
   orderTime,
   setOrderTime,
+  handleButtonClick,
 }) {
   let subtotal = 0;
   let tax = 0;
@@ -122,6 +123,7 @@ export default function TableDetails({
       totalPrice,
       quantity: totalQuantity,
       status: "Placed Order",
+      payment:"Pending",
     };
 
     // If an order with the same ID already exists, update it. Otherwise, add a new order.
@@ -334,7 +336,8 @@ export default function TableDetails({
         ) : null}
         {cartItems.length > 0 && orderCompleted && !showEditBtn && (
           <button
-            className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium">
+            className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+            onClick={handleButtonClick}>
             Make Payment
           </button>)}
       </div>

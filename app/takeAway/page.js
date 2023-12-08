@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
-import Modal from "../components/statusModal";
 import CategoryButton from "../components/categoryButton";
+import StatusModal from "../components/statusModal";
 
 export default function TakeAway() {
   const [menu, setMenu] = useState([]);
@@ -57,11 +57,6 @@ export default function TakeAway() {
     }
   }, [currentDate]);
 
-  let itemCounts = menu.reduce((counts, item) => {
-    counts[item.category] = (counts[item.category] || 0) + 1;
-    return counts;
-  }, {});
-
   const handleDetailBtn = (id) => {
     setSelectedOrderID(id);
     setShowEditBtn(false);
@@ -87,7 +82,6 @@ export default function TakeAway() {
     <>
       {showMenu ? (
        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-       {/* <div className="fixed bg-gray-100 top=0 z-10 w-1/2 pt-10 py-4"> */}
             <div className="flex justify-between w-full">
               <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
                 Our Menu
@@ -98,33 +92,7 @@ export default function TakeAway() {
                 x Close Menu
               </button>
             </div>
-            <div className="grid grid-cols-5 grid-rows-1 gap-4">
-              <CategoryButton
-                category="All"
-                itemCount={menu.length}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-              <CategoryButton
-                category="Cakes"
-                itemCount={itemCounts["Cakes"] || 0}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-              <CategoryButton
-                category="Dish"
-                itemCount={itemCounts["Dish"] || 0}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-              <CategoryButton
-                category="Drinks"
-                itemCount={itemCounts["Drinks"] || 0}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-            </div>
-          {/* </div> */}
+            <CategoryButton menu={menu} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
           {/* card begins here */}
           <MenuCard
             menu={menu}
@@ -216,7 +184,7 @@ export default function TakeAway() {
         orderTime={orderTime}
         setOrderTime={setOrderTime}
       />
-      <Modal
+      <StatusModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         orderID={selectedOrderID}

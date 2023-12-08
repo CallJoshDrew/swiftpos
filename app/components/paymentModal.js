@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 
-export default function StatusModal({
+export default function PaymentModal({
   isOpen,
   onClose,
   orderID,
-  selectedStatus,
-  setSelectedStatus,
+  paymentStatus,
+  setPaymentStatus,
 }) {
   const handleStatusChange = (event) => {
-    setSelectedStatus(event.target.value);
+    setPaymentStatus(event.target.value);
   };
 
   const handleSubmit = () => {
-    onClose(orderID, selectedStatus);
+    onClose(orderID, paymentStatus);
     toast.success("Status Changed Successfully'", {
       duration: 2000,
       position:"bottom-center",
@@ -38,26 +38,26 @@ export default function StatusModal({
             <input
               type="radio"
               value="Completed"
-              checked={selectedStatus === "Completed"}
+              checked={paymentStatus === "Completed"}
               onChange={handleStatusChange}
               className="form-checkbox h-4 w-4 rounded-full ring-1 ring-black text-white checked:text-green-800 focus:ring-1 mr-1"
             />
-            <label className="text-lg text-black mr-2">Completed</label>
+            <label className="text-lg text-black mr-2">Pay Now</label>
             <input
               type="radio"
-              value="Cancel"
-              checked={selectedStatus === "Cancel"}
+              value="Pending"
+              checked={paymentStatus === "Pending"}
               onChange={handleStatusChange}
               className="form-checkbox h-4 w-4 rounded-full ring-1 ring-black text-white checked:text-green-800 focus:ring-1 ml-2 mr-1"
             />
-            <label className="text-lg text-black">Cancel Order</label>
+            <label className="text-lg text-black">Cancel</label>
           </form>
 
           <div>
             <button
               className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
               onClick={handleSubmit}>
-              Change
+              Pay Now
             </button>
             <button
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"

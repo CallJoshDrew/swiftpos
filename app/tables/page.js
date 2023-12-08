@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import TableDetails from "../components/tableDetails";
 import MenuCard from "../components/menuCard";
 import CategoryButton from "../components/categoryButton";
+import PaymentModal from "../components/paymentModal";
 
 export default function Tables() {
   const [showMenu, setShowMenu] = useState(false);
@@ -18,6 +19,29 @@ export default function Tables() {
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [orderTime, setOrderTime] = useState("");
   const [selectedOrderID, setSelectedOrderID] = useState(null);
+
+  //Modal//
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState('pending');
+
+  const handleButtonClick = (orderID) => () => {
+    const order = orders.find((order) => order.id === orderID);
+    setSelectedOrderID(orderID);
+    setSelectedStatus(order.status); // Set the selectedStatus state to the status of the selected order
+    setModalOpen(true);
+  };
+
+  const handleModalClose = (orderID, selectedStatus) => {
+    setModalOpen(false);
+
+    // Update the order status in the orders array
+    setOrders(
+      orders.map((order) =>
+        order.id === orderID ? { ...order, status: selectedStatus } : order
+      )
+    );
+  };
+  // end of Modal //
 
   const [tables, setTables] = useState(
     Array.from({ length: 12 }, () => ({
@@ -38,6 +62,7 @@ export default function Tables() {
       setShowMenu(true);
       setShowEditBtn(true);
     }
+    setPaymentStatus(tables[tableIndex].payment);
   
     if (tables[tableIndex].order && tables[tableIndex].order.items) {
       // Add the order ID to each item
@@ -72,11 +97,6 @@ export default function Tables() {
     }
   }, [currentDate]);
 
-  let itemCounts = menu.reduce((counts, item) => {
-    counts[item.category] = (counts[item.category] || 0) + 1;
-    return counts;
-  }, {});
-
   const handleCloseMenu = () => {
     setShowMenu(false);
     setCartItems([]);
@@ -96,32 +116,7 @@ export default function Tables() {
               x Close Menu
             </button>
           </div>
-          <div className="grid grid-cols-5 grid-rows-1 gap-4">
-            <CategoryButton
-              category="All"
-              itemCount={menu.length}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Main"
-              itemCount={itemCounts["Main"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Drinks"
-              itemCount={itemCounts["Drinks"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <CategoryButton
-              category="Cakes"
-              itemCount={itemCounts["Cakes"] || 0}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-          </div>
+          <CategoryButton menu={menu} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
           {/* card begins here */}
           <MenuCard
             menu={menu}
@@ -177,6 +172,14 @@ export default function Tables() {
         setSelectedOrderID={setSelectedOrderID}
         orderTime={orderTime}
         setOrderTime={setOrderTime}
+        handleButtonClick={handleButtonClick}
+      />
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        orderID={selectedOrderID}
+        setPaymentStatus={setPaymentStatus}
+        paymentStatus={paymentStatus}
       />
     </>
   );

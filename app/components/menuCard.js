@@ -4,8 +4,6 @@ import toast from "react-hot-toast";
 
 function MenuItem({
   item,
-  itemCounts,
-  setItemCounts,
   cartItems,
   setCartItems,
   isOrderPlaced,
@@ -41,7 +39,7 @@ function MenuItem({
   return (
     <div
       key={item.id}
-      className="flex flex-col items-center relative rounded-lg bg-white border-2 border-gray-100 shadow-sm cursor-pointer hover:border-green-600 pt-3 h-[200px]">
+      className="flex flex-col items-center relative rounded-lg bg-white border-2 border-gray-100 shadow-sm cursor-pointer pt-3 h-[200px]">
       <Image
         src={item.image}
         alt={item.name}
@@ -55,9 +53,9 @@ function MenuItem({
       </div>
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
         <button
-          className="block bg-[#cce9d4] text-black text-xs p-1 rounded-md w-full"
+          className="block bg-[#cce9d4] text-black text-xs py-2 rounded-md w-full hover:bg-green-700 hover:text-white"
           onClick={handleClick}>
-          add to table
+          Add to table
         </button>
       </div>
     </div>
