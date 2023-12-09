@@ -13,7 +13,7 @@ export default function PaymentModal({
   const handlePaymentStatus = () => {
     setPaymentStatus("Completed");
     onClose(orderID, paymentStatus);
-    toast.success("Status Changed Successfully'", {
+    toast.success("Payment Done'", {
       duration: 2000,
       position:"top-left",
       reverseOrder:false,
