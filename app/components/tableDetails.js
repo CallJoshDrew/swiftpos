@@ -154,7 +154,7 @@ export default function TableDetails({
     });
 
     console.log(tables);
-    toast.success("Successfully Added", {
+    toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
