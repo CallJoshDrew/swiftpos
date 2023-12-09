@@ -43,6 +43,7 @@ function MenuItem({
       <Image
         src={item.image}
         alt={item.name}
+        as="image"
         width="100"
         height="100"
         className="h-24 w-32 object-cover rounded-lg"

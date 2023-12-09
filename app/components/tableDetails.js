@@ -116,6 +116,7 @@ export default function TableDetails({
     // Create a new order object
     const order = {
       id, // Use the existing or generated ID
+      tableNumber,
       timestamp, // Use the formatted timestamp
       items: cartItems, // Save the details of each item
       subtotal,
@@ -337,7 +338,7 @@ export default function TableDetails({
         {cartItems.length > 0 && orderCompleted && !showEditBtn && (
           <button
             className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            onClick={handleButtonClick}>
+            onClick={handleButtonClick(orderID)}>
             Make Payment
           </button>)}
       </div>

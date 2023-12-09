@@ -23,23 +23,23 @@ export default function Tables() {
   //Modal//
   const [isModalOpen, setModalOpen] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('pending');
-
+  const [order, setOrder] = useState([]);
   const handleButtonClick = (orderID) => () => {
-    const order = orders.find((order) => order.id === orderID);
+    setOrder(orders.find((order) => order.id === orderID));
     setSelectedOrderID(orderID);
-    setSelectedStatus(order.status); // Set the selectedStatus state to the status of the selected order
     setModalOpen(true);
   };
 
-  const handleModalClose = (orderID, selectedStatus) => {
+  const handleModalClose = (orderID, paymentStatus) => {
     setModalOpen(false);
 
     // Update the order status in the orders array
     setOrders(
       orders.map((order) =>
-        order.id === orderID ? { ...order, status: selectedStatus } : order
+        order.id === orderID ? { ...order, payment: paymentStatus, status: "Completed" } : order
       )
     );
+    console.log(order);
   };
   // end of Modal //
 
@@ -62,7 +62,6 @@ export default function Tables() {
       setShowMenu(true);
       setShowEditBtn(true);
     }
-    setPaymentStatus(tables[tableIndex].payment);
   
     if (tables[tableIndex].order && tables[tableIndex].order.items) {
       // Add the order ID to each item
@@ -75,6 +74,7 @@ export default function Tables() {
       setSelectedOrderID(tables[tableIndex].order.id);
       setCartItems(itemsWithOrderID);
       setShowEditBtn(false);
+      console.log(paymentStatus);
     } else {
       // Reset cartItems and selectedOrderID when an empty table is selected
       setSelectedOrderID(null);
@@ -178,8 +178,10 @@ export default function Tables() {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         orderID={selectedOrderID}
-        setPaymentStatus={setPaymentStatus}
+        order={order}
+        selectedTable={selectedTable}
         paymentStatus={paymentStatus}
+        setPaymentStatus={setPaymentStatus}
       />
     </>
   );

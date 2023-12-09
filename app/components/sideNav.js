@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import React from "react";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SideNav() {
   const path = usePathname();
@@ -13,33 +13,102 @@ export default function SideNav() {
         </div>
         <Link
           href="/tables"
-          className={path === '/tables' ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group" : 'rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6'}>
+          className={
+            path === "/tables"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6"
+          }>
           <svg
-            className={path === '/tables' ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={
+              path === "/tables"
+                ? "w-8 h-8 text-white"
+                : "w-8 h-8 text-green-800"
+            }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
             <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
           </svg>
-          <div className={path === '/tables' ? "text-white text-sm " : "text-black text-sm"}>来吹水</div>
+          <div
+            className={
+              path === "/tables" ? "text-white text-sm " : "text-black text-sm"
+            }>
+            来吹水
+          </div>
         </Link>
         <Link
           href="/takeAway"
-          className={path === '/takeAway' ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group" : 'rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group'}>
+          className={
+            path === "/takeAway"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
           <svg
-            className={path === '/takeAway' ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={
+              path === "/takeAway"
+                ? "w-8 h-8 text-white"
+                : "w-8 h-8 text-green-800"
+            }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
             <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
           </svg>
-          <div className={path === '/takeAway' ? "text-white text-sm " : "text-black text-sm"}>来打包</div>
+          <div
+            className={
+              path === "/takeAway"
+                ? "text-white text-sm "
+                : "text-black text-sm"
+            }>
+            来打包
+          </div>
+        </Link>
+        <Link
+          href="/receipts"
+          className={
+            path === "/receipts"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
+          <svg
+          className={
+            path === "/receipts"
+              ? "w-8 h-8 text-white"
+              : "w-8 h-8 text-green-800"
+          }
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+            />
+          </svg>
+          <div
+            className={
+              path === "/receipts"
+                ? "text-white text-sm "
+                : "text-black text-sm"
+            }>
+              收条
+          </div>
         </Link>
         <Link
           href="/salesReport"
-          className={path === '/salesReport' ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group" : 'rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group'}>
+          className={
+            path === "/salesReport"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
           <svg
-            className={path === '/salesReport' ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={
+              path === "/salesReport"
+                ? "w-8 h-8 text-white"
+                : "w-8 h-8 text-green-800"
+            }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
@@ -50,15 +119,28 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-          <div className={path === '/salesReport' ? "text-white text-sm " : "text-black text-sm"}>
+          <div
+            className={
+              path === "/salesReport"
+                ? "text-white text-sm "
+                : "text-black text-sm"
+            }>
             招財貓
           </div>
         </Link>
         <Link
           href="/setting"
-          className={path === '/setting' ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group" : 'rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group'}>
+          className={
+            path === "/setting"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
           <svg
-            className={path === '/setting' ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={
+              path === "/setting"
+                ? "w-8 h-8 text-white"
+                : "w-8 h-8 text-green-800"
+            }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
@@ -74,7 +156,10 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-          <div className={path === '/setting' ? "text-white text-sm " : "text-black text-sm"}>
+          <div
+            className={
+              path === "/setting" ? "text-white text-sm " : "text-black text-sm"
+            }>
             唔好按
           </div>
         </Link>
@@ -82,9 +167,15 @@ export default function SideNav() {
       <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
         <Link
           href="/"
-          className={path === '/' ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group" : 'rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group'}>
+          className={
+            path === "/"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
           <svg
-            className={path === '/' ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={
+              path === "/" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"
+            }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
@@ -94,7 +185,12 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-          <div className={path === '/' ? "text-white text-sm " : "text-black text-sm"}>唔好走</div>
+          <div
+            className={
+              path === "/" ? "text-white text-sm " : "text-black text-sm"
+            }>
+            唔好走
+          </div>
         </Link>
       </div>
     </div>
