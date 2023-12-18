@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function TableDetails({
+function TableDetails({
   tables,
   setTables,
   tableNumber,
@@ -22,8 +22,10 @@ export default function TableDetails({
   setSelectedOrderID,
   orderTime,
   setOrderTime,
-  handleButtonClick,
+  handlePaymentClick,
+  paymentStatus,
 }) {
+  // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
   let total = 0;
@@ -36,6 +38,7 @@ export default function TableDetails({
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
+
   const handleIncrease = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -53,8 +56,8 @@ export default function TableDetails({
       )
     );
   };
+
   const handleRemove = (id) => {
-    // Remove the item from the cart
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
@@ -63,37 +66,64 @@ export default function TableDetails({
     });
   };
 
-  const handleOrder = () => {
-    setShowMenu(false);
-
-    // Get the current date and time
-    const now = new Date();
-
-    // Check if an order ID already exists in cartItems
-    const existingOrder = cartItems.find((item) => item.orderID);
-
-    // Use the existing ID if it exists, otherwise generate a new one
-    let id;
+  // Order related variables and functions
+  const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
-      id = existingOrder.orderID;
+      return existingOrder.orderID;
     } else {
+      const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
+      const month = String(now.getMonth() + 1).padStart(2, "0");
       const day = String(now.getDate()).padStart(2, "0");
       const hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
-
-      // Generate the ID
-      id = `DINE-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
-
-      // Increment the order counter for the next order
-      setOrderCounter(orderCounter + 1);
+  
+      return `DINE-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
     }
+  };
+  
+  const calculateTotalQuantity = (cartItems) => {
+    let totalQuantity = 0;
+    cartItems.forEach((item) => {
+      totalQuantity += item.quantity;
+    });
+    return totalQuantity;
+  };
+  
+  const updateOrders = (prevOrders, order) => {
+    const orderIndex = prevOrders.findIndex((prevOrder) => prevOrder.id === order.id);
+    if (orderIndex !== -1) {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = order;
+      return updatedOrders;
+    } else {
+      return [order, ...prevOrders];
+    }
+  };
+  
+  const updateTables = (prevTables, tableNumber, order) => {
+    const updatedTables = [...prevTables];
+    updatedTables[tableNumber - 1] = {
+      ...updatedTables[tableNumber - 1],
+      orderID: order.id,
+      occupied: true,
+      order,
+    };
+    return updatedTables;
+  };
+  
+  const handleOrder = () => {
+    setShowMenu(false);
+  
+    const existingOrder = cartItems.find((item) => item.orderID);
+    const id = generateOrderID(existingOrder, orderCounter);
+    setOrderCounter(orderCounter + 1);
+  
     setSelectedOrderID(id);
     setOrderCompleted(true);
-    console.log(orderCompleted);
     setShowEditBtn(false);
-    // Convert the timestamp to a readable format
+  
+    const now = new Date();
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -101,65 +131,31 @@ export default function TableDetails({
       timeZone: "Asia/Kuala_Lumpur",
     });
     setOrderTime(timestamp);
-    // Calculate the total price and quantity of all items in the cart
-    let subtotal = 0;
-    let totalQuantity = 0;
-    cartItems.forEach((item) => {
-      subtotal += item.price * item.quantity;
-      totalQuantity += item.quantity;
-    });
-
-    // Calculate tax and total price
-    const tax = subtotal * taxRate; // Assuming a tax rate of 6%
-    const totalPrice = subtotal + tax;
-
-    // Create a new order object
+  
+    const totalQuantity = calculateTotalQuantity(cartItems);
+  
     const order = {
-      id, // Use the existing or generated ID
+      id,
       tableNumber,
-      timestamp, // Use the formatted timestamp
-      items: cartItems, // Save the details of each item
+      timestamp,
+      items: cartItems,
       subtotal,
       tax,
-      totalPrice,
+      totalPrice: total,
       quantity: totalQuantity,
       status: "Placed Order",
-      payment:"Pending",
+      payment: "Pending",
     };
-
-    // If an order with the same ID already exists, update it. Otherwise, add a new order.
-    setOrders((prevOrders) => {
-      const orderIndex = prevOrders.findIndex((order) => order.id === id);
-      if (orderIndex !== -1) {
-        // Update the existing order
-        const updatedOrders = [...prevOrders];
-        updatedOrders[orderIndex] = order;
-        return updatedOrders;
-      } else {
-        // Add a new order at the beginning of the array
-        return [order, ...prevOrders];
-      }
-    });
-
-    // Update the order ID and status of the selected table
-    setTables((prevTables) => {
-      const updatedTables = [...prevTables];
-      updatedTables[tableNumber - 1] = {
-        ...updatedTables[tableNumber - 1],
-        orderID: id,
-        occupied: true,
-        order,
-      };
-      return updatedTables;
-    });
-
-    console.log(tables);
+  
+    setOrders((prevOrders) => updateOrders(prevOrders, order));
+    setTables((prevTables) => updateTables(prevTables, tableNumber, order));
+  
     toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
     });
-  };
+  };  
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
@@ -174,8 +170,8 @@ export default function TableDetails({
                 </div>
               </div>
               <div className="text-green-800 text-sm">
-              {cartItems.length > 0 ? orderID : null}
-            </div>
+                {cartItems.length > 0 ? orderID : null}
+              </div>
             </div>
           </div>
           {cartItems.length > 0 && !showEditBtn && (
@@ -335,13 +331,18 @@ export default function TableDetails({
             Order Accepted
           </button>
         ) : null}
-        {cartItems.length > 0 && orderCompleted && !showEditBtn && (
-          <button
-            className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            onClick={handleButtonClick(orderID)}>
-            Make Payment
-          </button>)}
+        {cartItems.length > 0 &&
+          orderCompleted &&
+          !showEditBtn &&
+          paymentStatus != "Paid" && (
+            <button
+              className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              onClick={handlePaymentClick(orderID)}>
+              Make Payment
+            </button>
+          )}
       </div>
     </div>
   );
 }
+export default React.memo(TableDetails);

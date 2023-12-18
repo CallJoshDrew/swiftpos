@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function PaymentModal({
+function PaymentModal({
   isOpen,
   onClose,
   orderID,
@@ -11,7 +11,7 @@ export default function PaymentModal({
   setPaymentStatus,
 }) {
   const handlePaymentStatus = () => {
-    setPaymentStatus("Completed");
+    setPaymentStatus("Paid");
     onClose(orderID, paymentStatus);
     toast.success("Payment Done'", {
       duration: 2000,
@@ -51,3 +51,5 @@ export default function PaymentModal({
     </>
   );
 }
+
+export default React.memo(PaymentModal);

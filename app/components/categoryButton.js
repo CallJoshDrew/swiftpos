@@ -19,7 +19,7 @@ function Category({
   );
 }
 
-export default function CategoryButton({menu, selectedCategory, setSelectedCategory}) {
+function CategoryButton({menu, selectedCategory, setSelectedCategory}) {
   let itemCounts = menu.reduce((counts, item) => {
     counts[item.category] = (counts[item.category] || 0) + 1;
     return counts;
@@ -53,3 +53,4 @@ export default function CategoryButton({menu, selectedCategory, setSelectedCateg
     </div>
   );
 }
+export default React.memo(CategoryButton);

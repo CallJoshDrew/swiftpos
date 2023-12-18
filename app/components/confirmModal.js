@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function ConfirmModal({
+function ConfirmModal({
   isOpenMsg,
   onCloseMsg,
   message,
@@ -50,3 +50,4 @@ export default function ConfirmModal({
     </>
   );
 }
+export default React.memo(ConfirmModal);

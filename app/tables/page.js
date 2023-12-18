@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TableDetails from "../components/tableDetails";
 import MenuCard from "../components/menuCard";
 import CategoryButton from "../components/categoryButton";
@@ -7,45 +7,30 @@ import PaymentModal from "../components/paymentModal";
 import ConfirmModal from "../components/confirmModal";
 
 export default function Tables() {
+  // Menu related states
   const [showMenu, setShowMenu] = useState(false);
-  const [taxRate, setTaxRate] = useState(0.1);
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
   const [showEditBtn, setShowEditBtn] = useState(true);
-  const [orderCompleted, setOrderCompleted] = useState(false);
 
+  // Order related states
+  const [taxRate, setTaxRate] = useState(0.1);
+  const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [orderTime, setOrderTime] = useState("");
   const [selectedOrderID, setSelectedOrderID] = useState(null);
+  const [order, setOrder] = useState([]);
 
-  //Modal//
+  // Modal related states
   const [isModalOpen, setModalOpen] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("pending");
-  const [order, setOrder] = useState([]);
-  const handleButtonClick = (orderID) => () => {
-    setOrder(orders.find((order) => order.id === orderID));
-    setSelectedOrderID(orderID);
-    setModalOpen(true);
-  };
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleModalClose = (orderID, paymentStatus) => {
-    setModalOpen(false);
-
-    // Update the order status in the orders array
-    setOrders(
-      orders.map((order) =>
-        order.id === orderID
-          ? { ...order, payment: paymentStatus, status: "Completed" }
-          : order
-      )
-    );
-    console.log(order);
-  };
-  // end of Modal //
-
+  // Table related states
   const [tables, setTables] = useState(
     Array.from({ length: 18 }, () => ({
       occupied: false,
@@ -55,9 +40,43 @@ export default function Tables() {
   );
   const [selectedTable, setSelectedTable] = useState(null);
 
-  const selectTable = (tableIndex) => {
+  // Menu related functions
+  const handleCloseMenu = () => {
+    if (cartItems.length == 0) {
+      setShowMenu(false);
+      setShowEditBtn(false);
+      setCartItems([]);
+    } else {
+      setMessage("Are you sure?");
+      setMsgModalOpen(true);
+    }
+  };
+
+  // Modal related functions
+  const handlePaymentClick = (orderID) => () => {
+    setOrder(orders.find((order) => order.id === orderID));
+    setSelectedOrderID(orderID);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = (orderID, paymentStatus) => {
+    setModalOpen(false);
+    setOrders(
+      orders.map((order) =>
+        order.id === orderID
+          ? { ...order, payment: paymentStatus, status: "Completed" }
+          : order
+      )
+    );
+  };
+
+  const handleMsgModalClose = () => {
+    setMsgModalOpen(false);
+  };
+
+  // Table related functions
+  const selectTable = useCallback((tableIndex) => {
     setSelectedTable(tableIndex);
-    // Only show the menu if the table is occupied
     if (tables[tableIndex].occupied) {
       setOrderCompleted(true);
     } else {
@@ -67,30 +86,28 @@ export default function Tables() {
     }
 
     if (tables[tableIndex].order && tables[tableIndex].order.items) {
-      // Add the order ID to each item
       const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
         ...item,
         orderID: tables[tableIndex].order.id,
       }));
 
-      // Update the cart items
       setSelectedOrderID(tables[tableIndex].order.id);
       setCartItems(itemsWithOrderID);
       setShowEditBtn(false);
-      console.log(selectedOrderID);
     } else {
-      // Reset cartItems and selectedOrderID when an empty table is selected
       setSelectedOrderID(null);
       setCartItems([]);
     }
-  };
+  }, [tables]); // dependencies
 
+  // Fetch menu data
   useEffect(() => {
     fetch("/api/menu")
       .then((response) => response.json())
       .then((data) => setMenu(data));
   }, []);
 
+  // Update order counter
   useEffect(() => {
     const today = new Date().toDateString();
     if (today !== currentDate) {
@@ -98,24 +115,6 @@ export default function Tables() {
       setCurrentDate(today);
     }
   }, [currentDate]);
-  const [message, setMessage] = useState("");
-  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-
-  const handleCloseMenu = () => {
-    if (cartItems.length == 0) {
-      setShowMenu(false);
-      setShowEditBtn(false);
-      setCartItems([]);
-    } else {
-      setMessage("Are you sure?");
-      setMsgModalOpen(true);
-      console.log("clicked");
-    }
-  };
-  const handleMsgModalClose = () => {
-    setMsgModalOpen(false);
-    console.log("closed");
-  };
 
   return (
     <>
@@ -191,7 +190,8 @@ export default function Tables() {
         setSelectedOrderID={setSelectedOrderID}
         orderTime={orderTime}
         setOrderTime={setOrderTime}
-        handleButtonClick={handleButtonClick}
+        handlePaymentClick={handlePaymentClick}
+        paymentStatus={paymentStatus}
       />
       <PaymentModal
         isOpen={isModalOpen}

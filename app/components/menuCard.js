@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
@@ -63,7 +63,7 @@ function MenuItem({
   );
 }
 
-export default function MenuCard({
+function MenuCard({
   menu,
   selectedCategory,
   cartItems,
@@ -92,3 +92,5 @@ export default function MenuCard({
     </div>
   );
 }
+
+export default React.memo(MenuCard);
