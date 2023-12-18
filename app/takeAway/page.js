@@ -75,6 +75,7 @@ export default function TakeAway() {
 
   const handleCloseMenu = () => {
     setShowMenu(false);
+    setShowEditBtn(false);
     setCartItems([]);
   };
 

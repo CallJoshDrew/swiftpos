@@ -99,6 +99,7 @@ export default function Tables() {
 
   const handleCloseMenu = () => {
     setShowMenu(false);
+    setShowEditBtn(false);
     setCartItems([]);
   };
 

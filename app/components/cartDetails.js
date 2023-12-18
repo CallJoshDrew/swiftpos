@@ -179,7 +179,7 @@ export default function CartDetails({
               </div>
             </div>
           )}
-          {cartItems.length > 0 &&
+          {/* {cartItems.length > 0 &&
             orderCompleted == false &&
             showEditBtn && (
               <button
@@ -190,7 +190,7 @@ export default function CartDetails({
                 }}>
                 Close
               </button>
-            )}
+            )} */}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {cartItems.length > 0 ? (
