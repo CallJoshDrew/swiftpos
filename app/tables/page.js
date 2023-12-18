@@ -4,6 +4,7 @@ import TableDetails from "../components/tableDetails";
 import MenuCard from "../components/menuCard";
 import CategoryButton from "../components/categoryButton";
 import PaymentModal from "../components/paymentModal";
+import ConfirmModal from "../components/confirmModal";
 
 export default function Tables() {
   const [showMenu, setShowMenu] = useState(false);
@@ -22,7 +23,7 @@ export default function Tables() {
 
   //Modal//
   const [isModalOpen, setModalOpen] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState('pending');
+  const [paymentStatus, setPaymentStatus] = useState("pending");
   const [order, setOrder] = useState([]);
   const handleButtonClick = (orderID) => () => {
     setOrder(orders.find((order) => order.id === orderID));
@@ -36,7 +37,9 @@ export default function Tables() {
     // Update the order status in the orders array
     setOrders(
       orders.map((order) =>
-        order.id === orderID ? { ...order, payment: paymentStatus, status: "Completed" } : order
+        order.id === orderID
+          ? { ...order, payment: paymentStatus, status: "Completed" }
+          : order
       )
     );
     console.log(order);
@@ -62,26 +65,25 @@ export default function Tables() {
       setShowMenu(true);
       setShowEditBtn(true);
     }
-  
+
     if (tables[tableIndex].order && tables[tableIndex].order.items) {
       // Add the order ID to each item
       const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
         ...item,
         orderID: tables[tableIndex].order.id,
       }));
-  
+
       // Update the cart items
       setSelectedOrderID(tables[tableIndex].order.id);
       setCartItems(itemsWithOrderID);
       setShowEditBtn(false);
-      console.log(paymentStatus);
+      console.log(selectedOrderID);
     } else {
       // Reset cartItems and selectedOrderID when an empty table is selected
       setSelectedOrderID(null);
       setCartItems([]);
     }
   };
-  
 
   useEffect(() => {
     fetch("/api/menu")
@@ -96,11 +98,23 @@ export default function Tables() {
       setCurrentDate(today);
     }
   }, [currentDate]);
+  const [message, setMessage] = useState("");
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
 
   const handleCloseMenu = () => {
-    setShowMenu(false);
-    setShowEditBtn(false);
-    setCartItems([]);
+    if (cartItems.length == 0) {
+      setShowMenu(false);
+      setShowEditBtn(false);
+      setCartItems([]);
+    } else {
+      setMessage("Are you sure?");
+      setMsgModalOpen(true);
+      console.log("clicked");
+    }
+  };
+  const handleMsgModalClose = () => {
+    setMsgModalOpen(false);
+    console.log("closed");
   };
 
   return (
@@ -117,7 +131,11 @@ export default function Tables() {
               x Close Menu
             </button>
           </div>
-          <CategoryButton menu={menu} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
+          <CategoryButton
+            menu={menu}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
           {/* card begins here */}
           <MenuCard
             menu={menu}
@@ -183,6 +201,14 @@ export default function Tables() {
         selectedTable={selectedTable}
         paymentStatus={paymentStatus}
         setPaymentStatus={setPaymentStatus}
+      />
+      <ConfirmModal
+        message={message}
+        isOpenMsg={isMsgModalOpen}
+        onCloseMsg={handleMsgModalClose}
+        setShowMenu={setShowMenu}
+        setShowEditBtn={setShowEditBtn}
+        setCartItems={setCartItems}
       />
     </>
   );

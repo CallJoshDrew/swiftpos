@@ -4,6 +4,7 @@ import CartDetails from "../components/cartDetails";
 import MenuCard from "../components/menuCard";
 import CategoryButton from "../components/categoryButton";
 import StatusModal from "../components/statusModal";
+import ConfirmModal from "../components/confirmModal";
 
 export default function TakeAway() {
   const [menu, setMenu] = useState([]);
@@ -73,11 +74,25 @@ export default function TakeAway() {
     // console.log(cartItems);
   };
 
+  const [message, setMessage] = useState("");
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
+
   const handleCloseMenu = () => {
-    setShowMenu(false);
-    setShowEditBtn(false);
-    setCartItems([]);
+    if (cartItems.length == 0) {
+      setShowMenu(false);
+      setShowEditBtn(false);
+      setCartItems([]);
+    } else {
+      setMessage("Are you sure?");
+      setMsgModalOpen(true);
+      console.log("clicked");
+    }
   };
+  const handleMsgModalClose = () => {
+    setMsgModalOpen(false);
+    console.log("closed");
+  };
+
 
   return (
     <>
@@ -191,6 +206,14 @@ export default function TakeAway() {
         orderID={selectedOrderID}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
+      />
+      <ConfirmModal
+        message={message}
+        isOpenMsg={isMsgModalOpen}
+        onCloseMsg={handleMsgModalClose}
+        setShowMenu={setShowMenu}
+        setShowEditBtn={setShowEditBtn}
+        setCartItems={setCartItems}
       />
     </>
   );
