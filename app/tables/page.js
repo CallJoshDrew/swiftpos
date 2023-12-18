@@ -75,30 +75,33 @@ export default function Tables() {
   };
 
   // Table related functions
-  const selectTable = useCallback((tableIndex) => {
-    setSelectedTable(tableIndex);
-    if (tables[tableIndex].occupied) {
-      setOrderCompleted(true);
-    } else {
-      setOrderCompleted(false);
-      setShowMenu(true);
-      setShowEditBtn(true);
-    }
+  const selectTable = useCallback(
+    (tableIndex) => {
+      setSelectedTable(tableIndex);
+      if (tables[tableIndex].occupied) {
+        setOrderCompleted(true);
+      } else {
+        setOrderCompleted(false);
+        setShowMenu(true);
+        setShowEditBtn(true);
+      }
 
-    if (tables[tableIndex].order && tables[tableIndex].order.items) {
-      const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
-        ...item,
-        orderID: tables[tableIndex].order.id,
-      }));
+      if (tables[tableIndex].order && tables[tableIndex].order.items) {
+        const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
+          ...item,
+          orderID: tables[tableIndex].order.id,
+        }));
 
-      setSelectedOrderID(tables[tableIndex].order.id);
-      setCartItems(itemsWithOrderID);
-      setShowEditBtn(false);
-    } else {
-      setSelectedOrderID(null);
-      setCartItems([]);
-    }
-  }, [tables]); // dependencies
+        setSelectedOrderID(tables[tableIndex].order.id);
+        setCartItems(itemsWithOrderID);
+        setShowEditBtn(false);
+      } else {
+        setSelectedOrderID(null);
+        setCartItems([]);
+      }
+    },
+    [tables]
+  ); // dependencies
 
   // Fetch menu data
   useEffect(() => {
@@ -119,30 +122,34 @@ export default function Tables() {
   return (
     <>
       {showMenu ? (
-        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4 ">
-          <div className="flex justify-between w-full">
-            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-              Our Menu
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10">
+          <div className="relative">
+            <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">
+              <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
+                Our Menu
+              </div>
+              <button
+                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md z-10"
+                onClick={() => handleCloseMenu()}>
+                x Close Menu
+              </button>
             </div>
-            <button
-              className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-              onClick={() => handleCloseMenu()}>
-              x Close Menu
-            </button>
+            <CategoryButton
+              menu={menu}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
           </div>
-          <CategoryButton
-            menu={menu}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
           {/* card begins here */}
-          <MenuCard
-            menu={menu}
-            selectedCategory={selectedCategory}
-            cartItems={cartItems}
-            setCartItems={setCartItems}
-            showEditBtn={showEditBtn}
-          />
+          <div className="mt-[130px] px-4">
+            <MenuCard
+              menu={menu}
+              selectedCategory={selectedCategory}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              showEditBtn={showEditBtn}
+            />
+          </div>
         </div>
       ) : (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">

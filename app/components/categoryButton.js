@@ -25,7 +25,7 @@ function CategoryButton({menu, selectedCategory, setSelectedCategory}) {
     return counts;
   }, {});
   return (
-    <div className="grid grid-cols-5 grid-rows-1 gap-4">
+    <div className="grid grid-cols-5 grid-rows-1 gap-4 fixed top-16 z-10 p-4 w-3/6 bg-gray-100">
       <Category
         category="All"
         itemCount={menu.length}
