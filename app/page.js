@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Tables from "./tables/page";
+import TablesOverview from "./tablesOverview/page";
 
 export default function Home() {
   return (
@@ -24,7 +24,7 @@ export default function Home() {
           href="/images/favicon-16x16.png"
         />
       </Head>
-      <Tables />
+      <TablesOverview />
     </>
   );
 }

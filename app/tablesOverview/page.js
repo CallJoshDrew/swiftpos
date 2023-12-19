@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import TableDetails from "../components/tableDetails";
+import TableOrderDetails from "../components/tableOrderDetails";
+import CategoryCard from "../components/categoryCard";
 import MenuCard from "../components/menuCard";
-import CategoryButton from "../components/categoryButton";
 import PaymentModal from "../components/paymentModal";
 import ConfirmModal from "../components/confirmModal";
 
-export default function Tables() {
+export default function TablesOverview() {
   // Menu related states
   const [showMenu, setShowMenu] = useState(false);
   const [menu, setMenu] = useState([]);
@@ -39,18 +39,6 @@ export default function Tables() {
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-
-  // Menu related functions
-  const handleCloseMenu = () => {
-    if (cartItems.length == 0) {
-      setShowMenu(false);
-      setShowEditBtn(false);
-      setCartItems([]);
-    } else {
-      setMessage("Are you sure?");
-      setMsgModalOpen(true);
-    }
-  };
 
   // Modal related functions
   const handlePaymentClick = (orderID) => () => {
@@ -124,20 +112,16 @@ export default function Tables() {
       {showMenu ? (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10">
           <div className="relative">
-            <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">
-              <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-                Our Menu
-              </div>
-              <button
-                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md z-10"
-                onClick={() => handleCloseMenu()}>
-                x Close Menu
-              </button>
-            </div>
-            <CategoryButton
+            <CategoryCard
               menu={menu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              setShowEditBtn={setShowEditBtn}
+              setMessage={setMessage} 
+              setMsgModalOpen={setMsgModalOpen}
+              setShowMenu={setShowMenu}
             />
           </div>
           {/* card begins here */}
@@ -177,7 +161,7 @@ export default function Tables() {
           </div>
         </div>
       )}
-      <TableDetails
+      <TableOrderDetails
         tables={tables}
         setTables={setTables}
         tableNumber={selectedTable + 1}

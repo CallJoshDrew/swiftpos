@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import CartDetails from "../components/cartDetails";
+import TakeAwayOrderDetails from "../components/takeAwayOrderDetails";
 import MenuCard from "../components/menuCard";
-import CategoryButton from "../components/categoryButton";
+import CategoryCard from "../components/categoryCard";
 import StatusModal from "../components/statusModal";
 import ConfirmModal from "../components/confirmModal";
 
-export default function TakeAway() {
+export default function TakeAwayOverview() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
@@ -93,30 +93,33 @@ export default function TakeAway() {
     console.log("closed");
   };
 
-
   return (
     <>
       {showMenu ? (
-       <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10 px-4">
-            <div className="flex justify-between w-full">
-              <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-                Our Menu
-              </div>
-              <button
-                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-                onClick={() => handleCloseMenu()}>
-                x Close Menu
-              </button>
-            </div>
-            <CategoryButton menu={menu} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10">
+          <div className="relative">
+            <CategoryCard
+              menu={menu}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              setShowEditBtn={setShowEditBtn}
+              setMessage={setMessage}
+              setMsgModalOpen={setMsgModalOpen}
+              setShowMenu={setShowMenu}
+            />
+          </div>
           {/* card begins here */}
-          <MenuCard
-            menu={menu}
-            selectedCategory={selectedCategory}
-            cartItems={cartItems}
-            setCartItems={setCartItems}
-            showEditBtn={showEditBtn}
-          />
+          <div className="mt-[130px] px-4">
+            <MenuCard
+              menu={menu}
+              selectedCategory={selectedCategory}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              showEditBtn={showEditBtn}
+            />
+          </div>
         </div>
       ) : (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
@@ -182,7 +185,7 @@ export default function TakeAway() {
           </div>
         </div>
       )}
-      <CartDetails
+      <TakeAwayOrderDetails
         cartItems={cartItems}
         setCartItems={setCartItems}
         taxRate={taxRate}

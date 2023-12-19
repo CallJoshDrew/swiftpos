@@ -12,15 +12,15 @@ export default function SideNav() {
           POS SYSTEM
         </div>
         <Link
-          href="/tables"
+          href="/tablesOverview"
           className={
-            path === "/tables"
+            path === "/tablesOverview"
               ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6"
           }>
           <svg
             className={
-              path === "/tables"
+              path === "/tablesOverview"
                 ? "w-8 h-8 text-white"
                 : "w-8 h-8 text-green-800"
             }
@@ -31,21 +31,21 @@ export default function SideNav() {
           </svg>
           <div
             className={
-              path === "/tables" ? "text-white text-sm " : "text-black text-sm"
+              path === "/tablesOverview" ? "text-white text-sm " : "text-black text-sm"
             }>
             来吹水
           </div>
         </Link>
         <Link
-          href="/takeAway"
+          href="/takeAwayOverview"
           className={
-            path === "/takeAway"
+            path === "/takeAwayOverview"
               ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
           <svg
             className={
-              path === "/takeAway"
+              path === "/takeAwayOverview"
                 ? "w-8 h-8 text-white"
                 : "w-8 h-8 text-green-800"
             }
@@ -56,7 +56,7 @@ export default function SideNav() {
           </svg>
           <div
             className={
-              path === "/takeAway"
+              path === "/takeAwayOverview"
                 ? "text-white text-sm "
                 : "text-black text-sm"
             }>

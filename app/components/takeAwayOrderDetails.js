@@ -2,10 +2,7 @@ import Image from "next/image";
 import React from "react";
 import toast from "react-hot-toast";
 
-function TableDetails({
-  tables,
-  setTables,
-  tableNumber,
+export default function TakeAwayOrderDetails({
   cartItems,
   taxRate,
   showMenu,
@@ -22,10 +19,7 @@ function TableDetails({
   setSelectedOrderID,
   orderTime,
   setOrderTime,
-  handlePaymentClick,
-  paymentStatus,
 }) {
-  // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
   let total = 0;
@@ -38,7 +32,6 @@ function TableDetails({
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-
   const handleIncrease = (id) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -56,74 +49,46 @@ function TableDetails({
       )
     );
   };
-
   const handleRemove = (id) => {
+    // Remove the item from the cart
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
-      position: "top-left",
-      reverseOrder: false,
+      position:"top-left",
+      reverseOrder:false,
     });
   };
 
-  // Order related variables and functions
-  const generateOrderID = (existingOrder, orderCounter) => {
+  const handleOrder = () => {
+    setShowMenu(false);
+
+    // Get the current date and time
+    const now = new Date();
+
+    // Check if an order ID already exists in cartItems
+    const existingOrder = cartItems.find((item) => item.orderID);
+
+    // Use the existing ID if it exists, otherwise generate a new one
+    let id;
     if (existingOrder) {
-      return existingOrder.orderID;
+      id = existingOrder.orderID;
     } else {
-      const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
       const day = String(now.getDate()).padStart(2, "0");
       const hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
-  
-      return `DINE-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+
+      // Generate the ID
+      id = `TA-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+
+      // Increment the order counter for the next order
+      setOrderCounter(orderCounter + 1);
+      
     }
-  };
-  
-  const calculateTotalQuantity = (cartItems) => {
-    let totalQuantity = 0;
-    cartItems.forEach((item) => {
-      totalQuantity += item.quantity;
-    });
-    return totalQuantity;
-  };
-  
-  const updateOrders = (prevOrders, order) => {
-    const orderIndex = prevOrders.findIndex((prevOrder) => prevOrder.id === order.id);
-    if (orderIndex !== -1) {
-      const updatedOrders = [...prevOrders];
-      updatedOrders[orderIndex] = order;
-      return updatedOrders;
-    } else {
-      return [order, ...prevOrders];
-    }
-  };
-  
-  const updateTables = (prevTables, tableNumber, order) => {
-    const updatedTables = [...prevTables];
-    updatedTables[tableNumber - 1] = {
-      ...updatedTables[tableNumber - 1],
-      orderID: order.id,
-      occupied: true,
-      order,
-    };
-    return updatedTables;
-  };
-  
-  const handleOrder = () => {
-    setShowMenu(false);
-  
-    const existingOrder = cartItems.find((item) => item.orderID);
-    const id = generateOrderID(existingOrder, orderCounter);
-    setOrderCounter(orderCounter + 1);
-  
     setSelectedOrderID(id);
-    setOrderCompleted(true);
     setShowEditBtn(false);
-  
-    const now = new Date();
+    // Convert the timestamp to a readable format
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -131,47 +96,65 @@ function TableDetails({
       timeZone: "Asia/Kuala_Lumpur",
     });
     setOrderTime(timestamp);
-  
-    const totalQuantity = calculateTotalQuantity(cartItems);
-  
+    // Calculate the total price and quantity of all items in the cart
+    let subtotal = 0;
+    let totalQuantity = 0;
+    cartItems.forEach((item) => {
+      subtotal += item.price * item.quantity;
+      totalQuantity += item.quantity;
+    });
+
+    // Calculate tax and total price
+    const tax = subtotal * taxRate; // Assuming a tax rate of 6%
+    const totalPrice = subtotal + tax;
+
+    // Create a new order object
     const order = {
-      id,
-      tableNumber,
-      timestamp,
-      items: cartItems,
+      id, // Use the existing or generated ID
+      timestamp, // Use the formatted timestamp
+      items: cartItems, // Save the details of each item
       subtotal,
       tax,
-      totalPrice: total,
+      totalPrice,
       quantity: totalQuantity,
-      status: "Placed Order",
-      payment: "Pending",
+      status: "Completed",
     };
-  
-    setOrders((prevOrders) => updateOrders(prevOrders, order));
-    setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-  
+
+    // If an order with the same ID already exists, update it. Otherwise, add a new order.
+    setOrders((prevOrders) => {
+      const orderIndex = prevOrders.findIndex((order) => order.id === id);
+      if (orderIndex !== -1) {
+        // Update the existing order
+        const updatedOrders = [...prevOrders];
+        updatedOrders[orderIndex] = order;
+        return updatedOrders;
+      } else {
+        // Add a new order at the beginning of the array
+        return [order, ...prevOrders];
+      }
+    });
+
+    console.log(order);
     toast.success("Order Accepted", {
       duration: 3000,
-      position: "top-left",
-      reverseOrder: false,
+      position:"top-left",
+      reverseOrder:false,
     });
-  };  
+
+    // Clear the cartItems array
+    // setCartItems([]);
+  };
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
         <div className="rounded-lg px-2 flex my-1 justify-between items-center">
-          <div className="flex">
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                <div className="text-green-800 text-xl font-bold">Table</div>
-                <div className="bg-green-800 text-white px-2 py-1 rounded-full text-xs ml-2">
-                  {tableNumber}
-                </div>
-              </div>
-              <div className="text-green-800 text-sm">
-                {cartItems.length > 0 ? orderID : null}
-              </div>
+          <div className="flex flex-col space-y-0">
+            <div className="text-green-800 text-lg font-bold leading-none">
+              Take Away
+            </div>
+            <div className="text-green-800 text-sm">
+              {cartItems.length > 0 ? orderID : null}
             </div>
           </div>
           {cartItems.length > 0 && !showEditBtn && (
@@ -203,9 +186,7 @@ function TableDetails({
                 className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
                 onClick={() => {
                   setShowMenu(false);
-                  setShowEditBtn(false);
-                  setOrderCompleted(true);
-                  // setCartItems([]);
+                  setCartItems([]);
                 }}>
                 Close
               </button>
@@ -213,13 +194,14 @@ function TableDetails({
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {cartItems.length > 0 ? (
-          <div className="flex space-y-0 px-2 items-center space-x-2">
-            <div className="text-green-800 text-sm font-bold leading-none">
-              Order Time
-            </div>
-            <div className="text-green-800 text-sm">{orderTime}</div>
+        <div className="flex space-y-0 px-2 items-center space-x-2">
+          <div className="text-green-800 text-sm font-bold leading-none">
+            Order Time
           </div>
-        ) : null}
+          <div className="text-green-800 text-sm">
+            {orderTime}
+          </div>
+        </div>) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
@@ -318,31 +300,20 @@ function TableDetails({
             disabled>
             Empty Cart
           </button>
-        ) : !orderCompleted ? (
+        ) : showMenu && !orderCompleted ? (
           <button
             className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             onClick={handleOrder}>
             Place Order & Print
           </button>
-        ) : orderCompleted ? (
+        ) : cartItems.length > 0 ? (
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>
-            Order Accepted
+            Completed
           </button>
         ) : null}
-        {cartItems.length > 0 &&
-          orderCompleted &&
-          !showEditBtn &&
-          paymentStatus != "Paid" && (
-            <button
-              className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(orderID)}>
-              Make Payment
-            </button>
-          )}
       </div>
     </div>
   );
 }
-export default React.memo(TableDetails);
