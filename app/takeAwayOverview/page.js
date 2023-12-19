@@ -7,91 +7,82 @@ import StatusModal from "../components/statusModal";
 import ConfirmModal from "../components/confirmModal";
 
 export default function TakeAwayOverview() {
-  const [menu, setMenu] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [cartItems, setCartItems] = useState([]);
-  const [taxRate, setTaxRate] = useState(0.1);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showEditBtn, setShowEditBtn] = useState(true);
-  const [orderCompleted, setOrderCompleted] = useState(false);
+  // State for menu and category
+const [menu, setMenu] = useState([]);
+const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const [orders, setOrders] = useState([]);
-  const [orderCounter, setOrderCounter] = useState(1);
-  const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [orderTime, setOrderTime] = useState("");
+// State for cart and order details
+const [cartItems, setCartItems] = useState([]);
+const [taxRate, setTaxRate] = useState(0.1);
+const [orderCompleted, setOrderCompleted] = useState(false);
+const [orders, setOrders] = useState([]);
+const [orderCounter, setOrderCounter] = useState(1);
+const [currentDate, setCurrentDate] = useState(new Date().toDateString());
+const [orderTime, setOrderTime] = useState("");
 
-  //Modal//
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedOrderID, setSelectedOrderID] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
+// State for UI elements
+const [showMenu, setShowMenu] = useState(false);
+const [showEditBtn, setShowEditBtn] = useState(true);
 
-  const handleButtonClick = (orderID) => () => {
-    const order = orders.find((order) => order.id === orderID);
-    setSelectedOrderID(orderID);
-    setSelectedStatus(order.status); // Set the selectedStatus state to the status of the selected order
-    setModalOpen(true);
-  };
+// State for modal
+const [isModalOpen, setModalOpen] = useState(false);
+const [selectedOrderID, setSelectedOrderID] = useState(null);
+const [selectedStatus, setSelectedStatus] = useState(null);
+const [isMsgModalOpen, setMsgModalOpen] = useState(false);
+const [message, setMessage] = useState("");
 
-  const handleModalClose = (orderID, selectedStatus) => {
-    setModalOpen(false);
+// Function to handle button click
+const handleButtonClick = (orderID) => () => {
+  const order = orders.find((order) => order.id === orderID);
+  setSelectedOrderID(orderID);
+  setSelectedStatus(order.status);
+  setModalOpen(true);
+};
 
-    // Update the order status in the orders array
-    setOrders(
-      orders.map((order) =>
-        order.id === orderID ? { ...order, status: selectedStatus } : order
-      )
-    );
-  };
-  // end of Modal //
+// Function to handle modal close
+const handleModalClose = (orderID, selectedStatus) => {
+  setModalOpen(false);
+  setOrders(
+    orders.map((order) =>
+      order.id === orderID ? { ...order, status: selectedStatus } : order
+    )
+  );
+};
 
-  useEffect(() => {
-    fetch("/api/menu")
-      .then((response) => response.json())
-      .then((data) => setMenu(data));
-  }, []);
+// Function to handle detail button click
+const handleDetailBtn = (id) => {
+  setSelectedOrderID(id);
+  setShowEditBtn(false);
+  const order = orders.find((order) => order.id === id);
+  setOrderTime(order.timestamp);
+  const itemsWithOrderID = order.items.map((item) => ({
+    ...item,
+    orderID: order.id,
+  }));
+  setCartItems(itemsWithOrderID);
+};
 
-  useEffect(() => {
-    const today = new Date().toDateString();
-    if (today !== currentDate) {
-      setOrderCounter(1);
-      setCurrentDate(today);
-    }
-  }, [currentDate]);
+// Function to handle message modal close
+const handleMsgModalClose = () => {
+  setMsgModalOpen(false);
+};
 
-  const handleDetailBtn = (id) => {
-    setSelectedOrderID(id);
-    setShowEditBtn(false);
+// Fetch menu data
+useEffect(() => {
+  fetch("/api/menu")
+    .then((response) => response.json())
+    .then((data) => setMenu(data));
+}, []);
 
-    // Find the order with the clicked ID
-    const order = orders.find((order) => order.id === id);
-    setOrderTime(order.timestamp);
-    // Add the order id to each item and set cartItems to the items of the order
-    const itemsWithOrderID = order.items.map((item) => ({
-      ...item,
-      orderID: order.id,
-    }));
-    setCartItems(itemsWithOrderID);
-    // console.log(cartItems);
-  };
+// Update order counter
+useEffect(() => {
+  const today = new Date().toDateString();
+  if (today !== currentDate) {
+    setOrderCounter(1);
+    setCurrentDate(today);
+  }
+}, [currentDate]);
 
-  const [message, setMessage] = useState("");
-  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-
-  const handleCloseMenu = () => {
-    if (cartItems.length == 0) {
-      setShowMenu(false);
-      setShowEditBtn(false);
-      setCartItems([]);
-    } else {
-      setMessage("Are you sure?");
-      setMsgModalOpen(true);
-      console.log("clicked");
-    }
-  };
-  const handleMsgModalClose = () => {
-    setMsgModalOpen(false);
-    console.log("closed");
-  };
 
   return (
     <>

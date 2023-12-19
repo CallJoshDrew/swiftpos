@@ -20,6 +20,36 @@ export default function TakeAwayOrderDetails({
   orderTime,
   setOrderTime,
 }) {
+  // Function to handle cart item increase
+  const handleIncrease = (id) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  // Function to handle cart item decrease
+  const handleDecrease = (id) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
+          : item
+      )
+    );
+  };
+
+  // Function to handle cart item removal
+  const handleRemove = (id) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    toast.success("Item is removed!", {
+      duration: 2000,
+      position: "top-left",
+      reverseOrder: false,
+    });
+  };
+  // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
   let total = 0;
@@ -32,63 +62,76 @@ export default function TakeAwayOrderDetails({
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-  const handleIncrease = (id) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecrease = (id) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
-          : item
-      )
-    );
-  };
-  const handleRemove = (id) => {
-    // Remove the item from the cart
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    toast.success("Item is removed!", {
-      duration: 2000,
-      position:"top-left",
-      reverseOrder:false,
-    });
-  };
-
-  const handleOrder = () => {
-    setShowMenu(false);
-
-    // Get the current date and time
-    const now = new Date();
-
-    // Check if an order ID already exists in cartItems
-    const existingOrder = cartItems.find((item) => item.orderID);
-
-    // Use the existing ID if it exists, otherwise generate a new one
-    let id;
+  // Function to generate order ID
+  const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
-      id = existingOrder.orderID;
+      return existingOrder.orderID;
     } else {
+      const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
+      const month = String(now.getMonth() + 1).padStart(2, "0");
       const day = String(now.getDate()).padStart(2, "0");
       const hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
 
-      // Generate the ID
-      id = `TA-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
-
-      // Increment the order counter for the next order
-      setOrderCounter(orderCounter + 1);
-      
+      return `TA-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
     }
+  };
+
+  // Function to calculate total quantity
+  const calculateTotalQuantity = (cartItems) => {
+    let totalQuantity = 0;
+    cartItems.forEach((item) => {
+      totalQuantity += item.quantity;
+    });
+    return totalQuantity;
+  };
+
+  // Function to create order object
+  const createOrder = (
+    id,
+    timestamp,
+    cartItems,
+    subtotal,
+    tax,
+    total,
+    totalQuantity
+  ) => {
+    return {
+      id,
+      timestamp,
+      items: cartItems,
+      subtotal,
+      tax,
+      totalPrice: total,
+      quantity: totalQuantity,
+      status: "Completed",
+    };
+  };
+
+  // Function to update orders
+  const updateOrders = (prevOrders, id, order) => {
+    const orderIndex = prevOrders.findIndex((order) => order.id === id);
+    if (orderIndex !== -1) {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = order;
+      return updatedOrders;
+    } else {
+      return [order, ...prevOrders];
+    }
+  };
+
+  // Refactored handleOrder function
+  const handleOrder = () => {
+    setShowMenu(false);
+    const existingOrder = cartItems.find((item) => item.orderID);
+    const id = generateOrderID(existingOrder, orderCounter);
+    setOrderCounter(orderCounter + 1);
+
     setSelectedOrderID(id);
     setShowEditBtn(false);
-    // Convert the timestamp to a readable format
+
+    const now = new Date();
     const timestamp = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -96,53 +139,26 @@ export default function TakeAwayOrderDetails({
       timeZone: "Asia/Kuala_Lumpur",
     });
     setOrderTime(timestamp);
-    // Calculate the total price and quantity of all items in the cart
-    let subtotal = 0;
-    let totalQuantity = 0;
-    cartItems.forEach((item) => {
-      subtotal += item.price * item.quantity;
-      totalQuantity += item.quantity;
-    });
 
-    // Calculate tax and total price
-    const tax = subtotal * taxRate; // Assuming a tax rate of 6%
-    const totalPrice = subtotal + tax;
+    const totalQuantity = calculateTotalQuantity(cartItems);
 
-    // Create a new order object
-    const order = {
-      id, // Use the existing or generated ID
-      timestamp, // Use the formatted timestamp
-      items: cartItems, // Save the details of each item
+    const order = createOrder(
+      id,
+      timestamp,
+      cartItems,
       subtotal,
       tax,
-      totalPrice,
-      quantity: totalQuantity,
-      status: "Completed",
-    };
+      total,
+      totalQuantity
+    );
 
-    // If an order with the same ID already exists, update it. Otherwise, add a new order.
-    setOrders((prevOrders) => {
-      const orderIndex = prevOrders.findIndex((order) => order.id === id);
-      if (orderIndex !== -1) {
-        // Update the existing order
-        const updatedOrders = [...prevOrders];
-        updatedOrders[orderIndex] = order;
-        return updatedOrders;
-      } else {
-        // Add a new order at the beginning of the array
-        return [order, ...prevOrders];
-      }
-    });
+    setOrders((prevOrders) => updateOrders(prevOrders, id, order));
 
-    console.log(order);
     toast.success("Order Accepted", {
       duration: 3000,
-      position:"top-left",
-      reverseOrder:false,
+      position: "top-left",
+      reverseOrder: false,
     });
-
-    // Clear the cartItems array
-    // setCartItems([]);
   };
 
   return (
@@ -194,14 +210,13 @@ export default function TakeAwayOrderDetails({
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {cartItems.length > 0 ? (
-        <div className="flex space-y-0 px-2 items-center space-x-2">
-          <div className="text-green-800 text-sm font-bold leading-none">
-            Order Time
+          <div className="flex space-y-0 px-2 items-center space-x-2">
+            <div className="text-green-800 text-sm font-bold leading-none">
+              Order Time
+            </div>
+            <div className="text-green-800 text-sm">{orderTime}</div>
           </div>
-          <div className="text-green-800 text-sm">
-            {orderTime}
-          </div>
-        </div>) : null}
+        ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
           {cartItems.map((item) => (
