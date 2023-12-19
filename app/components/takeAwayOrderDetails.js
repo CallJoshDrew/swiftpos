@@ -67,14 +67,8 @@ export default function TakeAwayOrderDetails({
     if (existingOrder) {
       return existingOrder.orderID;
     } else {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      const hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-
-      return `TA-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+      const paddedCounter = String(orderCounter).padStart(4, "0");
+      return `#TAPAO-${paddedCounter}`;
     }
   };
 
@@ -85,28 +79,6 @@ export default function TakeAwayOrderDetails({
       totalQuantity += item.quantity;
     });
     return totalQuantity;
-  };
-
-  // Function to create order object
-  const createOrder = (
-    id,
-    timestamp,
-    cartItems,
-    subtotal,
-    tax,
-    total,
-    totalQuantity
-  ) => {
-    return {
-      id,
-      timestamp,
-      items: cartItems,
-      subtotal,
-      tax,
-      totalPrice: total,
-      quantity: totalQuantity,
-      status: "Completed",
-    };
   };
 
   // Function to update orders
@@ -142,15 +114,18 @@ export default function TakeAwayOrderDetails({
 
     const totalQuantity = calculateTotalQuantity(cartItems);
 
-    const order = createOrder(
+    const order = {
       id,
       timestamp,
-      cartItems,
+      items: cartItems,
       subtotal,
       tax,
-      total,
-      totalQuantity
-    );
+      totalPrice: total,
+      quantity: totalQuantity,
+      status: "Completed",
+    };
+
+    console.log(order);
 
     setOrders((prevOrders) => updateOrders(prevOrders, id, order));
 

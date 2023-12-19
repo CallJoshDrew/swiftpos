@@ -39,7 +39,8 @@ export default function TablesOverview() {
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-
+  console.log(orders);
+  
   // Modal related functions
   const handlePaymentClick = (orderID) => () => {
     setOrder(orders.find((order) => order.id === orderID));

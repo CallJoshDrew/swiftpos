@@ -71,17 +71,12 @@ function TableOrderDetails({
     if (existingOrder) {
       return existingOrder.orderID;
     } else {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      const hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, "0");
-  
-      return `DINE-${year}${month}${day}-${hours}${minutes}-${orderCounter}`;
+      const paddedCounter = String(orderCounter).padStart(4, "0");
+      return `#T${tableNumber}-${paddedCounter}`;
     }
   };
   
+
   const calculateTotalQuantity = (cartItems) => {
     let totalQuantity = 0;
     cartItems.forEach((item) => {
@@ -89,9 +84,11 @@ function TableOrderDetails({
     });
     return totalQuantity;
   };
-  
+
   const updateOrders = (prevOrders, order) => {
-    const orderIndex = prevOrders.findIndex((prevOrder) => prevOrder.id === order.id);
+    const orderIndex = prevOrders.findIndex(
+      (prevOrder) => prevOrder.id === order.id
+    );
     if (orderIndex !== -1) {
       const updatedOrders = [...prevOrders];
       updatedOrders[orderIndex] = order;
@@ -100,7 +97,7 @@ function TableOrderDetails({
       return [order, ...prevOrders];
     }
   };
-  
+
   const updateTables = (prevTables, tableNumber, order) => {
     const updatedTables = [...prevTables];
     updatedTables[tableNumber - 1] = {
@@ -111,29 +108,51 @@ function TableOrderDetails({
     };
     return updatedTables;
   };
-  
+
   const handleOrder = () => {
     setShowMenu(false);
-  
+
     const existingOrder = cartItems.find((item) => item.orderID);
     const id = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
-  
+
     setSelectedOrderID(id);
     setOrderCompleted(true);
     setShowEditBtn(false);
-  
+
     const now = new Date();
-    const timestamp = now.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
+    const timeOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: true,
-      timeZone: "Asia/Kuala_Lumpur",
-    });
+      timeZone: 'Asia/Kuala_Lumpur'
+    };
+    
+    const dateOptions = {
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+      timeZone: 'Asia/Kuala_Lumpur'
+    };
+    
+    const timeString = now.toLocaleTimeString('en-US', timeOptions);
+    const dateString = now.toLocaleDateString('en-US', dateOptions);
+    
+    const timestamp = `${timeString}, ${dateString}`;
+
+    // Use timeString and dateString separately as needed
+    // console.log(timeString); // prints "06:32 AM"
+    // console.log(dateString); // prints "Wed, Dec 20, 2023"
+
+    // Combine them when you need the full timestamp
+    // const timestamp = `${timeString}, ${dateString}`;
+    // console.log(timestamp); // prints "06:32 AM, Wed, Dec 20, 2023"
+    
     setOrderTime(timestamp);
-  
+
     const totalQuantity = calculateTotalQuantity(cartItems);
-  
+
     const order = {
       id,
       tableNumber,
@@ -146,16 +165,38 @@ function TableOrderDetails({
       status: "Placed Order",
       payment: "Pending",
     };
-  
+
+    // Address & Contact Info
+
+    // Order Number or Invoice Number
+    // Date
+    // Table Number
+
+    // item
+    // quantity
+    // Amount
+
+    // subtotal
+    // discount in %
+    // tax
+    // received Cash
+    // change
+
+    // Payment Method
+
+    // Thank You for Your Order!
+    // Powered By Josiah
+    // Wifi Password
+
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-  
+
     toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
     });
-  };  
+  };
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
