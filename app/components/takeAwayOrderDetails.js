@@ -1,5 +1,6 @@
+"use client"
 import Image from "next/image";
-import React from "react";
+import React, {useState} from "react";
 import toast from "react-hot-toast";
 
 export default function TakeAwayOrderDetails({
@@ -17,9 +18,10 @@ export default function TakeAwayOrderDetails({
   setOrderCounter,
   orderID, //this is selectOrderID
   setSelectedOrderID,
-  orderTime,
-  setOrderTime,
 }) {
+const [orderTime, setOrderTime] = useState("");
+const [orderDate, setOrderDate] = useState("");
+  
   // Function to handle cart item increase
   const handleIncrease = (id) => {
     setCartItems((prevItems) =>
@@ -92,7 +94,6 @@ export default function TakeAwayOrderDetails({
       return [order, ...prevOrders];
     }
   };
-
   // Refactored handleOrder function
   const handleOrder = () => {
     setShowMenu(false);
@@ -104,19 +105,31 @@ export default function TakeAwayOrderDetails({
     setShowEditBtn(false);
 
     const now = new Date();
-    const timestamp = now.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
+    const timeOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: true,
-      timeZone: "Asia/Kuala_Lumpur",
-    });
-    setOrderTime(timestamp);
-
+      timeZone: 'Asia/Kuala_Lumpur'
+    };
+    
+    const dateOptions = {
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+      timeZone: 'Asia/Kuala_Lumpur'
+    };
+    
+    const timeString = now.toLocaleTimeString('en-US', timeOptions);
+    const dateString = now.toLocaleDateString('en-US', dateOptions);
+    setOrderTime(timeString);
+    setOrderDate(dateString);
     const totalQuantity = calculateTotalQuantity(cartItems);
 
     const order = {
       id,
-      timestamp,
+      orderTime: timeString,
+      orderDate: dateString,
       items: cartItems,
       subtotal,
       tax,
@@ -170,18 +183,6 @@ export default function TakeAwayOrderDetails({
               </div>
             </div>
           )}
-          {/* {cartItems.length > 0 &&
-            orderCompleted == false &&
-            showEditBtn && (
-              <button
-                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-                onClick={() => {
-                  setShowMenu(false);
-                  setCartItems([]);
-                }}>
-                Close
-              </button>
-            )} */}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {cartItems.length > 0 ? (
@@ -189,7 +190,7 @@ export default function TakeAwayOrderDetails({
             <div className="text-green-800 text-sm font-bold leading-none">
               Order Time
             </div>
-            <div className="text-green-800 text-sm">{orderTime}</div>
+            <div className="text-green-800 text-sm">{`${orderTime} , ${orderDate}`}</div>
           </div>
         ) : null}
         {/* Each item card */}

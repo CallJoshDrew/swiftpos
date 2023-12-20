@@ -20,9 +20,9 @@ export default function TablesOverview() {
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [orderTime, setOrderTime] = useState("");
   const [selectedOrderID, setSelectedOrderID] = useState(null);
   const [order, setOrder] = useState([]);
+  const [selectedOrder, setSelectedOrder]= useState([])
 
   // Modal related states
   const [isModalOpen, setModalOpen] = useState(false);
@@ -39,8 +39,8 @@ export default function TablesOverview() {
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-  console.log(orders);
-  
+  // console.log(orders);
+
   // Modal related functions
   const handlePaymentClick = (orderID) => () => {
     setOrder(orders.find((order) => order.id === orderID));
@@ -74,23 +74,26 @@ export default function TablesOverview() {
         setShowMenu(true);
         setShowEditBtn(true);
       }
-
+  
       if (tables[tableIndex].order && tables[tableIndex].order.items) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
           orderID: tables[tableIndex].order.id,
         }));
-
+  
         setSelectedOrderID(tables[tableIndex].order.id);
+        setSelectedOrder(tables[tableIndex].order); // Set the selected order
         setCartItems(itemsWithOrderID);
         setShowEditBtn(false);
       } else {
         setSelectedOrderID(null);
+        setSelectedOrder(null); // Clear the selected order
         setCartItems([]);
       }
     },
     [tables]
-  ); // dependencies
+  );
+   // dependencies
 
   // Fetch menu data
   useEffect(() => {
@@ -178,10 +181,9 @@ export default function TablesOverview() {
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
         setOrders={setOrders}
-        orderID={selectedOrderID}
+        selectedOrderID={selectedOrderID}
         setSelectedOrderID={setSelectedOrderID}
-        orderTime={orderTime}
-        setOrderTime={setOrderTime}
+        selectedOrder={selectedOrder}
         handlePaymentClick={handlePaymentClick}
         paymentStatus={paymentStatus}
       />

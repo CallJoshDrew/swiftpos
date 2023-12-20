@@ -1,5 +1,6 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 function TableOrderDetails({
@@ -18,13 +19,14 @@ function TableOrderDetails({
   setOrders,
   orderCounter,
   setOrderCounter,
-  orderID, //this is selectOrderID
+  selectedOrderID,
   setSelectedOrderID,
-  orderTime,
-  setOrderTime,
+  selectedOrder,
   handlePaymentClick,
   paymentStatus,
 }) {
+  const [orderTime, setOrderTime] = useState("");
+  const [orderDate, setOrderDate] = useState("");
   // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
@@ -75,7 +77,6 @@ function TableOrderDetails({
       return `#T${tableNumber}-${paddedCounter}`;
     }
   };
-  
 
   const calculateTotalQuantity = (cartItems) => {
     let totalQuantity = 0;
@@ -122,24 +123,22 @@ function TableOrderDetails({
 
     const now = new Date();
     const timeOptions = {
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
-      timeZone: 'Asia/Kuala_Lumpur'
+      timeZone: "Asia/Kuala_Lumpur",
     };
-    
+
     const dateOptions = {
-      weekday: 'short',
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-      timeZone: 'Asia/Kuala_Lumpur'
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Kuala_Lumpur",
     };
-    
-    const timeString = now.toLocaleTimeString('en-US', timeOptions);
-    const dateString = now.toLocaleDateString('en-US', dateOptions);
-    
-    const timestamp = `${timeString}, ${dateString}`;
+
+    const timeString = now.toLocaleTimeString("en-US", timeOptions);
+    const dateString = now.toLocaleDateString("en-US", dateOptions);
 
     // Use timeString and dateString separately as needed
     // console.log(timeString); // prints "06:32 AM"
@@ -148,15 +147,16 @@ function TableOrderDetails({
     // Combine them when you need the full timestamp
     // const timestamp = `${timeString}, ${dateString}`;
     // console.log(timestamp); // prints "06:32 AM, Wed, Dec 20, 2023"
-    
-    setOrderTime(timestamp);
+    setOrderTime(timeString);
+    setOrderDate(dateString);
 
     const totalQuantity = calculateTotalQuantity(cartItems);
 
     const order = {
       id,
       tableNumber,
-      timestamp,
+      orderTime: timeString,
+      orderDate: dateString,
       items: cartItems,
       subtotal,
       tax,
@@ -198,6 +198,10 @@ function TableOrderDetails({
     });
   };
 
+  useEffect(() => {
+    console.log(selectedOrder);
+  }, [selectedOrder]);
+
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
@@ -207,11 +211,11 @@ function TableOrderDetails({
               <div className="flex items-center">
                 <div className="text-green-800 text-xl font-bold">Table</div>
                 <div className="bg-green-800 text-white px-2 py-1 rounded-full text-xs ml-2">
-                  {tableNumber}
+                  {selectedOrder ? selectedOrder.tableNumber : tableNumber}
                 </div>
               </div>
               <div className="text-green-800 text-sm">
-                {cartItems.length > 0 ? orderID : null}
+                {selectedOrder ? selectedOrder.id : selectedOrderID}
               </div>
             </div>
           </div>
@@ -258,7 +262,7 @@ function TableOrderDetails({
             <div className="text-green-800 text-sm font-bold leading-none">
               Order Time
             </div>
-            <div className="text-green-800 text-sm">{orderTime}</div>
+            <div className="text-green-800 text-sm">{`${orderTime}, ${orderDate}`}</div>
           </div>
         ) : null}
         {/* Each item card */}
@@ -378,7 +382,7 @@ function TableOrderDetails({
           paymentStatus != "Paid" && (
             <button
               className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(orderID)}>
+              onClick={handlePaymentClick(selectedOrderID)}>
               Make Payment
             </button>
           )}

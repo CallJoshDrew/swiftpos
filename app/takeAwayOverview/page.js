@@ -18,7 +18,6 @@ const [orderCompleted, setOrderCompleted] = useState(false);
 const [orders, setOrders] = useState([]);
 const [orderCounter, setOrderCounter] = useState(1);
 const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-const [orderTime, setOrderTime] = useState("");
 
 // State for UI elements
 const [showMenu, setShowMenu] = useState(false);
@@ -54,7 +53,6 @@ const handleDetailBtn = (id) => {
   setSelectedOrderID(id);
   setShowEditBtn(false);
   const order = orders.find((order) => order.id === id);
-  setOrderTime(order.timestamp);
   const itemsWithOrderID = order.items.map((item) => ({
     ...item,
     orderID: order.id,
@@ -83,7 +81,7 @@ useEffect(() => {
   }
 }, [currentDate]);
 
-
+  console.log(orders);
   return (
     <>
       {showMenu ? (
@@ -151,7 +149,7 @@ useEffect(() => {
                     <td className="border px-4 py-2">
                       {orders.length - index}
                     </td>
-                    <td className="border px-4 py-2">{order.timestamp}</td>
+                    <td className="border px-4 py-2">{order.orderTime}</td>
                     <td className="border px-4 py-2">{order.quantity}</td>
                     <td className="border px-4 py-2">
                       {order.totalPrice.toFixed(2)}
@@ -167,8 +165,6 @@ useEffect(() => {
                         {order.status}
                       </button>
                     </td>
-                    {/* <td className="border px-4 py-2">{order.timestamp}
-                    </td> */}
                   </tr>
                 ))}
               </tbody>
@@ -191,8 +187,6 @@ useEffect(() => {
         setOrderCounter={setOrderCounter}
         orderID={selectedOrderID}
         setSelectedOrderID={setSelectedOrderID}
-        orderTime={orderTime}
-        setOrderTime={setOrderTime}
       />
       <StatusModal
         isOpen={isModalOpen}
