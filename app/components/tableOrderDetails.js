@@ -1,4 +1,4 @@
-"use client";
+
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -9,7 +9,6 @@ function TableOrderDetails({
   tableNumber,
   cartItems,
   taxRate,
-  showMenu,
   setShowMenu,
   setCartItems,
   showEditBtn,
@@ -19,14 +18,10 @@ function TableOrderDetails({
   setOrders,
   orderCounter,
   setOrderCounter,
-  selectedOrderID,
-  setSelectedOrderID,
   selectedOrder,
   handlePaymentClick,
   paymentStatus,
 }) {
-  const [orderTime, setOrderTime] = useState("");
-  const [orderDate, setOrderDate] = useState("");
   // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
@@ -71,7 +66,7 @@ function TableOrderDetails({
   // Order related variables and functions
   const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
-      return existingOrder.orderID;
+      return existingOrder.orderNumber;
     } else {
       const paddedCounter = String(orderCounter).padStart(4, "0");
       return `#T${tableNumber}-${paddedCounter}`;
@@ -88,7 +83,7 @@ function TableOrderDetails({
 
   const updateOrders = (prevOrders, order) => {
     const orderIndex = prevOrders.findIndex(
-      (prevOrder) => prevOrder.id === order.id
+      (prevOrder) => prevOrder.orderNumber === order.orderNumber
     );
     if (orderIndex !== -1) {
       const updatedOrders = [...prevOrders];
@@ -103,7 +98,7 @@ function TableOrderDetails({
     const updatedTables = [...prevTables];
     updatedTables[tableNumber - 1] = {
       ...updatedTables[tableNumber - 1],
-      orderID: order.id,
+      orderNumber: order.orderNumber,
       occupied: true,
       order,
     };
@@ -113,11 +108,12 @@ function TableOrderDetails({
   const handleOrder = () => {
     setShowMenu(false);
 
-    const existingOrder = cartItems.find((item) => item.orderID);
-    const id = generateOrderID(existingOrder, orderCounter);
+    const existingOrder = cartItems.find((item) => item.orderNumber);
+    console.log(cartItems);
+    console.log(existingOrder);
+    const orderNumber = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
 
-    setSelectedOrderID(id);
     setOrderCompleted(true);
     setShowEditBtn(false);
 
@@ -147,13 +143,11 @@ function TableOrderDetails({
     // Combine them when you need the full timestamp
     // const timestamp = `${timeString}, ${dateString}`;
     // console.log(timestamp); // prints "06:32 AM, Wed, Dec 20, 2023"
-    setOrderTime(timeString);
-    setOrderDate(dateString);
 
     const totalQuantity = calculateTotalQuantity(cartItems);
 
     const order = {
-      id,
+      orderNumber,
       tableNumber,
       orderTime: timeString,
       orderDate: dateString,
@@ -197,6 +191,7 @@ function TableOrderDetails({
       reverseOrder: false,
     });
   };
+  // console.log(tables);
 
   useEffect(() => {
     console.log(selectedOrder);
@@ -215,7 +210,7 @@ function TableOrderDetails({
                 </div>
               </div>
               <div className="text-green-800 text-sm">
-                {selectedOrder ? selectedOrder.id : selectedOrderID}
+                {selectedOrder ? selectedOrder.orderNumber : null}
               </div>
             </div>
           </div>
@@ -262,7 +257,12 @@ function TableOrderDetails({
             <div className="text-green-800 text-sm font-bold leading-none">
               Order Time
             </div>
-            <div className="text-green-800 text-sm">{`${orderTime}, ${orderDate}`}</div>
+            <div className="text-green-800 text-sm">
+              {" "}
+              {selectedOrder
+                ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}`
+                : null}
+            </div>
           </div>
         ) : null}
         {/* Each item card */}
@@ -382,7 +382,7 @@ function TableOrderDetails({
           paymentStatus != "Paid" && (
             <button
               className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(selectedOrderID)}>
+              onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
               Make Payment
             </button>
           )}

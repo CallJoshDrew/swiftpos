@@ -20,8 +20,6 @@ export default function TablesOverview() {
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [selectedOrderID, setSelectedOrderID] = useState(null);
-  const [order, setOrder] = useState([]);
   const [selectedOrder, setSelectedOrder]= useState([])
 
   // Modal related states
@@ -34,29 +32,17 @@ export default function TablesOverview() {
   const [tables, setTables] = useState(
     Array.from({ length: 18 }, () => ({
       occupied: false,
-      orderID: null,
+      orderNumber: null,
       order: [],
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-  // console.log(orders);
+  console.log(orders);
 
   // Modal related functions
-  const handlePaymentClick = (orderID) => () => {
-    setOrder(orders.find((order) => order.id === orderID));
-    setSelectedOrderID(orderID);
+  const handlePaymentClick = (selectedOrderID) => () => {
+    setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
     setModalOpen(true);
-  };
-
-  const handleModalClose = (orderID, paymentStatus) => {
-    setModalOpen(false);
-    setOrders(
-      orders.map((order) =>
-        order.id === orderID
-          ? { ...order, payment: paymentStatus, status: "Completed" }
-          : order
-      )
-    );
   };
 
   const handleMsgModalClose = () => {
@@ -74,19 +60,16 @@ export default function TablesOverview() {
         setShowMenu(true);
         setShowEditBtn(true);
       }
-  
+      
       if (tables[tableIndex].order && tables[tableIndex].order.items) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
-          orderID: tables[tableIndex].order.id,
-        }));
-  
-        setSelectedOrderID(tables[tableIndex].order.id);
+          orderNumber: tables[tableIndex].order.orderNumber,
+        }));  
         setSelectedOrder(tables[tableIndex].order); // Set the selected order
         setCartItems(itemsWithOrderID);
         setShowEditBtn(false);
       } else {
-        setSelectedOrderID(null);
         setSelectedOrder(null); // Clear the selected order
         setCartItems([]);
       }
@@ -181,20 +164,17 @@ export default function TablesOverview() {
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
         setOrders={setOrders}
-        selectedOrderID={selectedOrderID}
-        setSelectedOrderID={setSelectedOrderID}
         selectedOrder={selectedOrder}
         handlePaymentClick={handlePaymentClick}
         paymentStatus={paymentStatus}
       />
       <PaymentModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
-        orderID={selectedOrderID}
-        order={order}
-        selectedTable={selectedTable}
-        paymentStatus={paymentStatus}
+        setModalOpen={setModalOpen}
+        selectedOrder={selectedOrder}
         setPaymentStatus={setPaymentStatus}
+        orders={orders}
+        setOrders={setOrders}
       />
       <ConfirmModal
         message={message}
