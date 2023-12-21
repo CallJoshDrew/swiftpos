@@ -10,12 +10,14 @@ function PaymentModal({
   orders,
   setOrders,
   setSelectedOrder,
+  tables,
+  setTables,
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
-
+  
   const handlePaymentStatus = () => {
     setModalOpen(false);
-  
+
     // Update the orders array
     const updatedOrders = orders.map((order) => {
       if (order.orderNumber === selectedOrder?.orderNumber) {
@@ -29,14 +31,9 @@ function PaymentModal({
         return order;
       }
     });
-  
+
     setOrders(updatedOrders);
-  
-    // Update the selectedOrder
-    const updatedSelectedOrder = updatedOrders.find(
-      (order) => order.orderNumber === selectedOrder?.orderNumber
-    );
-  
+
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -49,15 +46,31 @@ function PaymentModal({
         return prevSelectedOrder;
       }
     });
+    const updatedTables = tables.map((table) => {
+      if (table.order.orderNumber === selectedOrder?.orderNumber) {
+        return {
+          ...table,
+          order: {
+            ...table.order,
+            payment: "Paid",
+            status: "Completed",
+            paymentMethod,
+          },
+        };
+      } else {
+        return table;
+      }
+    });
+    
+    setTables(updatedTables);    
     setPaymentStatus("Paid");
-  
+
     toast.success("Payment Done'", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
     });
   };
-  
 
   const handleModalClose = () => {
     setModalOpen(false);

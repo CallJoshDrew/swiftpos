@@ -93,7 +93,7 @@ export default function TablesOverview() {
       setCurrentDate(today);
     }
   }, [currentDate]);
-
+  
   return (
     <>
       {showMenu ? (
@@ -177,6 +177,8 @@ export default function TablesOverview() {
         orders={orders}
         setOrders={setOrders}
         setSelectedOrder={setSelectedOrder}
+        tables={tables}
+        setTables={setTables}
       />
       <ConfirmModal
         message={message}

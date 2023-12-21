@@ -160,11 +160,11 @@ function TableOrderDetails({
       reverseOrder: false,
     });
   };
-  // console.log(tables);
 
   useEffect(() => {
-    console.log(selectedOrder?.payment);
-  }, [selectedOrder]);
+    // console.log(selectedOrder?.payment);
+    // console.log(tables);
+  }, [selectedOrder, tables]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
