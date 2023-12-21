@@ -37,7 +37,7 @@ export default function TablesOverview() {
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-  // console.log(orders);
+  console.log(orders);
 
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
@@ -66,7 +66,7 @@ export default function TablesOverview() {
           ...item,
           orderNumber: tables[tableIndex].order.orderNumber,
         }));  
-        setSelectedOrder(tables[tableIndex].order); // Set the selected order
+        setSelectedOrder(tables[tableIndex].order); 
         setCartItems(itemsWithOrderID);
         setShowEditBtn(false);
       } else {
@@ -165,6 +165,7 @@ export default function TablesOverview() {
         setOrderCounter={setOrderCounter}
         setOrders={setOrders}
         selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
         paymentStatus={paymentStatus}
       />
@@ -175,6 +176,7 @@ export default function TablesOverview() {
         setPaymentStatus={setPaymentStatus}
         orders={orders}
         setOrders={setOrders}
+        setSelectedOrder={setSelectedOrder}
       />
       <ConfirmModal
         message={message}

@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -19,6 +18,7 @@ function TableOrderDetails({
   orderCounter,
   setOrderCounter,
   selectedOrder,
+  setSelectedOrder,
   handlePaymentClick,
   paymentStatus,
 }) {
@@ -134,14 +134,6 @@ function TableOrderDetails({
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
 
-    // Use timeString and dateString separately as needed
-    // console.log(timeString); // prints "06:32 AM"
-    // console.log(dateString); // prints "Wed, Dec 20, 2023"
-
-    // Combine them when you need the full timestamp
-    // const timestamp = `${timeString}, ${dateString}`;
-    // console.log(timestamp); // prints "06:32 AM, Wed, Dec 20, 2023"
-
     const totalQuantity = calculateTotalQuantity(cartItems);
 
     const order = {
@@ -156,30 +148,9 @@ function TableOrderDetails({
       quantity: totalQuantity,
       status: "Placed Order",
       payment: "Pending",
+      paymentMethod: "Cash",
     };
-
-    // Address & Contact Info
-
-    // Order Number or Invoice Number
-    // Date
-    // Table Number
-
-    // item
-    // quantity
-    // Amount
-
-    // subtotal
-    // discount in %
-    // tax
-    // received Cash
-    // change
-
-    // Payment Method
-
-    // Thank You for Your Order!
-    // Powered By Josiah
-    // Wifi Password
-
+    setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
 
@@ -192,7 +163,7 @@ function TableOrderDetails({
   // console.log(tables);
 
   useEffect(() => {
-    // console.log(selectedOrder);
+    console.log(selectedOrder?.payment);
   }, [selectedOrder]);
 
   return (
@@ -234,20 +205,6 @@ function TableOrderDetails({
               </div>
             </div>
           )}
-          {/* {cartItems.length > 0 &&
-            orderCompleted == false &&
-            showEditBtn && (
-              <button
-                className="text-xs py-2 px-4 bg-red-700 text-white rounded-md"
-                onClick={() => {
-                  setShowMenu(false);
-                  setShowEditBtn(false);
-                  setOrderCompleted(true);
-                  // setCartItems([]);
-                }}>
-                Close
-              </button>
-            )} */}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {cartItems.length > 0 ? (
@@ -374,18 +331,45 @@ function TableOrderDetails({
             Order Accepted
           </button>
         ) : null}
-        {cartItems.length > 0 &&
-          orderCompleted &&
-          !showEditBtn &&
-          paymentStatus != "Paid" && (
+        {cartItems.length > 0 && orderCompleted && !showEditBtn ? (
+          selectedOrder.payment != "Paid" ? (
             <button
               className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
+              onClick={handlePaymentClick(selectedOrder.orderNumber)}>
               Make Payment
             </button>
-          )}
+          ) : (
+            <button
+              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+              disabled>
+              Paid
+            </button>
+          )
+        ) : null}
       </div>
     </div>
   );
 }
 export default React.memo(TableOrderDetails);
+
+// Address & Contact Info
+
+// Order Number or Invoice Number
+// Date
+// Table Number
+
+// item
+// quantity
+// Amount
+
+// subtotal
+// discount in %
+// tax
+// received Cash
+// change
+
+// Payment Method
+
+// Thank You for Your Order!
+// Powered By Josiah
+// Wifi Password

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 function PaymentModal({
@@ -8,23 +9,55 @@ function PaymentModal({
   setPaymentStatus,
   orders,
   setOrders,
+  setSelectedOrder,
 }) {
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
+
   const handlePaymentStatus = () => {
     setModalOpen(false);
-    setOrders(
-      orders.map((order) =>
-        order.orderNumber === selectedOrder?.orderNumber
-          ? { ...order, payment: "Paid", status: "Completed" }
-          : order
-      )
+  
+    // Update the orders array
+    const updatedOrders = orders.map((order) => {
+      if (order.orderNumber === selectedOrder?.orderNumber) {
+        return {
+          ...order,
+          payment: "Paid",
+          status: "Completed",
+          paymentMethod,
+        };
+      } else {
+        return order;
+      }
+    });
+  
+    setOrders(updatedOrders);
+  
+    // Update the selectedOrder
+    const updatedSelectedOrder = updatedOrders.find(
+      (order) => order.orderNumber === selectedOrder?.orderNumber
     );
+  
+    setSelectedOrder((prevSelectedOrder) => {
+      if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
+        return {
+          ...prevSelectedOrder,
+          payment: "Paid",
+          status: "Completed",
+          paymentMethod,
+        };
+      } else {
+        return prevSelectedOrder;
+      }
+    });
     setPaymentStatus("Paid");
+  
     toast.success("Payment Done'", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
     });
   };
+  
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -38,26 +71,48 @@ function PaymentModal({
     <>
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-[300px]">
-          <div className="text-2xl text-center font-bold text-green-800 mb-1">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-[340px]">
+          <div className="text-lg font-medium text-green-800">
             Table {selectedOrder?.tableNumber}
           </div>
-          <div className="text-center bg-green-800 rounded-md text-white py-6 px-4">
-            <div className="text-2xl">
-              Total : RM {selectedOrder?.totalPrice}
+          <div className="border-green-800 bg-green-800 border-2 rounded-md p-4 pb-6">
+            <div className="text-lg font-medium text-white mb-2">Total</div>
+            {/* <div className="text-center bg-green-800 rounded-md text-white py-6 px-4"> */}
+            <div className="text-5xl font-bold text-white leading-6">
+              RM {selectedOrder?.totalPrice}
             </div>
           </div>
-          <div className="text-center">
-            <div className="text-xl text-gray-800 text-center leading-5 my-4">
-              Make payment now?
-            </div>
+          <div className="text-xl text-gray-800 leading-5 mt-6">
+            Select payment method
+          </div>
+          <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
-              className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
+              className={`flex-1 text-white font-bold py-3 px-4 rounded-md ${
+                paymentMethod === "Cash" ? "bg-yellow-500" : "bg-gray-500"
+              }`}
+              onClick={() => setPaymentMethod("Cash")}>
+              Cash
+            </button>
+            <button
+              className={`flex-1 text-white font-bold py-3 px-4 rounded-md ${
+                paymentMethod === "Boost" ? "bg-red-500" : "bg-gray-500"
+              }`}
+              onClick={() => setPaymentMethod("Boost")}>
+              Boost
+            </button>
+          </div>
+          <div className="text-xl text-gray-800 leading-5 mt-6">
+            Make payment now?
+          </div>
+          <div className="flex w-full space-x-2 my-2 justify-center items-center">
+            <button
+              className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={handlePaymentStatus}>
               Yes
             </button>
+            {/* <div className="text-center text-white">OR</div> */}
             <button
-              className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
+              className="flex-1 bg-gray-700 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={handleModalClose}>
               No
             </button>
