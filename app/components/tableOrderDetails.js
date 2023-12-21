@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 
 function TableOrderDetails({
@@ -20,7 +20,6 @@ function TableOrderDetails({
   selectedOrder,
   setSelectedOrder,
   handlePaymentClick,
-  paymentStatus,
 }) {
   // Cart related variables and functions
   let subtotal = 0;

@@ -64,7 +64,8 @@ function PaymentModal({
     
     setTables(updatedTables);    
     setPaymentStatus("Paid");
-
+     // Reset paymentMethod back to "Cash"
+    setPaymentMethod("Cash");
     toast.success("Payment Done'", {
       duration: 2000,
       position: "top-left",
