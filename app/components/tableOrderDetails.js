@@ -109,8 +109,6 @@ function TableOrderDetails({
     setShowMenu(false);
 
     const existingOrder = cartItems.find((item) => item.orderNumber);
-    console.log(cartItems);
-    console.log(existingOrder);
     const orderNumber = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
 
@@ -194,7 +192,7 @@ function TableOrderDetails({
   // console.log(tables);
 
   useEffect(() => {
-    console.log(selectedOrder);
+    // console.log(selectedOrder);
   }, [selectedOrder]);
 
   return (

@@ -37,7 +37,7 @@ export default function TablesOverview() {
     }))
   );
   const [selectedTable, setSelectedTable] = useState(null);
-  console.log(orders);
+  // console.log(orders);
 
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
@@ -182,7 +182,7 @@ export default function TablesOverview() {
         onCloseMsg={handleMsgModalClose}
         setShowMenu={setShowMenu}
         setShowEditBtn={setShowEditBtn}
-        setCartItems={setCartItems}
+        setOrderCompleted={setOrderCompleted}
       />
     </>
   );

@@ -1,5 +1,4 @@
 import React from "react";
-import toast from "react-hot-toast";
 
 function ConfirmModal({
   isOpenMsg,
@@ -7,18 +6,13 @@ function ConfirmModal({
   message,
   setShowMenu,
   setShowEditBtn,
-  setCartItems,
+  setOrderCompleted,
 }) {
   const handleMessageStatus = () => {
     setShowMenu(false);
     setShowEditBtn(false);
-    setCartItems([]);
+    setOrderCompleted(true);
     onCloseMsg();
-    // toast.success("Payment Done'", {
-    //   duration: 2000,
-    //   position: "top-left",
-    //   reverseOrder: false,
-    // });
   };
 
   if (!isOpenMsg) {
