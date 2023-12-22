@@ -179,6 +179,7 @@ export default function TablesOverview() {
         setSelectedOrder={setSelectedOrder}
         tables={tables}
         setTables={setTables}
+        setCartItems={setCartItems}
       />
       <ConfirmModal
         message={message}

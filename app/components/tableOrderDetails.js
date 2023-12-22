@@ -161,8 +161,8 @@ function TableOrderDetails({
   };
 
   useEffect(() => {
-    // console.log(selectedOrder?.payment);
-    // console.log(tables);
+    console.log(selectedOrder);
+    console.log(tables);
   }, [selectedOrder, tables]);
 
   return (
@@ -182,7 +182,7 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {cartItems.length > 0 && !showEditBtn && (
+          {cartItems.length > 0 && !showEditBtn && selectedOrder.payment != "Paid" && (
             <div
               onClick={() => {
                 setShowMenu(true);
