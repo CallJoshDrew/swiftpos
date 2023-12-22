@@ -7,11 +7,15 @@ function ConfirmModal({
   setShowMenu,
   setShowEditBtn,
   setOrderCompleted,
+  setTempCartItems,
+  cartItems,
 }) {
   const handleMessageStatus = () => {
     setShowMenu(false);
     setShowEditBtn(false);
     setOrderCompleted(true);
+    // Update tempCartItems with cartItems when "Yes" is clicked
+    setTempCartItems(cartItems);
     onCloseMsg();
   };
 

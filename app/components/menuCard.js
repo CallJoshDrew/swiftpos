@@ -4,37 +4,33 @@ import toast from "react-hot-toast";
 
 function MenuItem({
   item,
-  cartItems,
-  setCartItems,
-  isOrderPlaced,
+  tempCartItems,
+  setTempCartItems,
 }) {
-
   const handleAddtoCartBtn = () => {
-    if (!isOrderPlaced) {
-      const existingCartItem = cartItems.find(
-        (cartItem) => cartItem.id === item.id
+    // If tempCartItems is [] and no item is being added before, then existingCartItem is undefined
+    const existingCartItem = tempCartItems.find(
+      (cartItem) => cartItem.id === item.id
+    );
+    if (existingCartItem) {
+      // If the item is already in the cart, increase its quantity
+      setTempCartItems(
+        tempCartItems.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
       );
-  
-      if (existingCartItem) {
-        // If the item is already in the cart, increase its quantity
-        setCartItems(
-          cartItems.map((cartItem) =>
-            cartItem.id === item.id
-              ? { ...cartItem, quantity: cartItem.quantity + 1 }
-              : cartItem
-          )
-        );
-      } else {
-        // If the item is not in the cart, add it with a quantity of 1
-        setCartItems([...cartItems, { ...item, quantity: 1 }]);
-      }
-      toast.success("Added to Cart", {
-        duration: 2000,
-        position:"top-left",
-        reverseOrder:false,
-      });
+    } else {
+      // If the item is not in the cart, add it with a quantity of 1
+      setTempCartItems([...tempCartItems, { ...item, quantity: 1 }]);
     }
-  };
+    toast.success("Added to Cart", {
+      duration: 2000,
+      position: "top-left",
+      reverseOrder: false,
+    });
+  };  
 
   return (
     <div
@@ -66,11 +62,9 @@ function MenuItem({
 function MenuCard({
   menu,
   selectedCategory,
-  cartItems,
-  setCartItems,
-  isOrderPlaced,
+  tempCartItems,
+  setTempCartItems,
 }) {
-  const [itemCounts, setItemCounts] = useState({});
 
   if (selectedCategory !== "All") {
     menu = menu.filter((item) => item.category === selectedCategory);
@@ -82,11 +76,8 @@ function MenuCard({
         <MenuItem
           key={item.id}
           item={item}
-          itemCounts={itemCounts}
-          setItemCounts={setItemCounts}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-          isOrderPlaced={isOrderPlaced}
+          tempCartItems={tempCartItems}
+          setTempCartItems={setTempCartItems}
         />
       ))}
     </div>

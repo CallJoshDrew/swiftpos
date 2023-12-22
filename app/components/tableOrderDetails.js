@@ -6,10 +6,11 @@ function TableOrderDetails({
   tables,
   setTables,
   tableNumber,
-  cartItems,
+  setCartItems,
+  tempCartItems,
+  setTempCartItems,
   taxRate,
   setShowMenu,
-  setCartItems,
   showEditBtn,
   setShowEditBtn,
   orderCompleted,
@@ -26,25 +27,25 @@ function TableOrderDetails({
   let tax = 0;
   let total = 0;
 
-  if (cartItems.length > 0) {
-    subtotal = cartItems.reduce(
+  if (tempCartItems.length > 0) {
+    subtotal = tempCartItems.reduce(
       (total, item) => total + parseFloat(item.price) * item.quantity,
       0
     );
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-
+  
   const handleIncrease = (id) => {
-    setCartItems((prevItems) =>
+    setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
-
+  
   const handleDecrease = (id) => {
-    setCartItems((prevItems) =>
+    setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id
           ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
@@ -52,16 +53,16 @@ function TableOrderDetails({
       )
     );
   };
-
+  
   const handleRemove = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    setTempCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
     });
   };
-
+  
   // Order related variables and functions
   const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
@@ -71,14 +72,15 @@ function TableOrderDetails({
       return `#T${tableNumber}-${paddedCounter}`;
     }
   };
-
-  const calculateTotalQuantity = (cartItems) => {
+  
+  const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
-    cartItems.forEach((item) => {
+    tempCartItems.forEach((item) => {
       totalQuantity += item.quantity;
     });
     return totalQuantity;
   };
+  
 
   const updateOrders = (prevOrders, order) => {
     const orderIndex = prevOrders.findIndex(
@@ -106,14 +108,17 @@ function TableOrderDetails({
 
   const handlePlaceOrderBtn = () => {
     setShowMenu(false);
-
-    const existingOrder = cartItems.find((item) => item.orderNumber);
+  
+    // Update cartItems with tempCartItems when "Place Order" is clicked
+    setCartItems(tempCartItems);
+  
+    const existingOrder = tempCartItems.find((item) => item.orderNumber);
     const orderNumber = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
-
+  
     setOrderCompleted(true);
     setShowEditBtn(false);
-
+  
     const now = new Date();
     const timeOptions = {
       hour: "2-digit",
@@ -121,7 +126,7 @@ function TableOrderDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     };
-
+  
     const dateOptions = {
       weekday: "short",
       month: "short",
@@ -129,18 +134,18 @@ function TableOrderDetails({
       year: "numeric",
       timeZone: "Asia/Kuala_Lumpur",
     };
-
+  
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
-
-    const totalQuantity = calculateTotalQuantity(cartItems);
-
+  
+    const totalQuantity = calculateTotalQuantity(tempCartItems);
+  
     const order = {
       orderNumber,
       tableNumber,
       orderTime: timeString,
       orderDate: dateString,
-      items: cartItems,
+      items: tempCartItems,
       subtotal,
       tax,
       totalPrice: total,
@@ -152,17 +157,19 @@ function TableOrderDetails({
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-
+  
     toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
     });
   };
+  
+  
 
   useEffect(() => {
-    // console.log(selectedOrder);
-    // console.log(tables);
+    console.log(selectedOrder);
+    console.log(tables);
   }, [selectedOrder, tables]);
 
   return (
@@ -182,7 +189,7 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {cartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
+          {tempCartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
             <div
               onClick={() => {
                 setShowMenu(true);
@@ -206,7 +213,7 @@ function TableOrderDetails({
           )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
-        {cartItems.length > 0 ? (
+        {tempCartItems.length > 0 ? (
           <div className="flex space-y-0 px-2 items-center space-x-2">
             <div className="text-green-800 text-sm font-bold leading-none">
               Order Time
@@ -221,7 +228,7 @@ function TableOrderDetails({
         ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
-          {cartItems.map((item) => (
+          {tempCartItems.map((item) => (
             <div
               key={item.id}
               className="flex flex-col border rounded-md p-2 shadow-sm">
@@ -311,7 +318,7 @@ function TableOrderDetails({
             </div>
           </div>
         </div>
-        {cartItems.length === 0 ? (
+        {tempCartItems.length === 0 ? (
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>
@@ -330,7 +337,7 @@ function TableOrderDetails({
             Order Accepted
           </button>
         ) : null}
-        {cartItems.length > 0 && orderCompleted && !showEditBtn ? (
+        {tempCartItems.length > 0 && orderCompleted && !showEditBtn ? (
           selectedOrder?.payment != "Paid" ? (
             <button
               className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"

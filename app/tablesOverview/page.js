@@ -12,6 +12,7 @@ export default function TablesOverview() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
+  const [tempCartItems, setTempCartItems] = useState([]);
   const [showEditBtn, setShowEditBtn] = useState(true);
 
   // Order related states
@@ -60,7 +61,7 @@ export default function TablesOverview() {
         setShowMenu(true);
         setShowEditBtn(true);
       }
-      
+  
       if (tables[tableIndex].order && tables[tableIndex].order.items) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
@@ -68,14 +69,19 @@ export default function TablesOverview() {
         }));  
         setSelectedOrder(tables[tableIndex].order); 
         setCartItems(itemsWithOrderID);
+        setTempCartItems(itemsWithOrderID); // Also set tempCartItems
         setShowEditBtn(false);
       } else {
         setSelectedOrder(null); // Clear the selected order
         setCartItems([]);
+        setTempCartItems([]); // Also clear tempCartItems
       }
+      console.log(tables);
+      console.log(selectedOrder);
     },
-    [tables]
+    [tables, selectedOrder],
   );
+  
    // dependencies
 
   // Fetch menu data
@@ -105,10 +111,10 @@ export default function TablesOverview() {
               setSelectedCategory={setSelectedCategory}
               cartItems={cartItems}
               setCartItems={setCartItems}
+              setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMessage={setMessage} 
               setMsgModalOpen={setMsgModalOpen}
-              setShowMenu={setShowMenu}
             />
           </div>
           {/* card begins here */}
@@ -116,9 +122,8 @@ export default function TablesOverview() {
             <MenuCard
               menu={menu}
               selectedCategory={selectedCategory}
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-              showEditBtn={showEditBtn}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
             />
           </div>
         </div>
@@ -154,6 +159,8 @@ export default function TablesOverview() {
         tableNumber={selectedTable + 1}
         cartItems={cartItems}
         setCartItems={setCartItems}
+        tempCartItems={tempCartItems}
+        setTempCartItems={setTempCartItems}
         showMenu={showMenu}
         setShowMenu={setShowMenu}
         taxRate={taxRate}
@@ -188,6 +195,8 @@ export default function TablesOverview() {
         setShowMenu={setShowMenu}
         setShowEditBtn={setShowEditBtn}
         setOrderCompleted={setOrderCompleted}
+        setTempCartItems={setTempCartItems}
+        cartItems={cartItems}
       />
     </>
   );
