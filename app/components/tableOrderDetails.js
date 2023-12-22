@@ -35,7 +35,7 @@ function TableOrderDetails({
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-  
+
   const handleIncrease = (id) => {
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -43,7 +43,7 @@ function TableOrderDetails({
       )
     );
   };
-  
+
   const handleDecrease = (id) => {
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -53,7 +53,7 @@ function TableOrderDetails({
       )
     );
   };
-  
+
   const handleRemove = (id) => {
     setTempCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
@@ -62,7 +62,7 @@ function TableOrderDetails({
       reverseOrder: false,
     });
   };
-  
+
   // Order related variables and functions
   const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
@@ -72,7 +72,7 @@ function TableOrderDetails({
       return `#T${tableNumber}-${paddedCounter}`;
     }
   };
-  
+
   const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
     tempCartItems.forEach((item) => {
@@ -80,7 +80,6 @@ function TableOrderDetails({
     });
     return totalQuantity;
   };
-  
 
   const updateOrders = (prevOrders, order) => {
     const orderIndex = prevOrders.findIndex(
@@ -108,17 +107,17 @@ function TableOrderDetails({
 
   const handlePlaceOrderBtn = () => {
     setShowMenu(false);
-  
+
     // Update cartItems with tempCartItems when "Place Order" is clicked
     setCartItems(tempCartItems);
-  
+
     const existingOrder = tempCartItems.find((item) => item.orderNumber);
     const orderNumber = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
-  
+
     setOrderCompleted(true);
     setShowEditBtn(false);
-  
+
     const now = new Date();
     const timeOptions = {
       hour: "2-digit",
@@ -126,7 +125,7 @@ function TableOrderDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     };
-  
+
     const dateOptions = {
       weekday: "short",
       month: "short",
@@ -134,12 +133,12 @@ function TableOrderDetails({
       year: "numeric",
       timeZone: "Asia/Kuala_Lumpur",
     };
-  
+
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
-  
+
     const totalQuantity = calculateTotalQuantity(tempCartItems);
-  
+
     const order = {
       orderNumber,
       tableNumber,
@@ -157,20 +156,48 @@ function TableOrderDetails({
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-  
+
     toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
     });
   };
-  
-  
+
+  // update table when customer leave and check out after payment
+  const updatedTables = tables.map((table) => {
+    if (table.order.orderNumber === selectedOrder?.orderNumber) {
+      return {
+        ...table,
+        order: [],
+        orderNumber: null,
+        occupied: false,
+      };
+    } else {
+      return table;
+    }
+  });
+
+  const handleTableCheckOut = () => {
+    setTables(updatedTables);
+    setTempCartItems([]);
+    setSelectedOrder((prevSelectedOrder) => {
+      if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
+        const tableNumber = prevSelectedOrder.tableNumber;
+        return {
+          tableNumber,
+        };
+      } else {
+        return prevSelectedOrder;
+      }
+    });
+  };
 
   useEffect(() => {
-    console.log(selectedOrder);
+    // console.log(selectedOrder);
+    console.log(tempCartItems);
     console.log(tables);
-  }, [selectedOrder, tables]);
+  }, [selectedOrder, tables, tempCartItems]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
@@ -189,28 +216,30 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {tempCartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
-            <div
-              onClick={() => {
-                setShowMenu(true);
-                setShowEditBtn(true);
-                setOrderCompleted(false);
-              }}>
-              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
-                  Edit
+          {tempCartItems.length > 0 &&
+            !showEditBtn &&
+            selectedOrder?.payment != "Paid" && (
+              <div
+                onClick={() => {
+                  setShowMenu(true);
+                  setShowEditBtn(true);
+                  setOrderCompleted(false);
+                }}>
+                <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                  <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
+                    Edit
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 text-white cursor-pointer">
+                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                  </svg>
                 </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5 text-white cursor-pointer">
-                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                </svg>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {tempCartItems.length > 0 ? (
@@ -334,7 +363,7 @@ function TableOrderDetails({
           <button
             className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
             disabled>
-            Order Accepted
+            Placed Order
           </button>
         ) : null}
         {tempCartItems.length > 0 && orderCompleted && !showEditBtn ? (
@@ -345,11 +374,18 @@ function TableOrderDetails({
               Make Payment
             </button>
           ) : (
-            <button
-              className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              disabled>
-              Paid
-            </button>
+            <>
+              <button
+                className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+                disabled>
+                Paid
+              </button>
+              <button
+                className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+                onClick={handleTableCheckOut}>
+                Check Out
+              </button>
+            </>
           )
         ) : null}
       </div>

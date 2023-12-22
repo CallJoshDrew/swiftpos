@@ -76,7 +76,7 @@ export default function TablesOverview() {
         setCartItems([]);
         setTempCartItems([]); // Also clear tempCartItems
       }
-      console.log(tables);
+      // console.log(tables);
       console.log(selectedOrder);
     },
     [tables, selectedOrder],

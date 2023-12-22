@@ -12,7 +12,6 @@ function PaymentModal({
   setSelectedOrder,
   tables,
   setTables,
-  setCartItems,
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   
@@ -34,8 +33,6 @@ function PaymentModal({
     });
 
     setOrders(updatedOrders);
-    // setSelectedOrder([]);
-    // setCartItems([]);
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -48,20 +45,7 @@ function PaymentModal({
         return prevSelectedOrder;
       }
     });
-    const updatedTables = tables.map((table) => {
-      if (table.order.orderNumber === selectedOrder?.orderNumber) {
-        return {
-          ...table,
-          order: [],
-          orderNumber: null,
-          occupied: false,  
-        };
-      } else {
-        return table;
-      }
-    });
-    
-    setTables(updatedTables);    
+      
     setPaymentStatus("Paid");
      // Reset paymentMethod back to "Cash"
     setPaymentMethod("Cash");
