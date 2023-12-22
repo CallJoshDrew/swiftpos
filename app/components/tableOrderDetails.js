@@ -161,8 +161,8 @@ function TableOrderDetails({
   };
 
   useEffect(() => {
-    console.log(selectedOrder);
-    console.log(tables);
+    // console.log(selectedOrder);
+    // console.log(tables);
   }, [selectedOrder, tables]);
 
   return (
@@ -182,7 +182,7 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {cartItems.length > 0 && !showEditBtn && selectedOrder.payment != "Paid" && (
+          {cartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
             <div
               onClick={() => {
                 setShowMenu(true);
@@ -331,10 +331,10 @@ function TableOrderDetails({
           </button>
         ) : null}
         {cartItems.length > 0 && orderCompleted && !showEditBtn ? (
-          selectedOrder.payment != "Paid" ? (
+          selectedOrder?.payment != "Paid" ? (
             <button
               className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(selectedOrder.orderNumber)}>
+              onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
               Make Payment
             </button>
           ) : (
