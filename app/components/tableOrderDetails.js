@@ -191,6 +191,11 @@ function TableOrderDetails({
         return prevSelectedOrder;
       }
     });
+    toast.success("Successfully Check Out", {
+      duration: 2000,
+      position: "top-left",
+      reverseOrder: false,
+    });
   };
 
   useEffect(() => {
