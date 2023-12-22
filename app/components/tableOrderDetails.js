@@ -104,7 +104,7 @@ function TableOrderDetails({
     return updatedTables;
   };
 
-  const handleOrder = () => {
+  const handlePlaceOrderBtn = () => {
     setShowMenu(false);
 
     const existingOrder = cartItems.find((item) => item.orderNumber);
@@ -320,7 +320,7 @@ function TableOrderDetails({
         ) : !orderCompleted ? (
           <button
             className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            onClick={handleOrder}>
+            onClick={handlePlaceOrderBtn}>
             Place Order & Print
           </button>
         ) : orderCompleted ? (

@@ -9,7 +9,7 @@ function MenuItem({
   isOrderPlaced,
 }) {
 
-  const handleClick = () => {
+  const handleAddtoCartBtn = () => {
     if (!isOrderPlaced) {
       const existingCartItem = cartItems.find(
         (cartItem) => cartItem.id === item.id
@@ -55,7 +55,7 @@ function MenuItem({
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
         <button
           className="block bg-[#cce9d4] text-black text-xs py-2 rounded-md w-full hover:bg-green-700 hover:text-white"
-          onClick={handleClick}>
+          onClick={handleAddtoCartBtn}>
           Add to table
         </button>
       </div>
@@ -68,7 +68,7 @@ function MenuCard({
   selectedCategory,
   cartItems,
   setCartItems,
-  isOrderPlaced
+  isOrderPlaced,
 }) {
   const [itemCounts, setItemCounts] = useState({});
 
