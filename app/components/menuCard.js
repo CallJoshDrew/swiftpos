@@ -8,30 +8,36 @@ function MenuItem({
   setTempCartItems,
 }) {
   const handleAddtoCartBtn = () => {
-    // If tempCartItems is [] and no item is being added before, then existingCartItem is undefined
-    const existingCartItem = tempCartItems.find(
-      (cartItem) => cartItem.id === item.id
-    );
-    if (existingCartItem) {
-      // If the item is already in the cart, increase its quantity
-      setTempCartItems(
-        tempCartItems.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
+    // If the item has choices, add it to the cart with a quantity of 1
+    if (item.choices) {
+      setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.length}` }]);
     } else {
-      // If the item is not in the cart, add it with a quantity of 1
-      setTempCartItems([...tempCartItems, { ...item, quantity: 1 }]);
+      // If the item doesn't have choices, check if it's already in the cart
+      const existingCartItem = tempCartItems.find(
+        (cartItem) => cartItem.id === item.id
+      );
+      if (existingCartItem) {
+        // If the item is already in the cart, increase its quantity
+        setTempCartItems(
+          tempCartItems.map((cartItem) =>
+            cartItem.id === item.id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          )
+        );
+      } else {
+        // If the item is not in the cart, add it with a quantity of 1
+        setTempCartItems([...tempCartItems, { ...item, quantity: 1 }]);
+      }
     }
     toast.success("Added to Cart", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
     });
-  };  
-
+  };
+  
+  
   return (
     <div
       key={item.id}

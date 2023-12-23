@@ -14,16 +14,39 @@ let menu = [
     { id: 13, name: "Cream Puff", category: "Cakes", price:2.50, image: "/creamPuff.png"},
     { id: 14, name: "Curry Puff", category: "Cakes", price:2.50, image: "/curryPuff.png"},
     { id: 15, name: "Custard Cake", category: "Cakes", price:2.50, image: "/custardCake.png"},
-    { id: 16, name: "Goreng Basah", category: "Dish", price:2.50, image: "/gorengBasah.png"},
-    { id: 17, name: "Goreng Kering", category: "Dish", price:2.50, image: "/gorengKering.png"},
-    { id: 18, name: "Kono Mee", category: "Dish", price:2.50, image: "/konoMee.png"},
-    { id: 19, name: "Watan Hor", category: "Dish", price:8.00, image: "/watanHor.png", choices: [{name: "Ayam", price: 0.00}, {name: "Seafood", price: 1.00}, {name: "Daging", price: 2.00}]},
-    { id: 20, name: "Laksa", category: "Dish", price:2.50, image: "/laksa.png"},
-    { id: 21, name: "Lo Mee", category: "Dish", price:2.50, image: "/loMee.png"},
-    { id: 22, name: "Nasi Ayam", category: "Dish", price:2.50, image: "/nasiAyam.png"},
-    { id: 23, name: "Nasi Goreng Ayam", category: "Dish", price:2.50, image: "/nasiGorengAyam.png"},
-    { id: 24, name: "Sui Kau", category: "Dish", price:2.50, image: "/suiKau.png"},
-    { id: 25, name: "Pandan", category: "Drinks", price:2.50, image: "/pandan.png"},
+
+    { id: 16, name: "Kono Mee", category: "Dish", price:8.00, image: "/konoMee.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam Goreng", price: 0.00}, {name: "Sui Kau", price: 1.00}, {name: "Seafood", price: 2.00}, {name: "Udang", price: 4.00}]},
+    { id: 17, name: "Goreng Kering", category: "Dish", price:9.00, image: "/gorengKering.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Ayam Goreng", price: 1.00}, {name: "Seafood", price: 2.00}]},
+    { id: 18, name: "Goreng Basah", category: "Dish", price:8.00, image: "/gorengBasah.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Ayam Goreng", price: 1.00}, {name: "Seafood", price: 2.00}]},
+    { id: 19, name: "Laksa", category: "Dish", price:10.0, image: "/laksa.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam Goreng", price: 0.00}, {name: "Sui Kau", price: 0.00}, {name: "Seafood", price: 2.00}]},
+
+    { id: 20, name: "Lo Mee", category: "Dish", price:10.0, image: "/loMee.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Sui Kau", price: 0.00}, {name: "Seafood", price: 2.00}]},
+
+    { id: 21, name: "Watan Hor", category: "Dish", price:10.00, image: "/watanHor.png", choices: [{name: "Campur", price: 0.00},{name: "Ayam", price: 0.00}, {name: "Sui Kau", price: 0.00}, {name: "Seafood", price: 2.00}]},
+    
+   
+    { id: 22, name: "Nasi Ayam", category: "Dish", price:7.00, image: "/nasiAyam.png"},
+    { id: 23, name: "Nasi Goreng Ayam", category: "Dish", price:7.00, image: "/nasiGorengAyam.png"},
+    { id: 24, name: "Sui Kau", category: "Dish", price:9.00, image: "/suiKau.png"},
+
+    { id: 41, name: "Teh C", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 42, name: "Teh Kahwin", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 43, name: "Lemon Teh", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 44, name: "Lemon Sui", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 45, name: "Nescafe Nai", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 46, name: "Milo Nai", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 47, name: "Milo C", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 48, name: "Nestum Nai", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 49, name: "Nestum C", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 50, name: "Kitcai Ping", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+    { id: 51, name: "Teh C Special", category: "Drinks", price:4.00, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.50}]},
+    { id: 52, name: "Liong Fun", category: "Drinks", price:3.80, image: "/pandan.png"},
+    { id: 53, name: "Lo Han Kuo", category: "Drinks", price:3.00, image: "/pandan.png"},
+    { id: 54, name: "Air Bunga", category: "Drinks", price:3.00, image: "/pandan.png"},
+    { id: 55, name: "Soft Drink", category: "Drinks", price:2.50, image: "/pandan.png", choices: [{name: "Cola", price: 0.00},{name: "100%", price: 0.00}, {name: "Sasi", price: 0.00},{name: "7UP", price: 0.00}]},
+    { id: 56, name: "Kopi O", category: "Drinks", price:1.80, image: "/pandan.png", choices: [{name: "Hot", price: 0.00}, {name: "Cold", price: 2.50}]},
+    { id: 57, name: "Teh O", category: "Drinks", price:1.80, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.70}]},
+    { id: 58, name: "Chinese Teh", category: "Drinks", price:0.50, image: "/pandan.png", choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.00}]},
   ];
   
   export default async function handler(req, res) {

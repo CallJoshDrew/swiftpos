@@ -17,7 +17,7 @@ export default function TablesOverview() {
   const [showEditBtn, setShowEditBtn] = useState(true);
 
   // Order related states
-  const [taxRate, setTaxRate] = useState(0.1);
+  const [taxRate, setTaxRate] = useState(0);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
