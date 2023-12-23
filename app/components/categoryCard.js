@@ -24,7 +24,9 @@ function CategoryCard({
   selectedCategory,
   setSelectedCategory,
   cartItems,
-  setCartItems,
+  tempCartItems,
+  setTempCartItems,
+  setOrderCompleted,
   setShowMenu,
   setShowEditBtn,
   setMsgModalOpen,
@@ -33,13 +35,20 @@ function CategoryCard({
     counts[item.category] = (counts[item.category] || 0) + 1;
     return counts;
   }, {});
-  // Menu related functions
+  // Close Menu related functions
   const handleCloseMenu = () => {
-    if (cartItems.length == 0) {
+    const sortedCartItems = [...cartItems].sort((a, b) => a.id - b.id);
+    const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.id - b.id);
+    if (
+      JSON.stringify(sortedCartItems) === JSON.stringify(sortedTempCartItems) ||
+      tempCartItems.length === 0
+    ) {
       setShowMenu(false);
       setShowEditBtn(false);
-      setCartItems([]);
+      setOrderCompleted(true);
+      // setTempCartItems([]);
     } else {
+      // Arrays are not equal
       setMsgModalOpen(true);
     }
   };

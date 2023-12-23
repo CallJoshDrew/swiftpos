@@ -119,7 +119,9 @@ export default function TablesOverview() {
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
               cartItems={cartItems}
-              setCartItems={setCartItems}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
+              setOrderCompleted={setOrderCompleted}
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}

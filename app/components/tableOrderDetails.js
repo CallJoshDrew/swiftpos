@@ -1,8 +1,6 @@
-"use client"
 import Image from "next/image";
-import React, {useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import CheckOutModal from "./checkOutModal";
 
 function TableOrderDetails({
   tables,
@@ -168,11 +166,74 @@ function TableOrderDetails({
     });
   };
 
+  let orderStatusBtn;
+
+  if (tempCartItems.length === 0) {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Empty Cart
+      </button>
+    );
+  } else if (!orderCompleted) {
+    orderStatusBtn = (
+      <button
+        className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        onClick={handlePlaceOrderBtn}>
+        Place Order & Print
+      </button>
+    );
+  } else if (orderCompleted && selectedOrder?.payment != "Paid") {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Placed Order
+      </button>
+    );
+  } else if (orderCompleted && selectedOrder?.payment == "Paid") {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Completed
+      </button>
+    );
+  }
+  let paymentStatusBtn;
+  if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
+    if (selectedOrder?.payment != "Paid") {
+      paymentStatusBtn = (
+        <button
+          className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+          onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
+          Make Payment
+        </button>
+      );
+    } else {
+      paymentStatusBtn = (
+        <>
+          <button
+            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+            disabled>
+            Paid by {selectedOrder ? selectedOrder.paymentMethod : null}
+          </button>
+          <button
+            className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+            onClick={handleCheckOutClick(selectedOrder?.orderNumber)}>
+            Check Out
+          </button>
+        </>
+      );
+    }
+  }
+
   useEffect(() => {
-    console.log(selectedOrder);
+    // console.log(selectedOrder);
     console.log(tempCartItems);
-    console.log(tables);
-    console.log(orders);
+    // console.log(tables);
+    // console.log(orders);
   }, [selectedOrder, tables, tempCartItems, orders]);
 
   return (
@@ -323,47 +384,8 @@ function TableOrderDetails({
             </div>
           </div>
         </div>
-        {tempCartItems.length === 0 ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Empty Cart
-          </button>
-        ) : !orderCompleted ? (
-          <button
-            className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            onClick={handlePlaceOrderBtn}>
-            Place Order & Print
-          </button>
-        ) : orderCompleted ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Placed Order
-          </button>
-        ) : null}
-        {tempCartItems.length > 0 && orderCompleted && !showEditBtn ? (
-          selectedOrder?.payment != "Paid" ? (
-            <button
-              className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-              onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
-              Make Payment
-            </button>
-          ) : (
-            <>
-              <button
-                className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-                disabled>
-                Paid by {selectedOrder ? selectedOrder.paymentMethod : null}
-              </button>
-              <button
-                className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-                onClick={handleCheckOutClick(selectedOrder?.orderNumber)}>
-                Check Out
-              </button>
-            </>
-          )
-        ) : null}
+        {orderStatusBtn}
+        {paymentStatusBtn}
       </div>
     </div>
   );
