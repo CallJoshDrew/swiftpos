@@ -31,13 +31,23 @@ function TableOrderDetails({
 
   if (tempCartItems.length > 0) {
     subtotal = tempCartItems.reduce(
-      (total, item) => total + parseFloat(item.price) * item.quantity,
+      (total, item) => total + parseFloat(item.price) * item.quantity + (item.selectedChoice ? item.selectedChoice.price * item.quantity : 0),
       0
     );
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-
+  const handleChoiceChange = (itemId, choiceName) => {
+    console.log(itemId);
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? { ...item, selectedChoice: item.choices.find((choice) => choice.name === choiceName) }
+          : item
+      )
+    );
+  };
+  
   const handleIncrease = (id) => {
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -318,6 +328,34 @@ function TableOrderDetails({
                   </div>
                 </div>
               </div>
+              {item.choices && (
+                <div className="mt-2">
+                  {/* <label className="block tracking-wide text-gray-700 text-sm font-medium mb-1 ml-2">
+                    Choices
+                  </label> */}
+                  <select
+                    id="choices"
+                    className="block appearance-none w-full bg-gray-200 border-gray-300 py-2 pl-4 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-700 focus:bg-white"
+                    onChange={(e) =>
+                      handleChoiceChange(item.id, e.target.value)
+                    }>
+                    {item.choices.map((choice, index) => (
+                      <option key={index} value={choice.name}>
+                        {choice.name} + RM {choice.price.toFixed(2)}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg
+                      className="fill-current h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
               {showEditBtn && (
                 <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
                   <div className="flex items-center gap-x-2">
