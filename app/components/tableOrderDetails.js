@@ -232,7 +232,7 @@ function TableOrderDetails({
   useEffect(() => {
     // console.log(selectedOrder);
     console.log(tempCartItems);
-    // console.log(tables);
+    console.log(tables);
     // console.log(orders);
   }, [selectedOrder, tables, tempCartItems, orders]);
 

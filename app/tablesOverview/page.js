@@ -143,23 +143,42 @@ export default function TablesOverview() {
             Select Table
           </div>
           <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
-            {tables.map((table, index) => (
-              <button
-                key={index}
-                className={`${
-                  index === selectedTable
-                    ? "bg-green-800 text-white"
-                    : table.occupied === false
-                    ? "bg-white text-black"
-                    : "bg-yellow-500 text-white"
-                } rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
-                onClick={() => selectTable(index)}>
-                <div className="text-md ">Table {index + 1}</div>
-                <div className="text-sm ">
-                  {table.occupied ? "Seated" : "Empty"}
-                </div>
-              </button>
-            ))}
+            {tables.map((table, index) => {
+              let buttonStyle = "bg-yellow-500 text-white";
+
+              if (index === selectedTable) {
+                buttonStyle = "bg-green-800 text-white";
+              } else if (table.occupied === false) {
+                buttonStyle = "bg-white text-black";
+              } else if (
+                table.occupied === true &&
+                table.order.payment === "Paid"
+              ) {
+                buttonStyle = "bg-gray-500 text-white";
+              }
+
+              return (
+                <button
+                  key={index}
+                  className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
+                  onClick={() => selectTable(index)}>
+                  <div className="text-md ">Table {index + 1}</div>
+                  <div className="text-sm ">
+                    <div className="text-sm ">
+                      {table.occupied
+                        ? table.order.payment === "Paid"
+                          ? table.order.paymentMethod === "Cash"
+                            ? "Paid by Cash"
+                            : table.order.paymentMethod === "Boost"
+                            ? "Paid by Boost"
+                            : "Paid"
+                          : "Seated"
+                        : "Empty"}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
