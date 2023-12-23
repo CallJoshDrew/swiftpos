@@ -3,7 +3,6 @@ import React from "react";
 function ConfirmModal({
   isOpenMsg,
   onCloseMsg,
-  message,
   setShowMenu,
   setShowEditBtn,
   setOrderCompleted,
@@ -29,7 +28,7 @@ function ConfirmModal({
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-[300px]">
           <div className="text-2xl text-center font-bold text-green-800 mb-4">
-            {message}
+            Are you sure?
           </div>
           <div className="text-center">
             <button

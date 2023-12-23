@@ -27,7 +27,6 @@ function CategoryCard({
   setCartItems,
   setShowMenu,
   setShowEditBtn,
-  setMessage,
   setMsgModalOpen,
 }) {
   let itemCounts = menu.reduce((counts, item) => {
@@ -41,7 +40,6 @@ function CategoryCard({
       setShowEditBtn(false);
       setCartItems([]);
     } else {
-      setMessage("Are you sure?");
       setMsgModalOpen(true);
     }
   };

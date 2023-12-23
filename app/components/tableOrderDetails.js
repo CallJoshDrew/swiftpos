@@ -1,6 +1,8 @@
+"use client"
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import CheckOutModal from "./checkOutModal";
 
 function TableOrderDetails({
   tables,
@@ -15,12 +17,14 @@ function TableOrderDetails({
   setShowEditBtn,
   orderCompleted,
   setOrderCompleted,
+  orders,
   setOrders,
   orderCounter,
   setOrderCounter,
   selectedOrder,
   setSelectedOrder,
   handlePaymentClick,
+  handleCheckOutClick,
 }) {
   // Cart related variables and functions
   let subtotal = 0;
@@ -164,45 +168,12 @@ function TableOrderDetails({
     });
   };
 
-  // update table when customer leave and check out after payment
-  const updatedTables = tables.map((table) => {
-    if (table.order.orderNumber === selectedOrder?.orderNumber) {
-      return {
-        ...table,
-        order: [],
-        orderNumber: null,
-        occupied: false,
-      };
-    } else {
-      return table;
-    }
-  });
-
-  const handleTableCheckOut = () => {
-    setTables(updatedTables);
-    setTempCartItems([]);
-    setSelectedOrder((prevSelectedOrder) => {
-      if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
-        const tableNumber = prevSelectedOrder.tableNumber;
-        return {
-          tableNumber,
-        };
-      } else {
-        return prevSelectedOrder;
-      }
-    });
-    toast.success("Successfully Check Out", {
-      duration: 2000,
-      position: "top-left",
-      reverseOrder: false,
-    });
-  };
-
   useEffect(() => {
     console.log(selectedOrder);
     console.log(tempCartItems);
     console.log(tables);
-  }, [selectedOrder, tables, tempCartItems]);
+    console.log(orders);
+  }, [selectedOrder, tables, tempCartItems, orders]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
@@ -387,7 +358,7 @@ function TableOrderDetails({
               </button>
               <button
                 className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-                onClick={handleTableCheckOut}>
+                onClick={handleCheckOutClick(selectedOrder?.orderNumber)}>
                 Check Out
               </button>
             </>

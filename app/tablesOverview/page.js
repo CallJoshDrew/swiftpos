@@ -5,6 +5,7 @@ import CategoryCard from "../components/categoryCard";
 import MenuCard from "../components/menuCard";
 import PaymentModal from "../components/paymentModal";
 import ConfirmModal from "../components/confirmModal";
+import CheckOutModal from "../components/checkOutModal";
 
 export default function TablesOverview() {
   // Menu related states
@@ -21,12 +22,12 @@ export default function TablesOverview() {
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [selectedOrder, setSelectedOrder]= useState([])
+  const [selectedOrder, setSelectedOrder] = useState([]);
 
   // Modal related states
   const [isModalOpen, setModalOpen] = useState(false);
   const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
 
   // Table related states
   const [tables, setTables] = useState(
@@ -41,12 +42,21 @@ export default function TablesOverview() {
 
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
-    setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
+    setSelectedOrder(
+      orders.find((order) => order.orderNumber === selectedOrderID)
+    );
     setModalOpen(true);
   };
 
   const handleMsgModalClose = () => {
     setMsgModalOpen(false);
+  };
+
+  const handleCheckOutClick = (selectedOrderID) => () => {
+    setSelectedOrder(
+      orders.find((order) => order.orderNumber === selectedOrderID)
+    );
+    setCheckOutModalOpen(true);
   };
 
   // Table related functions
@@ -60,13 +70,13 @@ export default function TablesOverview() {
         setShowMenu(true);
         setShowEditBtn(true);
       }
-  
+
       if (tables[tableIndex].order && tables[tableIndex].order.items) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
           orderNumber: tables[tableIndex].order.orderNumber,
-        }));  
-        setSelectedOrder(tables[tableIndex].order); 
+        }));
+        setSelectedOrder(tables[tableIndex].order);
         setCartItems(itemsWithOrderID);
         setTempCartItems(itemsWithOrderID); // Also set tempCartItems
         setShowEditBtn(false);
@@ -78,10 +88,10 @@ export default function TablesOverview() {
       // console.log(tables);
       console.log(selectedOrder);
     },
-    [tables, selectedOrder],
+    [tables, selectedOrder]
   );
-  
-   // dependencies
+
+  // dependencies
 
   // Fetch menu data
   useEffect(() => {
@@ -98,7 +108,7 @@ export default function TablesOverview() {
       setCurrentDate(today);
     }
   }, [currentDate]);
-  
+
   return (
     <>
       {showMenu ? (
@@ -112,7 +122,6 @@ export default function TablesOverview() {
               setCartItems={setCartItems}
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
-              setMessage={setMessage} 
               setMsgModalOpen={setMsgModalOpen}
             />
           </div>
@@ -169,10 +178,12 @@ export default function TablesOverview() {
         setOrderCompleted={setOrderCompleted}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
+        orders={orders}
         setOrders={setOrders}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
+        handleCheckOutClick={handleCheckOutClick}
       />
       <PaymentModal
         isOpen={isModalOpen}
@@ -186,7 +197,6 @@ export default function TablesOverview() {
         setCartItems={setCartItems}
       />
       <ConfirmModal
-        message={message}
         isOpenMsg={isMsgModalOpen}
         onCloseMsg={handleMsgModalClose}
         setShowMenu={setShowMenu}
@@ -194,6 +204,17 @@ export default function TablesOverview() {
         setOrderCompleted={setOrderCompleted}
         setTempCartItems={setTempCartItems}
         cartItems={cartItems}
+      />
+      <CheckOutModal
+        isCheckOutModalOpen={isCheckOutModalOpen}
+        setCheckOutModalOpen={setCheckOutModalOpen}
+        tables={tables}
+        setTables={setTables}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        setTempCartItems={setTempCartItems}
+        orders={orders}
+        setOrders={setOrders}
       />
     </>
   );
