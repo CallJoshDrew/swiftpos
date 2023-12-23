@@ -25,7 +25,6 @@ export default function TablesOverview() {
 
   // Modal related states
   const [isModalOpen, setModalOpen] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState("pending");
   const [isMsgModalOpen, setMsgModalOpen] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -174,13 +173,11 @@ export default function TablesOverview() {
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
-        paymentStatus={paymentStatus}
       />
       <PaymentModal
         isOpen={isModalOpen}
         setModalOpen={setModalOpen}
         selectedOrder={selectedOrder}
-        setPaymentStatus={setPaymentStatus}
         orders={orders}
         setOrders={setOrders}
         setSelectedOrder={setSelectedOrder}

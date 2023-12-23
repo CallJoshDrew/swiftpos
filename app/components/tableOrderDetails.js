@@ -199,7 +199,7 @@ function TableOrderDetails({
   };
 
   useEffect(() => {
-    // console.log(selectedOrder);
+    console.log(selectedOrder);
     console.log(tempCartItems);
     console.log(tables);
   }, [selectedOrder, tables, tempCartItems]);
@@ -383,7 +383,7 @@ function TableOrderDetails({
               <button
                 className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
                 disabled>
-                Paid
+                Paid by {selectedOrder ? selectedOrder.paymentMethod : null}
               </button>
               <button
                 className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
