@@ -18,7 +18,7 @@ let menu = [
     { id: 16, name: "Kono Mee", category: "Dish", price:8.00, image: "/konoMee.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam Goreng", price: 0.00}, {name: "Sui Kau", price: 1.00}, {name: "Seafood", price: 2.00}, {name: "Udang", price: 4.00}]},
     { id: 17, name: "Goreng Kering", category: "Dish", price:9.00, image: "/gorengKering.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Ayam Goreng", price: 1.00}, {name: "Seafood", price: 2.00}]},
 
-    { id: 18, name: "Goreng Basah", category: "Dish", price:8.00, image: "/gorengBasah.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Ayam Goreng", price: 1.00}, {name: "Seafood", price: 2.00}], meat: [{level:"Normal", price: 0.00}, {level:"Extra Meat", price: 2.00}], addOn: [{type:"Mee", price: 0.00}, {type:"Rice", price: 2.00}]},
+    { id: 18, name: "Goreng Basah", category: "Dish", price:8.00, image: "/gorengBasah.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam", price: 0.00}, {name: "Ayam Goreng", price: 1.00}, {name: "Seafood", price: 2.00}], meat: [{level:"Normal", price: 0.00}, {level:"Extra Meat", price: 2.00}], addOn: [{type:"Normal Mee", price: 0.00},{type:"Extra Mee", price: 2.00}]},
 
     { id: 19, name: "Laksa", category: "Dish", price:10.0, image: "/laksa.png", choices: [{name: "Campur", price: 0.00}, {name: "Ayam Goreng", price: 0.00}, {name: "Sui Kau", price: 0.00}, {name: "Seafood", price: 2.00}]},
 

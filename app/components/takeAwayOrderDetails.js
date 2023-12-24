@@ -295,8 +295,9 @@ function TakeAwayOrderDetails({
         {/* Each item card */}
         <div className="flex flex-col gap-4">
           {tempCartItems.map((item) => (
-            <div key={item.id} className="flex flex-col border rounded-md p-2 shadow-sm">
-              <div className="flex relative">
+            <div key={item.id} className="border rounded-md p-2 shadow-sm">
+            <div className="flex flex-col">
+              <div className="flex">
                 <Image
                   src={item.image}
                   alt="stew"
@@ -304,7 +305,7 @@ function TakeAwayOrderDetails({
                   height="100"
                   className="sm:h-18 w-20 object-cover rounded-lg"
                 />
-                <div className="flex w-full flex-col justify-around items-center py-1 px-2">
+                <div className="flex flex-col py-1 pl-3 pr-1">
                   <div className="flex w-full justify-between p-1 pr-0">
                     <div className="text-black text-base ">
                       {item.name} x {item.quantity}
@@ -314,7 +315,7 @@ function TakeAwayOrderDetails({
                     </div>
                   </div>
                   {item.choices && (
-                    <div className="mt-2 w-full">
+                    <div className="mt-2">
                       <select
                         id="choices"
                         className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
@@ -334,95 +335,102 @@ function TakeAwayOrderDetails({
                       </select>
                     </div>
                   )}
-                  {item.meat && (
-                    <div className="mt-2 w-full">
-                      <select
-                        id="meat"
-                        className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                        onChange={(e) => handleMeatLevel(item.id, e.target.value)}
-                        disabled={
-                          !(
-                            tempCartItems.length > 0 &&
-                            showEditBtn &&
-                            selectedOrder?.payment !== "Paid"
-                          )
-                        }>
-                        {item.meat.map((meat, index) => (
-                          <option key={index} value={meat.level}>
-                            {meat.level} + RM {meat.price.toFixed(2)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {item.addOn && (
-                    <div className="mt-2 w-full">
-                      <select
-                        id="meat"
-                        className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                        onChange={(e) => handleAddOn(item.id, e.target.value)}
-                        disabled={
-                          !(
-                            tempCartItems.length > 0 &&
-                            showEditBtn &&
-                            selectedOrder?.payment !== "Paid"
-                          )
-                        }>
-                        {item.addOn.map((addOn, index) => (
-                          <option key={index} value={addOn.type}>
-                            {addOn.type} + RM {addOn.price.toFixed(2)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
                 </div>
               </div>
-
-              {showEditBtn && (
-                <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
-                  <div className="flex items-center gap-x-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6 text-green-800"
-                      onClick={() => handleDecrease(item.id)}>
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <div className="text-sm text-black">{item.quantity}</div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6 text-green-800"
-                      onClick={() => handleIncrease(item.id)}>
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+              {item.meat && (
+                <div className="flex justify-between items-baseline">
+                  <div className=" text-gray-800 w-20 text-sm text-right">Meat</div>
+                  <div className="mt-2">
+                    <select
+                      id="meat"
+                      className="block appearance-none w-44 text-end bg-gray-200 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                      onChange={(e) => handleMeatLevel(item.id, e.target.value)}
+                      disabled={
+                        !(
+                          tempCartItems.length > 0 &&
+                          showEditBtn &&
+                          selectedOrder?.payment !== "Paid"
+                        )
+                      }>
+                      {item.meat.map((meat, index) => (
+                        <option key={index} value={meat.level}>
+                          {meat.level} + RM {meat.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+                </div>
+              )}
+              {item.addOn && (
+               <div className="flex justify-between items-baseline">
+               <div className=" text-gray-800 w-20 text-sm text-right">Add On</div>
+               <div className="mt-2">
+                 <select
+                   id="meat"
+                   className="block appearance-none w-44 text-end bg-gray-200 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                      onChange={(e) => handleAddOn(item.id, e.target.value)}
+                      disabled={
+                        !(
+                          tempCartItems.length > 0 &&
+                          showEditBtn &&
+                          selectedOrder?.payment !== "Paid"
+                        )
+                      }>
+                      {item.addOn.map((addOn, index) => (
+                        <option key={index} value={addOn.type}>
+                          {addOn.type} + RM {addOn.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {showEditBtn && (
+              <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
+                <div className="flex items-center gap-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-6 h-6 text-red-700"
-                    onClick={() => handleRemove(item.id)}>
+                    className="w-6 h-6 text-green-800"
+                    onClick={() => handleDecrease(item.id)}>
                     <path
                       fillRule="evenodd"
-                      d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div className="text-sm text-black">{item.quantity}</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6 text-green-800"
+                    onClick={() => handleIncrease(item.id)}>
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                       clipRule="evenodd"
                     />
                   </svg>
                 </div>
-              )}
-            </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6 text-red-700"
+                  onClick={() => handleRemove(item.id)}>
+                  <path
+                    fillRule="evenodd"
+                    d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
           ))}
         </div>
         {/* Subtotal, serviceCharge and Total Section */}
