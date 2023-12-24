@@ -321,55 +321,29 @@ function TableOrderDetails({
         <div className="flex flex-col gap-4">
           {tempCartItems.map((item) => (
             <div key={item.id} className="border rounded-md p-2 shadow-sm">
-              <div className="flex flex-col">
-                <div className="flex">
-                  <Image
-                    src={item.image}
-                    alt="stew"
-                    width="100"
-                    height="100"
-                    className="sm:h-18 w-20 object-cover rounded-lg"
-                  />
-                  <div className="flex flex-col py-1 pl-3 pr-1">
-                    <div className="flex w-full justify-between p-1 pr-0">
-                      <div className="text-black text-base ">
-                        {item.name} x {item.quantity}
-                      </div>
-                      <div className="text-green-800 font-bold text-base ">
-                        {(parseFloat(item.price) * item.quantity).toFixed(2)}
-                      </div>
+              <div className="flex">
+                <Image
+                  src={item.image}
+                  alt="stew"
+                  width="100"
+                  height="100"
+                  className="sm:h-18 w-20 object-cover rounded-lg"
+                />
+                <div className="flex flex-col py-1 pl-2 pr-1">
+                  <div className="flex w-full justify-between p-1 pr-0">
+                    <div className="text-black text-base ">
+                      {item.name} x {item.quantity}
                     </div>
-                    {item.choices && (
-                      <div className="mt-2">
-                        <select
-                          id="choices"
-                          className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                          onChange={(e) => handleChoiceChange(item.id, e.target.value)}
-                          disabled={
-                            !(
-                              tempCartItems.length > 0 &&
-                              showEditBtn &&
-                              selectedOrder?.payment !== "Paid"
-                            )
-                          }>
-                          {item.choices.map((choice, index) => (
-                            <option key={index} value={choice.name}>
-                              {choice.name} + RM {choice.price.toFixed(2)}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
+                    <div className="text-green-800 font-bold text-base ">
+                      {(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    </div>
                   </div>
-                </div>
-                {item.meat && (
-                  <div className="flex justify-between items-baseline">
-                    <div className=" text-gray-800 w-20 text-sm text-right">Meat</div>
+                  {item.choices && (
                     <div className="mt-2">
                       <select
-                        id="meat"
-                        className="block appearance-none w-44 text-end bg-gray-200 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                        onChange={(e) => handleMeatLevel(item.id, e.target.value)}
+                        id="choices"
+                        className="block appearance-none w-full text-center bg-white border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                        onChange={(e) => handleChoiceChange(item.id, e.target.value)}
                         disabled={
                           !(
                             tempCartItems.length > 0 &&
@@ -377,41 +351,56 @@ function TableOrderDetails({
                             selectedOrder?.payment !== "Paid"
                           )
                         }>
-                        {item.meat.map((meat, index) => (
-                          <option key={index} value={meat.level}>
-                            {meat.level} + RM {meat.price.toFixed(2)}
+                        {item.choices.map((choice, index) => (
+                          <option key={index} value={choice.name}>
+                            {choice.name} + RM {choice.price.toFixed(2)}
                           </option>
                         ))}
                       </select>
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
+              {/* <div className="flex flex-col space-y-2 py-2"> */}
+                {item.meat && (
+                  <select
+                    id="meat"
+                    className="block appearance-none w-full my-2 text-center bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                    onChange={(e) => handleMeatLevel(item.id, e.target.value)}
+                    disabled={
+                      !(
+                        tempCartItems.length > 0 &&
+                        showEditBtn &&
+                        selectedOrder?.payment !== "Paid"
+                      )
+                    }>
+                    {item.meat.map((meat, index) => (
+                      <option key={index} value={meat.level}>
+                        {meat.level} + RM {meat.price.toFixed(2)}
+                      </option>
+                    ))}
+                  </select>
                 )}
                 {item.addOn && (
-                 <div className="flex justify-between items-baseline">
-                 <div className=" text-gray-800 w-20 text-sm text-right">Add On</div>
-                 <div className="mt-2">
-                   <select
-                     id="meat"
-                     className="block appearance-none w-44 text-end bg-gray-200 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                        onChange={(e) => handleAddOn(item.id, e.target.value)}
-                        disabled={
-                          !(
-                            tempCartItems.length > 0 &&
-                            showEditBtn &&
-                            selectedOrder?.payment !== "Paid"
-                          )
-                        }>
-                        {item.addOn.map((addOn, index) => (
-                          <option key={index} value={addOn.type}>
-                            {addOn.type} + RM {addOn.price.toFixed(2)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                  <select
+                    id="meat"
+                    className="block appearance-none w-full text-center bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                    onChange={(e) => handleAddOn(item.id, e.target.value)}
+                    disabled={
+                      !(
+                        tempCartItems.length > 0 &&
+                        showEditBtn &&
+                        selectedOrder?.payment !== "Paid"
+                      )
+                    }>
+                    {item.addOn.map((addOn, index) => (
+                      <option key={index} value={addOn.type}>
+                        {addOn.type} + RM {addOn.price.toFixed(2)}
+                      </option>
+                    ))}
+                  </select>
                 )}
-              </div>
-
+              {/* </div> */}
               {showEditBtn && (
                 <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
                   <div className="flex items-center gap-x-2">
