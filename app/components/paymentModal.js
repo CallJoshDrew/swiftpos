@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 function PaymentModal({
-  isOpen,
-  setModalOpen,
+  isPayModalOpen,
+  setPayModalOpen,
   selectedOrder,
   orders,
   setOrders,
@@ -15,7 +15,7 @@ function PaymentModal({
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
   const handlePaymentStatus = () => {
-    setModalOpen(false);
+    setPayModalOpen(false);
 
     // Update the orders array
     const updatedOrders = orders.map((order) => {
@@ -74,10 +74,10 @@ function PaymentModal({
   };
 
   const handleModalClose = () => {
-    setModalOpen(false);
+    setPayModalOpen(false);
   };
 
-  if (!isOpen) {
+  if (!isPayModalOpen) {
     return null;
   }
 

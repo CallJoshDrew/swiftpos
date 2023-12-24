@@ -1,39 +1,40 @@
-"use client"
+"use client";
 import Image from "next/image";
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
-export default function TakeAwayOrderDetails({
+function TakeAwayOrderDetails({
   cartItems,
-  taxRate,
+  setCartItems,
+  tempCartItems,
+  setTempCartItems,
   showMenu,
   setShowMenu,
-  setCartItems,
+  taxRate,
   showEditBtn,
   setShowEditBtn,
   orderCompleted,
   setOrderCompleted,
-  setOrders,
   orderCounter,
   setOrderCounter,
+  orders,
+  setOrders,
   orderID, //this is selectOrderID
   setSelectedOrderID,
+  selectedOrder,
+  setSelectedOrder,
+  handlePaymentClick,
 }) {
-const [orderTime, setOrderTime] = useState("");
-const [orderDate, setOrderDate] = useState("");
-  
-  // Function to handle cart item increase
   const handleIncrease = (id) => {
-    setCartItems((prevItems) =>
+    setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
 
-  // Function to handle cart item decrease
   const handleDecrease = (id) => {
-    setCartItems((prevItems) =>
+    setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id
           ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
@@ -41,33 +42,51 @@ const [orderDate, setOrderDate] = useState("");
       )
     );
   };
-
-  // Function to handle cart item removal
   const handleRemove = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    setTempCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     toast.success("Item is removed!", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
     });
   };
+
   // Cart related variables and functions
   let subtotal = 0;
   let tax = 0;
   let total = 0;
 
-  if (cartItems.length > 0) {
-    subtotal = cartItems.reduce(
-      (total, item) => total + parseFloat(item.price) * item.quantity,
+  if (tempCartItems.length > 0) {
+    subtotal = tempCartItems.reduce(
+      (total, item) =>
+        total +
+        parseFloat(item.price) * item.quantity +
+        (item.selectedChoice ? item.selectedChoice.price * item.quantity : 0),
       0
     );
     tax = subtotal * taxRate;
     total = subtotal + tax;
   }
-  // Function to generate order ID
+  const handleChoiceChange = (itemId, choiceName) => {
+    console.log(itemId);
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              selectedChoice: item.choices.find(
+                (choice) => choice.name === choiceName
+              ),
+            }
+          : item
+      )
+    );
+  };
+
+  // Order related variables and functions
   const generateOrderID = (existingOrder, orderCounter) => {
     if (existingOrder) {
-      return existingOrder.orderID;
+      return existingOrder.orderNumber;
     } else {
       const paddedCounter = String(orderCounter).padStart(4, "0");
       return `#TAPAO-${paddedCounter}`;
@@ -75,17 +94,19 @@ const [orderDate, setOrderDate] = useState("");
   };
 
   // Function to calculate total quantity
-  const calculateTotalQuantity = (cartItems) => {
+  const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
-    cartItems.forEach((item) => {
+    tempCartItems.forEach((item) => {
       totalQuantity += item.quantity;
     });
     return totalQuantity;
   };
 
   // Function to update orders
-  const updateOrders = (prevOrders, id, order) => {
-    const orderIndex = prevOrders.findIndex((order) => order.id === id);
+  const updateOrders = (prevOrders, order) => {
+    const orderIndex = prevOrders.findIndex(
+      (prevOrder) => prevOrder.orderNumber === order.orderNumber
+    );
     if (orderIndex !== -1) {
       const updatedOrders = [...prevOrders];
       updatedOrders[orderIndex] = order;
@@ -94,53 +115,55 @@ const [orderDate, setOrderDate] = useState("");
       return [order, ...prevOrders];
     }
   };
-  // Refactored handleOrder function
-  const handleOrder = () => {
+
+  // Refactored handlePlaceOrderBtn function
+  const handlePlaceOrderBtn = () => {
     setShowMenu(false);
-    const existingOrder = cartItems.find((item) => item.orderID);
-    const id = generateOrderID(existingOrder, orderCounter);
+
+    // Update cartItems with tempCartItems when "Place Order" is clicked
+    setCartItems(tempCartItems);
+    const existingOrder = tempCartItems.find((item) => item.orderNumber);
+    const orderNumber = generateOrderID(existingOrder, orderCounter);
     setOrderCounter(orderCounter + 1);
 
-    setSelectedOrderID(id);
+    setOrderCompleted(true);
     setShowEditBtn(false);
 
     const now = new Date();
     const timeOptions = {
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
-      timeZone: 'Asia/Kuala_Lumpur'
+      timeZone: "Asia/Kuala_Lumpur",
     };
-    
-    const dateOptions = {
-      weekday: 'short',
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-      timeZone: 'Asia/Kuala_Lumpur'
-    };
-    
-    const timeString = now.toLocaleTimeString('en-US', timeOptions);
-    const dateString = now.toLocaleDateString('en-US', dateOptions);
-    setOrderTime(timeString);
-    setOrderDate(dateString);
-    const totalQuantity = calculateTotalQuantity(cartItems);
 
+    const dateOptions = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Kuala_Lumpur",
+    };
+
+    const timeString = now.toLocaleTimeString("en-US", timeOptions);
+    const dateString = now.toLocaleDateString("en-US", dateOptions);
+
+    const totalQuantity = calculateTotalQuantity(tempCartItems);
     const order = {
-      id,
+      orderNumber,
       orderTime: timeString,
       orderDate: dateString,
-      items: cartItems,
+      items: tempCartItems,
       subtotal,
       tax,
       totalPrice: total,
       quantity: totalQuantity,
-      status: "Completed",
+      status: "Placed Order",
+      payment: "Pending",
+      paymentMethod: "Cash",
     };
-
-    console.log(order);
-
-    setOrders((prevOrders) => updateOrders(prevOrders, id, order));
+    setSelectedOrder(order);
+    setOrders((prevOrders) => updateOrders(prevOrders, order));
 
     toast.success("Order Accepted", {
       duration: 3000,
@@ -148,6 +171,70 @@ const [orderDate, setOrderDate] = useState("");
       reverseOrder: false,
     });
   };
+
+  let orderStatusBtn;
+
+  if (tempCartItems.length === 0) {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Empty Cart
+      </button>
+    );
+  } else if (!orderCompleted) {
+    orderStatusBtn = (
+      <button
+        className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        onClick={handlePlaceOrderBtn}>
+        Place Order & Print
+      </button>
+    );
+  } else if (orderCompleted && selectedOrder?.payment != "Paid") {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Placed Order
+      </button>
+    );
+  } else if (orderCompleted && selectedOrder?.payment == "Paid") {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        Completed
+      </button>
+    );
+  }
+  let paymentStatusBtn;
+  if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
+    if (selectedOrder?.payment != "Paid") {
+      paymentStatusBtn = (
+        <button
+          className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+          onClick={handlePaymentClick(selectedOrder?.orderNumber)}>
+          Make Payment
+        </button>
+      );
+    } else {
+      paymentStatusBtn = (
+        <>
+          <button
+            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+            disabled>
+            Paid by {selectedOrder ? selectedOrder.paymentMethod : null}
+          </button>
+        </>
+      );
+    }
+  }
+
+  useEffect(() => {
+    // console.log(selectedOrder);
+    console.log(tempCartItems);
+    // console.log(orders);
+  }, [selectedOrder, tempCartItems, orders]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
@@ -158,44 +245,51 @@ const [orderDate, setOrderDate] = useState("");
               Take Away
             </div>
             <div className="text-green-800 text-sm">
-              {cartItems.length > 0 ? orderID : null}
+              {selectedOrder ? selectedOrder.orderNumber : null}
             </div>
           </div>
-          {cartItems.length > 0 && !showEditBtn && (
-            <div
-              onClick={() => {
-                setShowMenu(true);
-                setShowEditBtn(true);
-                setOrderCompleted(false);
-              }}>
-              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
-                  Edit
+          {tempCartItems.length > 0 &&
+            !showEditBtn &&
+            selectedOrder?.payment != "Paid" && (
+              <div
+                onClick={() => {
+                  setShowMenu(true);
+                  setShowEditBtn(true);
+                  setOrderCompleted(false);
+                }}>
+                <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                  <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
+                    Edit
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 text-white cursor-pointer">
+                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                  </svg>
                 </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5 text-white cursor-pointer">
-                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                </svg>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
-        {cartItems.length > 0 ? (
+        {tempCartItems.length > 0 ? (
           <div className="flex space-y-0 px-2 items-center space-x-2">
             <div className="text-green-800 text-sm font-bold leading-none">
               Order Time
             </div>
-            <div className="text-green-800 text-sm">{`${orderTime} , ${orderDate}`}</div>
+            <div className="text-green-800 text-sm">
+              {" "}
+              {selectedOrder
+                ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}`
+                : null}
+            </div>
           </div>
         ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
-          {cartItems.map((item) => (
+          {tempCartItems.map((item) => (
             <div
               key={item.id}
               className="flex flex-col border rounded-md p-2 shadow-sm">
@@ -207,18 +301,34 @@ const [orderDate, setOrderDate] = useState("");
                   height="100"
                   className="sm:h-18 w-20 object-cover rounded-lg"
                 />
-                <div className="flex flex-col py-1 px-4">
-                  <div className="text-black text-base leading-4">
-                    {item.name}
+                <div className="flex w-full flex-col justify-around items-center py-1 px-2">
+                  <div className="flex w-full justify-between p-1 pr-0">
+                    <div className="text-black text-base ">
+                      {item.name} x {item.quantity}
+                    </div>
+                    <div className="text-green-800 font-bold text-base ">
+                      {(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    </div>
                   </div>
-                  <div className="text-green-800 text-xs">
-                    RM {item.price.toFixed(2)} x {item.quantity}
-                  </div>
-                  <div className="text-green-800 font-bold text-sm absolute bottom-0 right-2">
-                    {(parseFloat(item.price) * item.quantity).toFixed(2)}
-                  </div>
+                  {item.choices && (
+                    <div className="mt-2 w-full">
+                      <select
+                        id="choices"
+                        className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                        onChange={(e) =>
+                          handleChoiceChange(item.id, e.target.value)
+                        }>
+                        {item.choices.map((choice, index) => (
+                          <option key={index} value={choice.name}>
+                            {choice.name} + RM {choice.price.toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
               </div>
+
               {showEditBtn && (
                 <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
                   <div className="flex items-center gap-x-2">
@@ -274,7 +384,7 @@ const [orderDate, setOrderDate] = useState("");
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Tax</div>
+            <div className="text-gray-600 text-sm">Service Charge</div>
             <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
           </div>
           <hr className="h-px my-6 bg-black border-dashed" />
@@ -285,26 +395,11 @@ const [orderDate, setOrderDate] = useState("");
             </div>
           </div>
         </div>
-        {cartItems.length === 0 ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Empty Cart
-          </button>
-        ) : showMenu && !orderCompleted ? (
-          <button
-            className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            onClick={handleOrder}>
-            Place Order & Print
-          </button>
-        ) : cartItems.length > 0 ? (
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Completed
-          </button>
-        ) : null}
+        {orderStatusBtn}
+        {paymentStatusBtn}
       </div>
     </div>
   );
 }
+
+export default React.memo(TakeAwayOrderDetails);

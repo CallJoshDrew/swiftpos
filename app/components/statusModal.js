@@ -2,8 +2,8 @@ import React from "react";
 import toast from "react-hot-toast";
 
 export default function StatusModal({
-  isOpen,
-  onClose,
+  isStatusModalOpen,
+  handleStsModalClose,
   orderID,
   selectedStatus,
   setSelectedStatus,
@@ -13,7 +13,7 @@ export default function StatusModal({
   };
 
   const handleSubmit = () => {
-    onClose(orderID, selectedStatus);
+    handleStsModalClose(orderID, selectedStatus);
     toast.success("Status Changed Successfully'", {
       duration: 2000,
       position:"top-left",
@@ -21,7 +21,7 @@ export default function StatusModal({
     });
   };
 
-  if (!isOpen) {
+  if (!isStatusModalOpen) {
     return null;
   }
 
@@ -61,7 +61,7 @@ export default function StatusModal({
             </button>
             <button
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
-              onClick={onClose}>
+              onClick={handleStsModalClose}>
               Cancel
             </button>
           </div>

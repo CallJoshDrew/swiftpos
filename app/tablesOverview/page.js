@@ -25,7 +25,7 @@ export default function TablesOverview() {
   const [selectedOrder, setSelectedOrder] = useState([]);
 
   // Modal related states
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isMsgModalOpen, setMsgModalOpen] = useState(false);
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
 
@@ -45,7 +45,7 @@ export default function TablesOverview() {
     setSelectedOrder(
       orders.find((order) => order.orderNumber === selectedOrderID)
     );
-    setModalOpen(true);
+    setPayModalOpen(true);
   };
 
   const handleMsgModalClose = () => {
@@ -207,8 +207,8 @@ export default function TablesOverview() {
         handleCheckOutClick={handleCheckOutClick}
       />
       <PaymentModal
-        isOpen={isModalOpen}
-        setModalOpen={setModalOpen}
+        isPayModalOpen={isPayModalOpen}
+        setPayModalOpen={setPayModalOpen}
         selectedOrder={selectedOrder}
         orders={orders}
         setOrders={setOrders}

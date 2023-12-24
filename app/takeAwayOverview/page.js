@@ -5,81 +5,123 @@ import MenuCard from "../components/menuCard";
 import CategoryCard from "../components/categoryCard";
 import StatusModal from "../components/statusModal";
 import ConfirmModal from "../components/confirmModal";
+import PaymentModal from "../components/paymentModal";
 
 export default function TakeAwayOverview() {
-  // State for menu and category
-const [menu, setMenu] = useState([]);
-const [selectedCategory, setSelectedCategory] = useState("All");
+  // Menu related states
+  const [showMenu, setShowMenu] = useState(false);
+  const [menu, setMenu] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [cartItems, setCartItems] = useState([]);
+  const [tempCartItems, setTempCartItems] = useState([]);
+  const [showEditBtn, setShowEditBtn] = useState(true);
 
-// State for cart and order details
-const [cartItems, setCartItems] = useState([]);
-const [taxRate, setTaxRate] = useState(0.1);
-const [orderCompleted, setOrderCompleted] = useState(false);
-const [orders, setOrders] = useState([]);
-const [orderCounter, setOrderCounter] = useState(1);
-const [currentDate, setCurrentDate] = useState(new Date().toDateString());
+  // State for cart and order details
 
-// State for UI elements
-const [showMenu, setShowMenu] = useState(false);
-const [showEditBtn, setShowEditBtn] = useState(true);
+  const [taxRate, setTaxRate] = useState(0.1);
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [orderCounter, setOrderCounter] = useState(1);
+  const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
-// State for modal
-const [isModalOpen, setModalOpen] = useState(false);
-const [selectedOrderID, setSelectedOrderID] = useState(null);
-const [selectedStatus, setSelectedStatus] = useState(null);
-const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-const [message, setMessage] = useState("");
-
-// Function to handle button click
-const handleButtonClick = (orderID) => () => {
-  const order = orders.find((order) => order.id === orderID);
-  setSelectedOrderID(orderID);
-  setSelectedStatus(order.status);
-  setModalOpen(true);
-};
-
-// Function to handle modal close
-const handleModalClose = (orderID, selectedStatus) => {
-  setModalOpen(false);
-  setOrders(
-    orders.map((order) =>
-      order.id === orderID ? { ...order, status: selectedStatus } : order
-    )
+  // temp
+  const [tables, setTables] = useState(
+    Array.from({ length: 18 }, () => ({
+      occupied: false,
+      orderNumber: null,
+      order: [],
+    }))
   );
-};
 
-// Function to handle detail button click
-const handleDetailBtn = (id) => {
-  setSelectedOrderID(id);
-  setShowEditBtn(false);
-  const order = orders.find((order) => order.id === id);
-  const itemsWithOrderID = order.items.map((item) => ({
-    ...item,
-    orderID: order.id,
-  }));
-  setCartItems(itemsWithOrderID);
-};
+  // Modal related states
+  const [isPayModalOpen, setPayModalOpen] = useState(false);
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
+  const [isStatusModalOpen, setModalOpen] = useState(false);
 
-// Function to handle message modal close
-const handleMsgModalClose = () => {
-  setMsgModalOpen(false);
-};
+  const [selectedOrderID, setSelectedOrderID] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
-// Fetch menu data
-useEffect(() => {
-  fetch("/api/menu")
-    .then((response) => response.json())
-    .then((data) => setMenu(data));
-}, []);
+  // Function to handle button click
+  const handleButtonClick = (orderID) => () => {
+    const order = orders.find((order) => order.orderNumber === orderID);
+    setSelectedOrderID(orderID);
+    setSelectedStatus(order.status);
+    setModalOpen(true);
+  };
 
-// Update order counter
-useEffect(() => {
-  const today = new Date().toDateString();
-  if (today !== currentDate) {
-    setOrderCounter(1);
-    setCurrentDate(today);
-  }
-}, [currentDate]);
+  // Modal related functions
+  // Modal related functions
+  const handlePaymentClick = (selectedOrderID) => () => {
+    setSelectedOrder(
+      orders.find((order) => order.orderNumber === selectedOrderID)
+    );
+    setPayModalOpen(true);
+  };
+
+  const handleMsgModalClose = () => {
+    setMsgModalOpen(false);
+  };
+
+  const handleCheckOutClick = (selectedOrderID) => () => {
+    setSelectedOrder(
+      orders.find((order) => order.orderNumber === selectedOrderID)
+    );
+    setCheckOutModalOpen(true);
+  };
+
+  // Function to handle modal close
+  const handleStsModalClose = (orderID, selectedStatus) => {
+    setModalOpen(false);
+    setOrders(
+      orders.map((order) =>
+        order.orderNumber === orderID ? { ...order, status: selectedStatus } : order
+      )
+    );
+  };
+
+  // if (tables[tableIndex].order && tables[tableIndex].order.items) {
+  //   const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
+  //     ...item,
+  //     orderNumber: tables[tableIndex].order.orderNumber,
+  //   }));
+  //   setSelectedOrder(tables[tableIndex].order);
+  //   setCartItems(itemsWithOrderID);
+  //   setTempCartItems(itemsWithOrderID); // Also set tempCartItems
+  //   setShowEditBtn(false);
+  // } else {
+  //   setSelectedOrder(null); // Clear the selected order
+  //   setCartItems([]);
+  //   setTempCartItems([]); // Also clear tempCartItems
+  // }
+  // Function to handle detail button click
+  const handleSelectedOrderBtn = (id) => {
+    setSelectedOrderID(id);
+    setShowEditBtn(false);
+    const order = orders.find((order) => order.orderNumber === id);
+    const itemsWithOrderID = order.items.map((item) => ({
+      ...item,
+      orderID: order.orderNumber,
+    }));
+    setCartItems(itemsWithOrderID);
+    setTempCartItems(itemsWithOrderID);
+  };
+
+  // Fetch menu data
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((response) => response.json())
+      .then((data) => setMenu(data));
+  }, []);
+
+  // Update order counter
+  useEffect(() => {
+    const today = new Date().toDateString();
+    if (today !== currentDate) {
+      setOrderCounter(1);
+      setCurrentDate(today);
+    }
+  }, [currentDate]);
 
   console.log(orders);
   return (
@@ -92,11 +134,12 @@ useEffect(() => {
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
               cartItems={cartItems}
-              setCartItems={setCartItems}
-              setShowEditBtn={setShowEditBtn}
-              setMessage={setMessage}
-              setMsgModalOpen={setMsgModalOpen}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
+              setOrderCompleted={setOrderCompleted}
               setShowMenu={setShowMenu}
+              setShowEditBtn={setShowEditBtn}
+              setMsgModalOpen={setMsgModalOpen}
             />
           </div>
           {/* card begins here */}
@@ -104,9 +147,8 @@ useEffect(() => {
             <MenuCard
               menu={menu}
               selectedCategory={selectedCategory}
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-              showEditBtn={showEditBtn}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
             />
           </div>
         </div>
@@ -141,11 +183,11 @@ useEffect(() => {
               <tbody>
                 {orders.map((order, index) => (
                   <tr
-                    key={order.id}
+                    key={order.orderNumber}
                     className={`${
-                      order.id === selectedOrderID ? "bg-gray-100" : "bg-white"
+                      order.orderNumber === selectedOrderID ? "bg-gray-100" : "bg-white"
                     } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
-                    onClick={() => handleDetailBtn(order.id)}>
+                    onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
                     <td className="border px-4 py-2">
                       {orders.length - index}
                     </td>
@@ -156,7 +198,7 @@ useEffect(() => {
                     </td>
                     <td className="border px-4 py-2">
                       <button
-                        onClick={handleButtonClick(order.id)}
+                        onClick={handleButtonClick(order.orderNumber)}
                         className={`rounded-md text-sm underline ${
                           order.status === "Completed"
                             ? "text-green-800"
@@ -175,33 +217,51 @@ useEffect(() => {
       <TakeAwayOrderDetails
         cartItems={cartItems}
         setCartItems={setCartItems}
+        tempCartItems={tempCartItems}
+        setTempCartItems={setTempCartItems}
+        showMenu={showMenu}
+        setShowMenu={setShowMenu}
         taxRate={taxRate}
         showEditBtn={showEditBtn}
         setShowEditBtn={setShowEditBtn}
-        showMenu={showMenu}
-        setShowMenu={setShowMenu}
         orderCompleted={orderCompleted}
         setOrderCompleted={setOrderCompleted}
-        setOrders={setOrders}
         orderCounter={orderCounter}
         setOrderCounter={setOrderCounter}
-        orderID={selectedOrderID}
+        orders={orders}
+        setOrders={setOrders}
+        orderID={selectedOrderID} //this is selectOrderID
         setSelectedOrderID={setSelectedOrderID}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        handlePaymentClick={handlePaymentClick}
       />
+       <PaymentModal
+        isPayModalOpen={isPayModalOpen}
+        setPayModalOpen={setPayModalOpen}
+        selectedOrder={selectedOrder}
+        orders={orders}
+        setOrders={setOrders}
+        setSelectedOrder={setSelectedOrder}
+        tables={tables}
+        setTables={setTables}
+        setCartItems={setCartItems}
+      />  
       <StatusModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        isStatusModalOpen={isStatusModalOpen}
+        handleStsModalClose={handleStsModalClose}
         orderID={selectedOrderID}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
       />
       <ConfirmModal
-        message={message}
         isOpenMsg={isMsgModalOpen}
         onCloseMsg={handleMsgModalClose}
         setShowMenu={setShowMenu}
         setShowEditBtn={setShowEditBtn}
-        setCartItems={setCartItems}
+        setOrderCompleted={setOrderCompleted}
+        setTempCartItems={setTempCartItems}
+        cartItems={cartItems}
       />
     </>
   );

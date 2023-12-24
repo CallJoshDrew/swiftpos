@@ -407,7 +407,7 @@ function TableOrderDetails({
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-sm">Tax</div>
+            <div className="text-gray-600 text-sm">Service Charge</div>
             <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
           </div>
           <hr className="h-px my-6 bg-black border-dashed" />
@@ -437,7 +437,7 @@ export default React.memo(TableOrderDetails);
 // Amount
 
 // subtotal
-// discount in %
+// discount in %???? How do you want to give discount?
 // tax
 // received Cash
 // change
