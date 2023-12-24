@@ -318,7 +318,7 @@ function TakeAwayOrderDetails({
               {item.choices && (
                 <select
                   id="choices"
-                  className="block appearance-none w-full my-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                  className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                   onChange={(e) => handleChoiceChange(item.id, e.target.value)}
                   disabled={
                     !(tempCartItems.length > 0 && showEditBtn && selectedOrder?.payment !== "Paid")
@@ -333,7 +333,7 @@ function TakeAwayOrderDetails({
               {item.meat && (
                 <select
                   id="meat"
-                  className="block appearance-none w-full my-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                  className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                   onChange={(e) => handleMeatLevel(item.id, e.target.value)}
                   disabled={
                     !(tempCartItems.length > 0 && showEditBtn && selectedOrder?.payment !== "Paid")
@@ -348,7 +348,7 @@ function TakeAwayOrderDetails({
               {item.addOn && (
                 <select
                   id="meat"
-                  className="block appearance-none w-full text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                  className="block appearance-none w-full py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                   onChange={(e) => handleAddOn(item.id, e.target.value)}
                   disabled={
                     !(tempCartItems.length > 0 && showEditBtn && selectedOrder?.payment !== "Paid")
@@ -361,7 +361,7 @@ function TakeAwayOrderDetails({
                 </select>
               )}
               {showEditBtn && (
-                <div className="flex justify-between px-2 py-1 bg-gray-200 rounded-md mt-3 w-full">
+                <div className="flex justify-between px-2 py-2 bg-gray-200 rounded-md mt-3 w-full">
                   <div className="flex items-center gap-x-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
