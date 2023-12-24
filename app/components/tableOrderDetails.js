@@ -34,12 +34,15 @@ function TableOrderDetails({
       (total, item) =>
         total +
         parseFloat(item.price) * item.quantity +
-        (item.selectedChoice ? item.selectedChoice.price * item.quantity : 0),
+        (item.selectedChoice ? item.selectedChoice.price * item.quantity : 0) +
+        (item.selectedMeatLevel ? item.selectedMeatLevel.price * item.quantity : 0) +
+        (item.selectedAddOn ? item.selectedAddOn.price * item.quantity : 0),
       0
     );
     serviceCharge = subtotal * serviceTax;
     total = subtotal + serviceCharge;
   }
+  
   const handleChoiceChange = (itemId, choiceName) => {
     console.log(itemId);
     setTempCartItems((prevItems) =>
@@ -49,6 +52,24 @@ function TableOrderDetails({
               ...item,
               selectedChoice: item.choices.find((choice) => choice.name === choiceName),
             }
+          : item
+      )
+    );
+  };
+  const handleMeatLevel = (itemId, level) => {
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? { ...item, selectedMeatLevel: item.meat.find((meat) => meat.level === level) }
+          : item
+      )
+    );
+  };
+  const handleAddOn = (itemId, type) => {
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId
+          ? { ...item, selectedAddOn: item.addOn.find((addOn) => addOn.type === type) }
           : item
       )
     );
@@ -288,7 +309,7 @@ function TableOrderDetails({
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {tempCartItems.length > 0 ? (
-          <div className="flex space-y-0 px-2 items-center space-x-2">
+          <div className="flex space-y-0 px-2 items-center justify-between">
             <div className="text-green-800 text-sm font-bold leading-none">Order Time</div>
             <div className="text-green-800 text-sm">
               {" "}
@@ -333,6 +354,48 @@ function TableOrderDetails({
                         {item.choices.map((choice, index) => (
                           <option key={index} value={choice.name}>
                             {choice.name} + RM {choice.price.toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  {item.meat && (
+                    <div className="mt-2 w-full">
+                      <select
+                        id="meat"
+                        className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                        onChange={(e) => handleMeatLevel(item.id, e.target.value)}
+                        disabled={
+                          !(
+                            tempCartItems.length > 0 &&
+                            showEditBtn &&
+                            selectedOrder?.payment !== "Paid"
+                          )
+                        }>
+                        {item.meat.map((meat, index) => (
+                          <option key={index} value={meat.level}>
+                            {meat.level} + RM {meat.price.toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  {item.addOn && (
+                    <div className="mt-2 w-full">
+                      <select
+                        id="meat"
+                        className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
+                        onChange={(e) => handleAddOn(item.id, e.target.value)}
+                        disabled={
+                          !(
+                            tempCartItems.length > 0 &&
+                            showEditBtn &&
+                            selectedOrder?.payment !== "Paid"
+                          )
+                        }>
+                        {item.addOn.map((addOn, index) => (
+                          <option key={index} value={addOn.type}>
+                            {addOn.type} + RM {addOn.price.toFixed(2)}
                           </option>
                         ))}
                       </select>
