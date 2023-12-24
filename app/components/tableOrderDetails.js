@@ -9,7 +9,7 @@ function TableOrderDetails({
   setCartItems,
   tempCartItems,
   setTempCartItems,
-  taxRate,
+  serviceTax,
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
@@ -26,7 +26,7 @@ function TableOrderDetails({
 }) {
   // Cart related variables and functions
   let subtotal = 0;
-  let tax = 0;
+  let serviceCharge = 0;
   let total = 0;
 
   if (tempCartItems.length > 0) {
@@ -37,8 +37,8 @@ function TableOrderDetails({
         (item.selectedChoice ? item.selectedChoice.price * item.quantity : 0),
       0
     );
-    tax = subtotal * taxRate;
-    total = subtotal + tax;
+    serviceCharge = subtotal * serviceTax;
+    total = subtotal + serviceCharge;
   }
   const handleChoiceChange = (itemId, choiceName) => {
     console.log(itemId);
@@ -47,9 +47,7 @@ function TableOrderDetails({
         item.id === itemId
           ? {
               ...item,
-              selectedChoice: item.choices.find(
-                (choice) => choice.name === choiceName
-              ),
+              selectedChoice: item.choices.find((choice) => choice.name === choiceName),
             }
           : item
       )
@@ -58,18 +56,14 @@ function TableOrderDetails({
 
   const handleIncrease = (id) => {
     setTempCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
+      prevItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
     );
   };
 
   const handleDecrease = (id) => {
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
-          : item
+        item.id === id ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 } : item
       )
     );
   };
@@ -166,7 +160,7 @@ function TableOrderDetails({
       orderDate: dateString,
       items: tempCartItems,
       subtotal,
-      tax,
+      serviceCharge,
       totalPrice: total,
       quantity: totalQuantity,
       status: "Placed Order",
@@ -271,51 +265,41 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {tempCartItems.length > 0 &&
-            !showEditBtn &&
-            selectedOrder?.payment != "Paid" && (
-              <div
-                onClick={() => {
-                  setShowMenu(true);
-                  setShowEditBtn(true);
-                  setOrderCompleted(false);
-                }}>
-                <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                  <div className="text-white cursor-pointer pt-1 pr-1 text-sm">
-                    Edit
-                  </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-white cursor-pointer">
-                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                  </svg>
-                </div>
+          {tempCartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
+            <div
+              onClick={() => {
+                setShowMenu(true);
+                setShowEditBtn(true);
+                setOrderCompleted(false);
+              }}>
+              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5 text-white cursor-pointer">
+                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                </svg>
               </div>
-            )}
+            </div>
+          )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {tempCartItems.length > 0 ? (
           <div className="flex space-y-0 px-2 items-center space-x-2">
-            <div className="text-green-800 text-sm font-bold leading-none">
-              Order Time
-            </div>
+            <div className="text-green-800 text-sm font-bold leading-none">Order Time</div>
             <div className="text-green-800 text-sm">
               {" "}
-              {selectedOrder
-                ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}`
-                : null}
+              {selectedOrder ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}` : null}
             </div>
           </div>
         ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
           {tempCartItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex flex-col border rounded-md p-2 shadow-sm">
+            <div key={item.id} className="flex flex-col border rounded-md p-2 shadow-sm">
               <div className="flex relative">
                 <Image
                   src={item.image}
@@ -338,8 +322,13 @@ function TableOrderDetails({
                       <select
                         id="choices"
                         className="block appearance-none w-full text-end bg-gray-200 border-gray-300 py-2 pl-2 mx-1 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-xs text-gray-700 focus:bg-white"
-                        onChange={(e) =>
-                          handleChoiceChange(item.id, e.target.value)
+                        onChange={(e) => handleChoiceChange(item.id, e.target.value)}
+                        disabled={
+                          !(
+                            tempCartItems.length > 0 &&
+                            showEditBtn &&
+                            selectedOrder?.payment !== "Paid"
+                          )
                         }>
                         {item.choices.map((choice, index) => (
                           <option key={index} value={choice.name}>
@@ -398,24 +387,20 @@ function TableOrderDetails({
             </div>
           ))}
         </div>
-        {/* Subtotal, Tax and Total Section */}
+        {/* Subtotal, serviceCharge and Total Section */}
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">
-              RM {subtotal.toFixed(2)}
-            </div>
+            <div className="text-gray-600 text-sm">RM {subtotal.toFixed(2)}</div>
           </div>
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Service Charge</div>
-            <div className="text-gray-600 text-sm">RM {tax.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">RM {serviceCharge.toFixed(2)}</div>
           </div>
           <hr className="h-px my-6 bg-black border-dashed" />
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-base font-bold">Total</div>
-            <div className="text-gray-600 text-base font-bold">
-              RM {total.toFixed(2)}
-            </div>
+            <div className="text-gray-600 text-base font-bold">RM {total.toFixed(2)}</div>
           </div>
         </div>
         {orderStatusBtn}
@@ -438,7 +423,7 @@ export default React.memo(TableOrderDetails);
 
 // subtotal
 // discount in %???? How do you want to give discount?
-// tax
+// serviceCharge
 // received Cash
 // change
 

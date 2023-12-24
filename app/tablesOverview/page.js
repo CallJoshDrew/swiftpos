@@ -17,7 +17,7 @@ export default function TablesOverview() {
   const [showEditBtn, setShowEditBtn] = useState(true);
 
   // Order related states
-  const [taxRate, setTaxRate] = useState(0);
+  const [serviceTax, setServiceTax] = useState(0);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]);
@@ -192,7 +192,7 @@ export default function TablesOverview() {
         setTempCartItems={setTempCartItems}
         showMenu={showMenu}
         setShowMenu={setShowMenu}
-        taxRate={taxRate}
+        serviceTax={serviceTax}
         showEditBtn={showEditBtn}
         setShowEditBtn={setShowEditBtn}
         orderCompleted={orderCompleted}

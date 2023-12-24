@@ -18,7 +18,7 @@ export default function TakeAwayOverview() {
 
   // State for cart and order details
 
-  const [taxRate, setTaxRate] = useState(0.1);
+  const [serviceTax, setServiceTax] = useState(0);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orders, setOrders] = useState([]);
   const [orderCounter, setOrderCounter] = useState(1);
@@ -221,7 +221,7 @@ export default function TakeAwayOverview() {
         setTempCartItems={setTempCartItems}
         showMenu={showMenu}
         setShowMenu={setShowMenu}
-        taxRate={taxRate}
+        serviceTax={serviceTax}
         showEditBtn={showEditBtn}
         setShowEditBtn={setShowEditBtn}
         orderCompleted={orderCompleted}
