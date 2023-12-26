@@ -25,27 +25,19 @@ export default function TakeAwayOverview() {
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
   // temp
-  const [tables, setTables] = useState(
-    Array.from({ length: 18 }, () => ({
-      occupied: false,
-      orderNumber: null,
-      order: [],
-    }))
-  );
+  const [tables, setTables] = useState("TAPAO");
 
   // Modal related states
   const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isMsgModalOpen, setMsgModalOpen] = useState(false);
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
-  const [selectedOrderID, setSelectedOrderID] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Function to handle button click
-  const handleButtonClick = (orderID) => () => {
-    const order = orders.find((order) => order.orderNumber === orderID);
-    setSelectedOrderID(orderID);
+  const handleChangeStatusBtn  = (orderNumber) => () => {
+    const order = orders.find((order) => order.orderNumber === orderNumber);
     setSelectedStatus(order.status);
     setModalOpen(true);
   };
@@ -96,7 +88,6 @@ export default function TakeAwayOverview() {
   // }
   // Function to handle detail button click
   const handleSelectedOrderBtn = (id) => {
-    setSelectedOrderID(id);
     setShowEditBtn(false);
     const order = orders.find((order) => order.orderNumber === id);
     const itemsWithOrderID = order.items.map((item) => ({
@@ -123,7 +114,7 @@ export default function TakeAwayOverview() {
     }
   }, [currentDate]);
 
-  console.log(orders);
+  // console.log(orders);
   return (
     <>
       {showMenu ? (
@@ -162,7 +153,9 @@ export default function TakeAwayOverview() {
               className="text-xs py-2 px-4 bg-green-800 text-white rounded-md"
               onClick={() => {
                 setShowMenu(true);
+                setOrderCompleted(false);
                 setCartItems([]);
+                setTempCartItems([]);
                 setShowEditBtn(true);
               }}>
               + New Order
@@ -185,7 +178,7 @@ export default function TakeAwayOverview() {
                   <tr
                     key={order.orderNumber}
                     className={`${
-                      order.orderNumber === selectedOrderID ? "bg-gray-100" : "bg-white"
+                      order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
                     } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
                     onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
                     <td className="border px-4 py-2">
@@ -198,7 +191,7 @@ export default function TakeAwayOverview() {
                     </td>
                     <td className="border px-4 py-2">
                       <button
-                        onClick={handleButtonClick(order.orderNumber)}
+                        onClick={handleChangeStatusBtn(order.orderNumber)}
                         className={`rounded-md text-sm underline ${
                           order.status === "Completed"
                             ? "text-green-800"
@@ -230,8 +223,6 @@ export default function TakeAwayOverview() {
         setOrderCounter={setOrderCounter}
         orders={orders}
         setOrders={setOrders}
-        orderID={selectedOrderID} //this is selectOrderID
-        setSelectedOrderID={setSelectedOrderID}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
@@ -250,7 +241,7 @@ export default function TakeAwayOverview() {
       <StatusModal
         isStatusModalOpen={isStatusModalOpen}
         handleStsModalClose={handleStsModalClose}
-        orderID={selectedOrderID}
+        // orderID={selectedOrderID}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
       />

@@ -11,7 +11,9 @@ function MenuItem({
     // If the item has choices, add it to the cart with a quantity of 1
     if (item.choices) {
       setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.length}` }]);
+      console.log(tempCartItems);
     } else {
+      
       // If the item doesn't have choices, check if it's already in the cart
       const existingCartItem = tempCartItems.find(
         (cartItem) => cartItem.id === item.id

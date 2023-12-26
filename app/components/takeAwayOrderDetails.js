@@ -19,12 +19,11 @@ function TakeAwayOrderDetails({
   setOrderCounter,
   orders,
   setOrders,
-  orderID, //this is selectOrderID
-  setSelectedOrderID,
   selectedOrder,
   setSelectedOrder,
   handlePaymentClick,
 }) {
+  console.log(selectedOrder);
   const handleIncrease = (id) => {
     setTempCartItems((prevItems) =>
       prevItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
@@ -62,12 +61,15 @@ function TakeAwayOrderDetails({
         (item.selectedAddOn ? item.selectedAddOn.price * item.quantity : 0),
       0
     );
+    subtotal = parseFloat(subtotal.toFixed(2)); // Round to 2 decimal places
     serviceCharge = subtotal * serviceTax;
+    serviceCharge = parseFloat(serviceCharge.toFixed(2)); // Round to 2 decimal places
     total = subtotal + serviceCharge;
+    total = parseFloat(total.toFixed(2)); // Round to 2 decimal places
   }
 
   const handleChoiceChange = (itemId, choiceName) => {
-    console.log(itemId);
+    // console.log(itemId);
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId
@@ -135,10 +137,23 @@ function TakeAwayOrderDetails({
   const handlePlaceOrderBtn = () => {
     setShowMenu(false);
 
-    // Update cartItems with tempCartItems when "Place Order" is clicked
-    setCartItems(tempCartItems);
-    const existingOrder = tempCartItems.find((item) => item.orderNumber);
-    const orderNumber = generateOrderID(existingOrder, orderCounter);
+    // Calculate existingOrder and orderNumber once at the beginning
+    let existingOrder = tempCartItems.find((item) => item.orderNumber);
+    let orderNumber = generateOrderID(existingOrder, orderCounter);
+    setOrderCounter(orderCounter + 1);
+
+    // Use existingOrder and orderNumber in your map function
+    const updatedTempCartItems = tempCartItems.map((item) => {
+      if (!existingOrder) {
+        existingOrder = item;
+        orderNumber = generateOrderID(existingOrder, orderCounter);
+      }
+      return { ...item, orderNumber: orderNumber };
+    });
+
+    // Update cartItems with updatedTempCartItems when "Place Order" is clicked
+    setCartItems(updatedTempCartItems);
+
     setOrderCounter(orderCounter + 1);
 
     setOrderCompleted(true);
@@ -246,8 +261,8 @@ function TakeAwayOrderDetails({
   }
 
   useEffect(() => {
-    // console.log(selectedOrder);
-    console.log(tempCartItems);
+    console.log("Selected Order is ", selectedOrder?.items);
+    console.log("tempCartItems: ", tempCartItems);
     // console.log(orders);
   }, [selectedOrder, tempCartItems, orders]);
 
@@ -288,7 +303,7 @@ function TakeAwayOrderDetails({
             <div className="text-green-800 text-sm font-bold leading-none">Order Time</div>
             <div className="text-green-800 text-sm">
               {" "}
-              {selectedOrder ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}` : "pending"}
+              {selectedOrder ? `${selectedOrder.orderTime}, ${selectedOrder.orderDate}` : null}
             </div>
           </div>
         ) : null}

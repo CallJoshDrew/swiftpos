@@ -24,6 +24,7 @@ function TableOrderDetails({
   handlePaymentClick,
   handleCheckOutClick,
 }) {
+  // console.log(selectedOrder);
   // Cart related variables and functions
   let subtotal = 0;
   let serviceCharge = 0;
@@ -39,12 +40,15 @@ function TableOrderDetails({
         (item.selectedAddOn ? item.selectedAddOn.price * item.quantity : 0),
       0
     );
+    subtotal = parseFloat(subtotal.toFixed(2)); // Round to 2 decimal places
     serviceCharge = subtotal * serviceTax;
+    serviceCharge = parseFloat(serviceCharge.toFixed(2)); // Round to 2 decimal places
     total = subtotal + serviceCharge;
+    total = parseFloat(total.toFixed(2)); // Round to 2 decimal places
   }
 
   const handleChoiceChange = (itemId, choiceName) => {
-    console.log(itemId);
+    // console.log(itemId);
     setTempCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId
@@ -98,16 +102,6 @@ function TableOrderDetails({
     });
   };
 
-  // Order related variables and functions
-  const generateOrderID = (existingOrder, orderCounter) => {
-    if (existingOrder) {
-      return existingOrder.orderNumber;
-    } else {
-      const paddedCounter = String(orderCounter).padStart(4, "0");
-      return `#T${tableNumber}-${paddedCounter}`;
-    }
-  };
-
   const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
     tempCartItems.forEach((item) => {
@@ -141,14 +135,30 @@ function TableOrderDetails({
   };
 
   const handlePlaceOrderBtn = () => {
+    // console.log("handlePlaceOrderBtn called, orderCounter is", orderCounter);
     setShowMenu(false);
 
-    // Update cartItems with tempCartItems when "Place Order" is clicked
-    setCartItems(tempCartItems);
+    // Find an existing order number
+  const existingOrderItem = tempCartItems.find(item => item.orderNumber);
+  let orderNumber;
 
-    const existingOrder = tempCartItems.find((item) => item.orderNumber);
-    const orderNumber = generateOrderID(existingOrder, orderCounter);
-    setOrderCounter(orderCounter + 1);
+  // If an existing order number is found, use it
+  if (existingOrderItem) {
+    orderNumber = existingOrderItem.orderNumber;
+  } else {
+    // If no existing order number is found, generate a new one
+    const paddedCounter = String(orderCounter).padStart(4, "0");
+    orderNumber = `#T${tableNumber}-${paddedCounter}`;
+    setOrderCounter(prevOrderCounter => prevOrderCounter + 1);
+  }
+
+  // Assign the order number to all items
+  const updatedTempCartItems = tempCartItems.map((item) => {
+    return { ...item, orderNumber: orderNumber };
+  });
+
+  setCartItems(updatedTempCartItems);
+  setTempCartItems(updatedTempCartItems);
 
     setOrderCompleted(true);
     setShowEditBtn(false);
@@ -160,7 +170,6 @@ function TableOrderDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     };
-
     const dateOptions = {
       weekday: "short",
       month: "short",
@@ -171,9 +180,7 @@ function TableOrderDetails({
 
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
-
     const totalQuantity = calculateTotalQuantity(tempCartItems);
-
     const order = {
       orderNumber,
       tableNumber,
@@ -263,11 +270,12 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    // console.log(selectedOrder);
+    console.log(selectedOrder);
     console.log(tempCartItems);
-    console.log(tables);
+    // console.log(tables);
     // console.log(orders);
-  }, [selectedOrder, tables, tempCartItems, orders]);
+    console.log(orderCounter);
+  }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative">
@@ -278,7 +286,7 @@ function TableOrderDetails({
               <div className="flex items-center">
                 <div className="text-green-800 text-xl font-bold">Table</div>
                 <div className="bg-green-800 text-white px-2 py-1 rounded-full text-xs ml-2">
-                  {selectedOrder ? selectedOrder.tableNumber : tableNumber}
+                  {selectedOrder ? selectedOrder.tableNumber : null}
                 </div>
               </div>
               <div className="text-green-800 text-sm">
@@ -319,7 +327,7 @@ function TableOrderDetails({
         ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
-        {tempCartItems.map((item) => (
+          {tempCartItems.map((item) => (
             <div key={item.id} className="border rounded-md p-2 shadow-sm">
               <div className="flex">
                 <Image

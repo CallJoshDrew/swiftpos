@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 export default function StatusModal({
   isStatusModalOpen,
   handleStsModalClose,
-  orderID,
+  // orderID,
   selectedStatus,
   setSelectedStatus,
 }) {
@@ -12,14 +12,17 @@ export default function StatusModal({
     setSelectedStatus(event.target.value);
   };
 
-  const handleSubmit = () => {
-    handleStsModalClose(orderID, selectedStatus);
-    toast.success("Status Changed Successfully'", {
-      duration: 2000,
-      position:"top-left",
-      reverseOrder:false,
-    });
+  const handleSubmit =() => {
+    console.log("clicked");
   };
+  // const handleSubmit = () => {
+  //   handleStsModalClose(orderID, selectedStatus);
+  //   toast.success("Status Changed Successfully'", {
+  //     duration: 2000,
+  //     position:"top-left",
+  //     reverseOrder:false,
+  //   });
+  // };
 
   if (!isStatusModalOpen) {
     return null;
@@ -31,8 +34,8 @@ export default function StatusModal({
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded shadow-lg text-center">
           <div className="flex bg-gray-700 rounded-md text-white py-2 px-4">
-            <div className="text-xl">Order ID: {orderID}</div>
-            {/* <div className="text-xl mb-4">{selectedStatus}</div> */}
+            <div className="text-xl">Order ID: </div>
+            {/* {orderID} <div className="text-xl mb-4">{selectedStatus}</div> */}
           </div>
           <form className="flex justify-between px-2 my-3 items-center">
             <input

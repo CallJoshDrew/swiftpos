@@ -87,18 +87,18 @@ function PaymentModal({
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-[340px]">
           <div className="text-lg font-medium text-green-800">
-            Table {selectedOrder?.tableNumber}
+            {tables === "TAPAO"
+              ? `Order ID ${selectedOrder?.orderNumber}`
+              : `Table ${selectedOrder?.tableNumber}`}
           </div>
           <div className="border-green-800 bg-green-800 border-2 rounded-md p-4 pb-6">
             <div className="text-lg font-medium text-white mb-2">Total</div>
             {/* <div className="text-center bg-green-800 rounded-md text-white py-6 px-4"> */}
             <div className="text-5xl font-bold text-white leading-6">
-              RM {selectedOrder?.totalPrice}
+              RM {selectedOrder?.totalPrice.toFixed(2)}
             </div>
           </div>
-          <div className="text-xl text-gray-800 leading-5 mt-6">
-            Select payment method
-          </div>
+          <div className="text-xl text-gray-800 leading-5 mt-6">Select payment method</div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
               className={`flex-1 text-white font-bold py-3 px-4 rounded-md ${
@@ -115,9 +115,7 @@ function PaymentModal({
               Boost
             </button>
           </div>
-          <div className="text-xl text-gray-800 leading-5 mt-6">
-            Make payment now?
-          </div>
+          <div className="text-xl text-gray-800 leading-5 mt-6">Make payment now?</div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
               className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
