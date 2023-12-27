@@ -87,15 +87,17 @@ export default function TakeAwayOverview() {
   //   setTempCartItems([]); // Also clear tempCartItems
   // }
   // Function to handle detail button click
-  const handleSelectedOrderBtn = (id) => {
-    setShowEditBtn(false);
-    const order = orders.find((order) => order.orderNumber === id);
+  const handleSelectedOrderBtn = (orderNumber) => {
+    const order = orders.find((order) => order.orderNumber === orderNumber);
     const itemsWithOrderID = order.items.map((item) => ({
       ...item,
-      orderID: order.orderNumber,
+      orderNumber: order.orderNumber,
     }));
+    // need to set the selectedOrder with the latest selection. If not it will remain previous updated selected order.
+    setSelectedOrder(order); 
     setCartItems(itemsWithOrderID);
     setTempCartItems(itemsWithOrderID);
+    setShowEditBtn(false);
   };
 
   // Fetch menu data
@@ -176,7 +178,7 @@ export default function TakeAwayOverview() {
               <tbody>
                 {orders.map((order, index) => (
                   <tr
-                    key={order.orderNumber}
+                    key={index}
                     className={`${
                       order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
                     } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}

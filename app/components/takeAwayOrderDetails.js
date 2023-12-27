@@ -24,28 +24,6 @@ function TakeAwayOrderDetails({
   handlePaymentClick,
 }) {
   console.log(selectedOrder);
-  const handleIncrease = (id) => {
-    setTempCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
-    );
-  };
-
-  const handleDecrease = (id) => {
-    setTempCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 } : item
-      )
-    );
-  };
-  const handleRemove = (id) => {
-    setTempCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    toast.success("Item is removed!", {
-      duration: 2000,
-      position: "top-left",
-      reverseOrder: false,
-    });
-  };
-
   // Cart related variables and functions
   let subtotal = 0;
   let serviceCharge = 0;
@@ -67,7 +45,6 @@ function TakeAwayOrderDetails({
     total = subtotal + serviceCharge;
     total = parseFloat(total.toFixed(2)); // Round to 2 decimal places
   }
-
   const handleChoiceChange = (itemId, choiceName) => {
     // console.log(itemId);
     setTempCartItems((prevItems) =>
@@ -100,17 +77,28 @@ function TakeAwayOrderDetails({
     );
   };
 
-  // Order related variables and functions
-  const generateOrderID = (existingOrder, orderCounter) => {
-    if (existingOrder) {
-      return existingOrder.orderNumber;
-    } else {
-      const paddedCounter = String(orderCounter).padStart(4, "0");
-      return `#TAPAO-${paddedCounter}`;
-    }
+  const handleIncrease = (id) => {
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
+    );
   };
 
-  // Function to calculate total quantity
+  const handleDecrease = (id) => {
+    setTempCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 } : item
+      )
+    );
+  };
+  const handleRemove = (id) => {
+    setTempCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    toast.success("Item is removed!", {
+      duration: 2000,
+      position: "top-left",
+      reverseOrder: false,
+    });
+  };
+
   const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
     tempCartItems.forEach((item) => {
@@ -119,7 +107,6 @@ function TakeAwayOrderDetails({
     return totalQuantity;
   };
 
-  // Function to update orders
   const updateOrders = (prevOrders, order) => {
     const orderIndex = prevOrders.findIndex(
       (prevOrder) => prevOrder.orderNumber === order.orderNumber
@@ -135,26 +122,31 @@ function TakeAwayOrderDetails({
 
   // Refactored handlePlaceOrderBtn function
   const handlePlaceOrderBtn = () => {
+    // console.log("handlePlaceOrderBtn called, orderCounter is", orderCounter);
     setShowMenu(false);
 
-    // Calculate existingOrder and orderNumber once at the beginning
-    let existingOrder = tempCartItems.find((item) => item.orderNumber);
-    let orderNumber = generateOrderID(existingOrder, orderCounter);
-    setOrderCounter(orderCounter + 1);
+    // Find an existing order number
+    const existingOrderItem = tempCartItems.find((item) => item.orderNumber);
+   
+    let orderNumber;
 
-    // Use existingOrder and orderNumber in your map function
+    // If an existing order number is found, use it
+    if (existingOrderItem) {
+      orderNumber = existingOrderItem.orderNumber;
+    } else {
+      // If no existing order number is found, generate a new one
+      const paddedCounter = String(orderCounter).padStart(4, "0");
+      orderNumber = `#TAPAO-${paddedCounter}`;
+      setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
+    }
+
+    // Assign the order number to all items
     const updatedTempCartItems = tempCartItems.map((item) => {
-      if (!existingOrder) {
-        existingOrder = item;
-        orderNumber = generateOrderID(existingOrder, orderCounter);
-      }
       return { ...item, orderNumber: orderNumber };
     });
-
-    // Update cartItems with updatedTempCartItems when "Place Order" is clicked
+    console.log(existingOrderItem);
     setCartItems(updatedTempCartItems);
-
-    setOrderCounter(orderCounter + 1);
+    setTempCartItems(updatedTempCartItems);
 
     setOrderCompleted(true);
     setShowEditBtn(false);
@@ -166,7 +158,6 @@ function TakeAwayOrderDetails({
       hour12: true,
       timeZone: "Asia/Kuala_Lumpur",
     };
-
     const dateOptions = {
       weekday: "short",
       month: "short",
@@ -177,7 +168,6 @@ function TakeAwayOrderDetails({
 
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
-
     const totalQuantity = calculateTotalQuantity(tempCartItems);
     const order = {
       orderNumber,
@@ -263,7 +253,7 @@ function TakeAwayOrderDetails({
   useEffect(() => {
     console.log("Selected Order is ", selectedOrder?.items);
     console.log("tempCartItems: ", tempCartItems);
-    // console.log(orders);
+    console.log("Orders list is:", orders);
   }, [selectedOrder, tempCartItems, orders]);
 
   return (

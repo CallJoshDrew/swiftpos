@@ -9,8 +9,8 @@ function PaymentModal({
   orders,
   setOrders,
   setSelectedOrder,
-  tables,
-  setTables,
+  tables = [], // default value for tables
+  setTables = () => {}, // default value for setTables
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
@@ -32,24 +32,29 @@ function PaymentModal({
     });
 
     setOrders(updatedOrders);
-    // update tables array
-    const updatedTables = tables.map((table) => {
-      if (table.order.orderNumber === selectedOrder?.orderNumber) {
-        return {
-          ...table,
-          order: {
-            ...table.order, // keep existing properties
-            payment: "Paid",
-            status: "Completed",
-            paymentMethod,
-          },
-        };
-      } else {
-        return table;
-      }
-    });
 
-    setTables(updatedTables);
+    // Update tables array only if tables and setTables are defined
+    if (Array.isArray(tables) && tables && setTables) {
+      const updatedTables = tables.map((table) => {
+        if (table.order.orderNumber === selectedOrder?.orderNumber) {
+          return {
+            ...table,
+            order: {
+              ...table.order, // keep existing properties
+              payment: "Paid",
+              status: "Completed",
+              paymentMethod,
+            },
+          };
+        } else {
+          return table;
+        }
+      });
+    
+      setTables(updatedTables);
+    }
+    
+
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -62,10 +67,10 @@ function PaymentModal({
         return prevSelectedOrder;
       }
     });
-    console.log(selectedOrder);
 
     // Reset paymentMethod back to "Cash"
     setPaymentMethod("Cash");
+
     toast.success("Payment Done'", {
       duration: 2000,
       position: "top-left",

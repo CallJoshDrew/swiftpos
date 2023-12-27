@@ -59,6 +59,7 @@ function TableOrderDetails({
           : item
       )
     );
+    console.log(tempCartItems);
   };
   const handleMeatLevel = (itemId, level) => {
     setTempCartItems((prevItems) =>
@@ -139,26 +140,26 @@ function TableOrderDetails({
     setShowMenu(false);
 
     // Find an existing order number
-  const existingOrderItem = tempCartItems.find(item => item.orderNumber);
-  let orderNumber;
+    const existingOrderItem = tempCartItems.find((item) => item.orderNumber);
+    let orderNumber;
 
-  // If an existing order number is found, use it
-  if (existingOrderItem) {
-    orderNumber = existingOrderItem.orderNumber;
-  } else {
-    // If no existing order number is found, generate a new one
-    const paddedCounter = String(orderCounter).padStart(4, "0");
-    orderNumber = `#T${tableNumber}-${paddedCounter}`;
-    setOrderCounter(prevOrderCounter => prevOrderCounter + 1);
-  }
+    // If an existing order number is found, use it
+    if (existingOrderItem) {
+      orderNumber = existingOrderItem.orderNumber;
+    } else {
+      // If no existing order number is found, generate a new one
+      const paddedCounter = String(orderCounter).padStart(4, "0");
+      orderNumber = `#T${tableNumber}-${paddedCounter}`;
+      setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
+    }
 
-  // Assign the order number to all items
-  const updatedTempCartItems = tempCartItems.map((item) => {
-    return { ...item, orderNumber: orderNumber };
-  });
+    // Assign the order number to all items
+    const updatedTempCartItems = tempCartItems.map((item) => {
+      return { ...item, orderNumber: orderNumber };
+    });
 
-  setCartItems(updatedTempCartItems);
-  setTempCartItems(updatedTempCartItems);
+    setCartItems(updatedTempCartItems);
+    setTempCartItems(updatedTempCartItems);
 
     setOrderCompleted(true);
     setShowEditBtn(false);
@@ -270,11 +271,11 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    console.log(selectedOrder);
-    console.log(tempCartItems);
+    console.log("Selected Order is ", selectedOrder?.items);
+    console.log("tempCartItems: ", tempCartItems);
+    console.log("Orders list is:",orders);
     // console.log(tables);
-    // console.log(orders);
-    console.log(orderCounter);
+    // console.log(orderCounter);
   }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
 
   return (
