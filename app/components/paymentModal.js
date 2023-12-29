@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 function PaymentModal({
@@ -71,7 +71,7 @@ function PaymentModal({
     // Reset paymentMethod back to "Cash"
     setPaymentMethod("Cash");
 
-    toast.success("Payment Done'", {
+    toast.success("Payment Done", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,

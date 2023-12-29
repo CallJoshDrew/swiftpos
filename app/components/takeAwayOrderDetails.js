@@ -23,7 +23,7 @@ function TakeAwayOrderDetails({
   setSelectedOrder,
   handlePaymentClick,
 }) {
-  console.log(selectedOrder);
+  // console.log(selectedOrder);
   // Cart related variables and functions
   let subtotal = 0;
   let serviceCharge = 0;
@@ -144,7 +144,7 @@ function TakeAwayOrderDetails({
     const updatedTempCartItems = tempCartItems.map((item) => {
       return { ...item, orderNumber: orderNumber };
     });
-    console.log(existingOrderItem);
+    // console.log(existingOrderItem);
     setCartItems(updatedTempCartItems);
     setTempCartItems(updatedTempCartItems);
 
@@ -251,9 +251,9 @@ function TakeAwayOrderDetails({
   }
 
   useEffect(() => {
-    console.log("Selected Order is ", selectedOrder?.items);
-    console.log("tempCartItems: ", tempCartItems);
-    console.log("Orders list is:", orders);
+    // console.log("Selected Order is ", selectedOrder?.items);
+    // console.log("tempCartItems: ", tempCartItems);
+    // console.log("Orders list is:", orders);
   }, [selectedOrder, tempCartItems, orders]);
 
   return (

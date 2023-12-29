@@ -59,7 +59,7 @@ function TableOrderDetails({
           : item
       )
     );
-    console.log(tempCartItems);
+    // console.log(tempCartItems);
   };
   const handleMeatLevel = (itemId, level) => {
     setTempCartItems((prevItems) =>
@@ -271,9 +271,9 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    console.log("Selected Order is ", selectedOrder?.items);
-    console.log("tempCartItems: ", tempCartItems);
-    console.log("Orders list is:",orders);
+    // console.log("Selected Order is ", selectedOrder?.items);
+    // console.log("tempCartItems: ", tempCartItems);
+    // console.log("Orders list is:",orders);
     // console.log(tables);
     // console.log(orderCounter);
   }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
