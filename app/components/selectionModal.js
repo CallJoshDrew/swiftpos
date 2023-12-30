@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
@@ -9,43 +9,28 @@ function SelectionModal({
   tempCartItems,
   setTempCartItems,
   selectedItemID,
+  setSelectedItemID,
 }) {
-  console.log("TempCartItems is ",tempCartItems);
-//   console.log(selectedItemID);
-  const handleChoiceChange = (itemId, choiceName) => {
-    // console.log(itemId);
-    setTempCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === selectedItemID.id
-          ? {
-              ...selectedItemID,
-              selectedChoice: item.choices.find((choice) => choice.name === choiceName),
-            }
-          : item
-      )
-    );
-  };
-  const handleMeatLevel = (itemId, level) => {
-    setTempCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === selectedItemID.id
-          ? { ...item, selectedMeatLevel: selectedItemID.meat.find((meat) => meat.level === level) }
-          : item
-      )
-    );
-  };
-  const handleAddOn = (itemId, type) => {
-    setTempCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === selectedItemID.id
-          ? { ...item, selectedAddOn: selectedItemID.addOn.find((addOn) => addOn.type === type) }
-          : item
-      )
-    );
-  };
+  console.log("TempCartItems is ", tempCartItems);
+  const [selectedChoice, setSelectedChoice] = useState("");
+  const [selectedMeatLevel, setSelectedMeatLevel] = useState("");
+  const [selectedAddOn, setSelectedAddOn] = useState("");
+ 
   const handleSelectionBtn = () => {
-    setTempCartItems([...tempCartItems, { ...selectedItemID, quantity: 1, id: `${selectedItemID.id}-${tempCartItems.length}` }]);
+    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    setTempCartItems([
+      ...tempCartItems,
+      {
+        ...selectedItemID,
+        quantity: 1,
+        id: `${selectedItemID.id}-${tempCartItems.length}-${uniqueId}`,
+        selectedChoice,
+        selectedMeatLevel,
+        selectedAddOn,
+      },
+    ]);
     setSelectionModalOpen(false);
+    setSelectedItemID("");
     toast.success("Added to Cart", {
       duration: 2000,
       position: "top-left",
@@ -90,7 +75,10 @@ function SelectionModal({
                   <select
                     id="choices"
                     className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
-                    onChange={(e) => handleChoiceChange(selectedItemID.id, e.target.value)}>
+                    onChange={(e) => {
+                      const selectedChoice = selectedItemID.choices[e.target.selectedIndex];
+                      setSelectedChoice(selectedChoice);
+                    }}>
                     {selectedItemID.choices.map((choice, index) => (
                       <option key={index} value={choice.name}>
                         {choice.name} + RM {choice.price.toFixed(2)}
@@ -98,11 +86,14 @@ function SelectionModal({
                     ))}
                   </select>
                 )}
+
                 {selectedItemID.meat && (
                   <select
                     id="meat"
                     className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
-                    onChange={(e) => handleMeatLevel(selectedItemID.id, e.target.value)}>
+                    onChange={(e) => {
+                        const selectedLevel = selectedItemID.meat[e.target.selectedIndex];
+                        setSelectedMeatLevel(selectedLevel)}}>
                     {selectedItemID.meat.map((meat, index) => (
                       <option key={index} value={meat.level}>
                         {meat.level} + RM {meat.price.toFixed(2)}
@@ -114,7 +105,9 @@ function SelectionModal({
                   <select
                     id="meat"
                     className="block appearance-none w-full py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
-                    onChange={(e) => handleAddOn(selectedItemID.id, e.target.value)}>
+                    onChange={(e) => {
+                        const selectedAddOn = selectedItemID.addOn[e.target.selectedIndex];
+                        setSelectedAddOn(selectedAddOn)}}>
                     {selectedItemID.addOn.map((addOn, index) => (
                       <option key={index} value={addOn.type}>
                         {addOn.type} + RM {addOn.price.toFixed(2)}

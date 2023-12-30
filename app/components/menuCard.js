@@ -35,6 +35,7 @@ function MenuCard({ menu, selectedCategory, tempCartItems, setTempCartItems }) {
         tempCartItems={tempCartItems}
         setTempCartItems={setTempCartItems}
         selectedItemID={selectedItemID}
+        setSelectedItemID={setSelectedItemID}
       />
     </div>
   );
