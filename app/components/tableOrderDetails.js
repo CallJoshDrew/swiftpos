@@ -416,7 +416,7 @@ function TableOrderDetails({
                 {item.selectedChoice && (
                   <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
                     {/* x {item.quantity}:  */}
-                    Add On RM {(parseFloat(itemTotalAddOn) * item.quantity).toFixed(2)}
+                    Add On x {item.quantity}: RM {(parseFloat(itemTotalAddOn) * item.quantity).toFixed(2)}
                   </div>
                 )}
                 {showEditBtn && (

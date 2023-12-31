@@ -36,7 +36,7 @@ export default function TakeAwayOverview() {
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Function to handle button click
-  const handleChangeStatusBtn  = (orderNumber) => () => {
+  const handleChangeStatusBtn = (orderNumber) => () => {
     const order = orders.find((order) => order.orderNumber === orderNumber);
     setSelectedStatus(order.status);
     setModalOpen(true);
@@ -45,21 +45,12 @@ export default function TakeAwayOverview() {
   // Modal related functions
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
-    setSelectedOrder(
-      orders.find((order) => order.orderNumber === selectedOrderID)
-    );
+    setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
     setPayModalOpen(true);
   };
 
   const handleMsgModalClose = () => {
     setMsgModalOpen(false);
-  };
-
-  const handleCheckOutClick = (selectedOrderID) => () => {
-    setSelectedOrder(
-      orders.find((order) => order.orderNumber === selectedOrderID)
-    );
-    setCheckOutModalOpen(true);
   };
 
   // Function to handle modal close
@@ -70,6 +61,10 @@ export default function TakeAwayOverview() {
         order.orderNumber === orderID ? { ...order, status: selectedStatus } : order
       )
     );
+    setSelectedOrder({
+      ...selectedOrder,
+      status: selectedStatus,
+    });
   };
 
   // if (tables[tableIndex].order && tables[tableIndex].order.items) {
@@ -94,7 +89,7 @@ export default function TakeAwayOverview() {
       orderNumber: order.orderNumber,
     }));
     // need to set the selectedOrder with the latest selection. If not it will remain previous updated selected order.
-    setSelectedOrder(order); 
+    setSelectedOrder(order);
     setCartItems(itemsWithOrderID);
     setTempCartItems(itemsWithOrderID);
     setShowEditBtn(false);
@@ -148,9 +143,7 @@ export default function TakeAwayOverview() {
       ) : (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
           <div className="flex justify-between w-full">
-            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">
-              Today Order
-            </div>
+            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">Today Order</div>
             <button
               className="text-xs py-2 px-4 bg-green-800 text-white rounded-md"
               onClick={() => {
@@ -183,22 +176,17 @@ export default function TakeAwayOverview() {
                       order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
                     } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
                     onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
-                    <td className="border px-4 py-2">
-                      {orders.length - index}
-                    </td>
+                    <td className="border px-4 py-2">{orders.length - index}</td>
                     <td className="border px-4 py-2">{order.orderTime}</td>
                     <td className="border px-4 py-2">{order.quantity}</td>
-                    <td className="border px-4 py-2">
-                      {order.totalPrice.toFixed(2)}
-                    </td>
+                    <td className="border px-4 py-2">{order.totalPrice.toFixed(2)}</td>
                     <td className="border px-4 py-2">
                       <button
                         onClick={handleChangeStatusBtn(order.orderNumber)}
                         className={`rounded-md text-sm underline ${
-                          order.status === "Completed"
-                            ? "text-green-800"
-                            : "text-red-700"
-                        }`}>
+                          order.status === "Completed" ? "text-green-800" : "text-red-700"
+                        }`}
+                        disabled={order.payment === "Paid"}>
                         {order.status}
                       </button>
                     </td>
@@ -229,7 +217,7 @@ export default function TakeAwayOverview() {
         setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
       />
-       <PaymentModal
+      <PaymentModal
         isPayModalOpen={isPayModalOpen}
         setPayModalOpen={setPayModalOpen}
         selectedOrder={selectedOrder}
@@ -239,11 +227,11 @@ export default function TakeAwayOverview() {
         tables={tables}
         setTables={setTables}
         setCartItems={setCartItems}
-      />  
+      />
       <StatusModal
         isStatusModalOpen={isStatusModalOpen}
         handleStsModalClose={handleStsModalClose}
-        // orderID={selectedOrderID}
+        selectedOrder={selectedOrder}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
       />

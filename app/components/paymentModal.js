@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 function PaymentModal({
@@ -13,6 +13,13 @@ function PaymentModal({
   setTables = () => {}, // default value for setTables
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [amountReceived, setAmountReceived] = useState(0);
+
+  useEffect(() => {
+    if (selectedOrder && typeof selectedOrder.totalPrice === 'number') {
+      setAmountReceived(Number(selectedOrder.totalPrice.toFixed(2)));
+    }
+  }, [selectedOrder]);
 
   const handlePaymentStatus = () => {
     setPayModalOpen(false);
@@ -50,10 +57,9 @@ function PaymentModal({
           return table;
         }
       });
-    
+
       setTables(updatedTables);
     }
-    
 
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
@@ -98,7 +104,6 @@ function PaymentModal({
           </div>
           <div className="border-green-800 bg-green-800 border-2 rounded-md p-4 pb-6">
             <div className="text-lg font-medium text-white mb-2">Total</div>
-            {/* <div className="text-center bg-green-800 rounded-md text-white py-6 px-4"> */}
             <div className="text-5xl font-bold text-white leading-6">
               RM {selectedOrder?.totalPrice.toFixed(2)}
             </div>
@@ -120,6 +125,17 @@ function PaymentModal({
               Boost
             </button>
           </div>
+          <div className="text-xl text-gray-800 leading-5 mt-6">Amount Received</div>
+          <input
+            type="number"
+            value={amountReceived}
+            onChange={(e) => setAmountReceived(e.target.value)}
+            className="w-full text-gray-500 p-2 mt-2 border-2 border-gray-300 rounded-md"
+          />
+          <div className="text-xl text-gray-800 leading-5 mt-6">Change</div>
+          <div className="text-xl px-2 py-3 mt-2 bg-yellow-500 text-white rounded-md font-semibold leading-6">
+            RM {(amountReceived - selectedOrder?.totalPrice).toFixed(2)}
+          </div>
           <div className="text-xl text-gray-800 leading-5 mt-6">Make payment now?</div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
@@ -127,7 +143,6 @@ function PaymentModal({
               onClick={handlePaymentStatus}>
               Yes
             </button>
-            {/* <div className="text-center text-white">OR</div> */}
             <button
               className="flex-1 bg-gray-700 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={handleModalClose}>

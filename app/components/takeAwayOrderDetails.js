@@ -127,7 +127,7 @@ function TakeAwayOrderDetails({
 
     // Find an existing order number
     const existingOrderItem = tempCartItems.find((item) => item.orderNumber);
-   
+
     let orderNumber;
 
     // If an existing order number is found, use it
@@ -193,7 +193,6 @@ function TakeAwayOrderDetails({
   };
 
   let orderStatusBtn;
-
   if (tempCartItems.length === 0) {
     orderStatusBtn = (
       <button
@@ -210,7 +209,16 @@ function TakeAwayOrderDetails({
         Place Order & Print
       </button>
     );
-  } else if (orderCompleted && selectedOrder?.payment != "Paid") {
+  } else if (selectedOrder?.status === "Cancel") {
+    orderStatusBtn = (
+      <button
+        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
+        disabled>
+        {selectedOrder ? "Cancelled Order" : "Cancel"}
+      </button>
+    );
+  } 
+  else if (orderCompleted && selectedOrder?.payment != "Paid" && selectedOrder.status !=="Completed") {
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -218,7 +226,7 @@ function TakeAwayOrderDetails({
         Placed Order
       </button>
     );
-  } else if (orderCompleted && selectedOrder?.payment == "Paid") {
+  } else if (orderCompleted && selectedOrder?.status == "Completed") {
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -226,10 +234,11 @@ function TakeAwayOrderDetails({
         Completed
       </button>
     );
-  }
+  } 
+
   let paymentStatusBtn;
   if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
-    if (selectedOrder?.payment != "Paid") {
+    if (selectedOrder?.status === "Placed Order") {
       paymentStatusBtn = (
         <button
           className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -237,7 +246,7 @@ function TakeAwayOrderDetails({
           Make Payment
         </button>
       );
-    } else {
+    } else if (selectedOrder?.status !== "Cancel") {
       paymentStatusBtn = (
         <>
           <button
@@ -251,7 +260,7 @@ function TakeAwayOrderDetails({
   }
 
   useEffect(() => {
-    // console.log("Selected Order is ", selectedOrder?.items);
+    // console.log("Selected Order is ", selectedOrder?.status);
     // console.log("tempCartItems: ", tempCartItems);
     // console.log("Orders list is:", orders);
   }, [selectedOrder, tempCartItems, orders]);
@@ -266,26 +275,29 @@ function TakeAwayOrderDetails({
               {selectedOrder ? selectedOrder.orderNumber : null}
             </div>
           </div>
-          {tempCartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
-            <div
-              onClick={() => {
-                setShowMenu(true);
-                setShowEditBtn(true);
-                setOrderCompleted(false);
-              }}>
-              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5 text-white cursor-pointer">
-                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                </svg>
+          {tempCartItems.length > 0 &&
+            !showEditBtn &&
+            selectedOrder?.payment != "Paid" &&
+            selectedOrder?.status === "Placed Order" && (
+              <div
+                onClick={() => {
+                  setShowMenu(true);
+                  setShowEditBtn(true);
+                  setOrderCompleted(false);
+                }}>
+                <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                  <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 text-white cursor-pointer">
+                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                  </svg>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {tempCartItems.length > 0 ? (
@@ -299,7 +311,7 @@ function TakeAwayOrderDetails({
         ) : null}
         {/* Each item card */}
         <div className="flex flex-col gap-4">
-        {tempCartItems.map((item) => {
+          {tempCartItems.map((item) => {
             // Calculate total price for the add-ons
             const itemTotalAddOn =
               (item.selectedChoice ? item.selectedChoice.price : 0) +
