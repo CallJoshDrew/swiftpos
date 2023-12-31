@@ -22,7 +22,7 @@ function PaymentModal({
       setAmountReceived(Number(selectedOrder.totalPrice.toFixed(2)));
       setInputValue(Number(selectedOrder.totalPrice.toFixed(2)));
     }
-    console.log(selectedOrder);
+    // console.log(selectedOrder);
   }, [selectedOrder]);
 
   const handlePaymentStatus = (newAmountReceived, newAmountChange) => {

@@ -8,12 +8,12 @@ export default function StatusModal({
   selectedStatus,
   setSelectedStatus,
 }) {
-  // console.log(selectedOrder);
+  console.log(selectedOrder);
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
 
-  const handleSubmit =() => {
+  const handleStatusSubmitBtn =() => {
     // console.log("clicked");
     handleStsModalClose(selectedOrder.orderNumber, selectedStatus);
     toast.success("Status Changed Successfully'", {
@@ -65,12 +65,12 @@ export default function StatusModal({
           <div>
             <button
               className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
-              onClick={handleSubmit}>
+              onClick={handleStatusSubmitBtn}>
               Change
             </button>
             <button
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
-              onClick={handleStsModalClose}>
+              onClick={() => {handleStsModalClose(selectedOrder.orderNumber, selectedOrder.status)}}>
               Cancel
             </button>
           </div>
