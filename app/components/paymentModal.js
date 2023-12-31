@@ -14,17 +14,19 @@ function PaymentModal({
 }) {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
+  const [amountChange, setAmountChange] = useState(0);
+  const [inputValue, setInputValue] = useState(0);
 
   useEffect(() => {
-    if (selectedOrder && typeof selectedOrder.totalPrice === 'number') {
+    if (selectedOrder && typeof selectedOrder.totalPrice === "number") {
       setAmountReceived(Number(selectedOrder.totalPrice.toFixed(2)));
+      setInputValue(Number(selectedOrder.totalPrice.toFixed(2)));
     }
+    console.log(selectedOrder);
   }, [selectedOrder]);
 
-  const handlePaymentStatus = () => {
+  const handlePaymentStatus = (newAmountReceived, newAmountChange) => {
     setPayModalOpen(false);
-
-    // Update the orders array
     const updatedOrders = orders.map((order) => {
       if (order.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -32,6 +34,8 @@ function PaymentModal({
           payment: "Paid",
           status: "Completed",
           paymentMethod,
+          amountReceived: newAmountReceived,
+          amountChange: newAmountChange,
         };
       } else {
         return order;
@@ -51,6 +55,8 @@ function PaymentModal({
               payment: "Paid",
               status: "Completed",
               paymentMethod,
+              amountReceived: newAmountReceived,
+              amountChange: newAmountChange,
             },
           };
         } else {
@@ -68,6 +74,8 @@ function PaymentModal({
           payment: "Paid",
           status: "Completed",
           paymentMethod,
+          amountReceived: newAmountReceived,
+          amountChange: newAmountChange,
         };
       } else {
         return prevSelectedOrder;
@@ -128,24 +136,35 @@ function PaymentModal({
           <div className="text-xl text-gray-800 leading-5 mt-6">Amount Received</div>
           <input
             type="number"
-            value={amountReceived}
-            onChange={(e) => setAmountReceived(e.target.value)}
+            placeholder={amountReceived}
+            onChange={(e) => setInputValue(e.target.value)}
             className="w-full text-gray-500 p-2 mt-2 border-2 border-gray-300 rounded-md"
           />
           <div className="text-xl text-gray-800 leading-5 mt-6">Change</div>
           <div className="text-xl px-2 py-3 mt-2 bg-yellow-500 text-white rounded-md font-semibold leading-6">
-            RM {(amountReceived - selectedOrder?.totalPrice).toFixed(2)}
+            RM {(inputValue - selectedOrder?.totalPrice).toFixed(2)}
           </div>
           <div className="text-xl text-gray-800 leading-5 mt-6">Make payment now?</div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
               className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
-              onClick={handlePaymentStatus}>
+              onClick={() => {
+                const newAmountReceived = Number(Number(inputValue).toFixed(2));
+                const newAmountChange = Number((Number(inputValue) - Number(selectedOrder?.totalPrice)).toFixed(2));
+                handlePaymentStatus(newAmountReceived, newAmountChange);
+                setAmountReceived(newAmountReceived);
+                setAmountChange(newAmountChange);
+              }}>
               Yes
             </button>
             <button
               className="flex-1 bg-gray-700 text-sm text-white font-bold py-3 px-4 rounded-md"
-              onClick={handleModalClose}>
+              onClick={() => {
+                handleModalClose();
+                setAmountReceived(amountReceived);
+                setInputValue(amountReceived);
+                setAmountChange(0);
+              }}>
               No
             </button>
           </div>
