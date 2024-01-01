@@ -148,7 +148,7 @@ export default function TakeAwayOverview() {
               <thead>
                 <tr className="bg-green-800 text-white text-center">
                   <th className="px-4 py-4 border-b font-light">No.</th>
-                  <th className="px-4 py-4 border-b font-light">Time</th>
+                  <th className="px-4 py-4 border-b font-light">Order Time</th>
                   <th className="px-4 py-4 border-b font-light">Qty</th>
                   <th className="px-4 py-4 border-b font-light">Price (RM)</th>
                   <th className="px-4 py-4 border-b font-light">Status</th>

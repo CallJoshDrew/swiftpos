@@ -267,14 +267,13 @@ function TakeAwayOrderDetails({
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
         disabled>
-        Completed
+        Completed ({selectedOrder?.paymentMethod})
       </button>
     );
   }
 
   let paymentStatusBtn;
-  if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
-    if (selectedOrder?.status === "Placed Order") {
+  if (tempCartItems.length > 0 && orderCompleted && !showEditBtn && selectedOrder?.status === "Placed Order") {
       paymentStatusBtn = (
         <button
           className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -282,18 +281,7 @@ function TakeAwayOrderDetails({
           Make Payment
         </button>
       );
-    } else if (selectedOrder?.status !== "Cancel") {
-      paymentStatusBtn = (
-        <>
-          <button
-            className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-            disabled>
-            Paid by {selectedOrder ? selectedOrder.paymentMethod : null}
-          </button>
-        </>
-      );
-    }
-  }
+    } 
 
   useEffect(() => {
     // console.log("Selected Order is ", selectedOrder?.status);
@@ -518,6 +506,9 @@ function TakeAwayOrderDetails({
             <div className="text-gray-600 text-base font-bold">Total Sales</div>
             <div className="text-gray-600 text-base font-bold">RM {total.toFixed(2)}</div>
           </div>
+          {selectedOrder?.paymentTime && (
+              <div className="text-green-800 text-sm font-bold leading-none">Payment Time ({selectedOrder?.paymentTime.split(",")[0]})</div>
+          )}
         </div>
         {orderStatusBtn}
         {paymentStatusBtn}
