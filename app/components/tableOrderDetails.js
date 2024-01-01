@@ -389,7 +389,7 @@ function TableOrderDetails({
                 <div className="flex">
                   <Image
                     src={item.image}
-                    alt="stew"
+                    alt={item.name}
                     width="100"
                     height="100"
                     className="sm:h-18 w-20 object-cover rounded-lg"
@@ -523,17 +523,17 @@ function TableOrderDetails({
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">RM {subtotal.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{subtotal.toFixed(2)}</div>
           </div>
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Service Charge</div>
-            <div className="text-gray-600 text-sm">RM {serviceCharge.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{serviceCharge.toFixed(2)}</div>
           </div>
           {selectedOrder?.amountReceived && (
             <div className="flex justify-between items-center">
               <div className="text-gray-600 text-sm">Amount Received</div>
               <div className="text-gray-600 text-sm">
-                RM {selectedOrder?.amountReceived.toFixed(2)}
+                {selectedOrder?.amountReceived.toFixed(2)}
               </div>
             </div>
           )}
@@ -541,7 +541,7 @@ function TableOrderDetails({
             <div className="flex justify-between items-center">
               <div className="text-gray-600 text-sm">Change</div>
               <div className="text-gray-600 text-sm">
-                RM {selectedOrder?.amountChange.toFixed(2)}
+                {selectedOrder?.amountChange.toFixed(2)}
               </div>
             </div>
           )}
