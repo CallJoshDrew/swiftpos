@@ -26,7 +26,7 @@ function TableOrderDetails({
   handleCheckOutClick,
 }) {
   // console.log(orders);
-  // console.log(selectedOrder);
+  console.log(selectedOrder);
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
   const handleStsModalClose = (orderID) => {
@@ -280,11 +280,7 @@ function TableOrderDetails({
             strokeWidth={1.5}
             stroke="currentColor"
             className="w-5 h-5 text-white cursor-pointer">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -345,7 +341,7 @@ function TableOrderDetails({
               <div className="flex items-center">
                 <div className="text-green-800 text-xl font-bold">Table</div>
                 <div className="bg-green-800 text-white px-2 py-1 rounded-full text-xs ml-2">
-                  {selectedOrder ? selectedOrder.tableNumber : null}
+                  {selectedOrder ? selectedOrder.tableNumber : tableNumber}
                 </div>
               </div>
               <div className="text-green-800 text-sm">
@@ -540,9 +536,25 @@ function TableOrderDetails({
             <div className="text-gray-600 text-sm">Service Charge</div>
             <div className="text-gray-600 text-sm">RM {serviceCharge.toFixed(2)}</div>
           </div>
+          {selectedOrder?.amountReceived && (
+            <div className="flex justify-between items-center">
+              <div className="text-gray-600 text-sm">Amount Received</div>
+              <div className="text-gray-600 text-sm">
+                RM {selectedOrder?.amountReceived.toFixed(2)}
+              </div>
+            </div>
+          )}
+          {selectedOrder?.amountChange !== undefined && selectedOrder?.amountChange !== null && (
+            <div className="flex justify-between items-center">
+              <div className="text-gray-600 text-sm">Change</div>
+              <div className="text-gray-600 text-sm">
+                RM {selectedOrder?.amountChange.toFixed(2)}
+              </div>
+            </div>
+          )}
           <hr className="h-px my-6 bg-black border-dashed" />
           <div className="flex justify-between items-center">
-            <div className="text-gray-600 text-base font-bold">Total</div>
+            <div className="text-gray-600 text-base font-bold">Total Sales</div>
             <div className="text-gray-600 text-base font-bold">RM {total.toFixed(2)}</div>
           </div>
         </div>

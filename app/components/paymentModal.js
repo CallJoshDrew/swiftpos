@@ -22,11 +22,28 @@ function PaymentModal({
       setAmountReceived(Number(selectedOrder.totalPrice.toFixed(2)));
       setInputValue(Number(selectedOrder.totalPrice.toFixed(2)));
     }
-    // console.log(selectedOrder);
   }, [selectedOrder]);
 
   const handlePaymentStatus = (newAmountReceived, newAmountChange) => {
     setPayModalOpen(false);
+    const now = new Date();
+      const timeOptions = {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Kuala_Lumpur",
+      };
+
+      const dateOptions = {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        timeZone: "Asia/Kuala_Lumpur",
+      };
+
+    const timeString = now.toLocaleTimeString("en-US", timeOptions);
+    const dateString = now.toLocaleDateString("en-US", dateOptions);
     const updatedOrders = orders.map((order) => {
       if (order.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -36,6 +53,7 @@ function PaymentModal({
           paymentMethod,
           amountReceived: newAmountReceived,
           amountChange: newAmountChange,
+          paymentTime: `${timeString}, ${dateString}`,
         };
       } else {
         return order;
@@ -57,6 +75,7 @@ function PaymentModal({
               paymentMethod,
               amountReceived: newAmountReceived,
               amountChange: newAmountChange,
+              paymentTime: `${timeString}, ${dateString}`,
             },
           };
         } else {
@@ -76,6 +95,7 @@ function PaymentModal({
           paymentMethod,
           amountReceived: newAmountReceived,
           amountChange: newAmountChange,
+          paymentTime: `${timeString}, ${dateString}`,
         };
       } else {
         return prevSelectedOrder;
