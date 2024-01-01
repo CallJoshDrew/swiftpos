@@ -37,7 +37,7 @@ function TakeAwayOrderDetails({
       status: "Cancel",
     });
   };
-  console.log(selectedOrder);
+  // console.log(selectedOrder);
   // Cart related variables and functions
   let subtotal = 0;
   let serviceCharge = 0;
@@ -237,16 +237,34 @@ function TakeAwayOrderDetails({
     selectedOrder.status !== "Completed"
   ) {
     orderStatusBtn = (
-      <button
-        onClick={() => {
-          setModalOpen(true);
-        }}
-        className={`w-full my-4 rounded-md p-2 text-white text-sm font-medium bg-yellow-500 ${
-          selectedOrder.status === "Completed" ? "text-green-800" : "text-red-700"
-        }`}
-        disabled={selectedOrder.payment === "Paid"}>
-        {selectedOrder.status}
-      </button>
+      <div className="flex space-x-2">
+        <button
+          className={`flex-1  rounded-md p-2 text-white text-sm font-medium bg-gray-500 ${
+            selectedOrder.status === "Completed" ? "text-green-800" : "text-red-700"
+          }`}
+          disabled>
+          {selectedOrder.status}
+        </button>
+        <button
+          className="bg-red-700 px-2 rounded-md"
+          onClick={() => {
+            setModalOpen(true);
+          }}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5 text-white cursor-pointer">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+            />
+          </svg>
+        </button>
+      </div>
     );
   } else if (orderCompleted && selectedOrder?.status == "Completed") {
     orderStatusBtn = (
