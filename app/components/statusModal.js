@@ -4,19 +4,14 @@ import toast from "react-hot-toast";
 export default function StatusModal({
   isStatusModalOpen,
   handleStsModalClose,
+  setModalOpen,
   selectedOrder,
-  selectedStatus,
-  setSelectedStatus,
 }) {
-  // console.log(selectedOrder);
-  const handleStatusChange = (event) => {
-    setSelectedStatus(event.target.value);
-  };
 
   const handleStatusSubmitBtn = () => {
     // console.log("clicked");
-    handleStsModalClose(selectedOrder.orderNumber, selectedStatus);
-    toast.success("Status Changed Successfully'", {
+    handleStsModalClose(selectedOrder.orderNumber);
+    toast.success("Order is Cancelled'", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,
@@ -31,53 +26,24 @@ export default function StatusModal({
     <>
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded shadow-lg w-[350px] text-center">
-          <div className="text-xl bg-gray-700 rounded-md text-white p-4">
+        <div className="bg-white p-6 rounded shadow-lg w-[340px] text-center">
+          <div className="text-xl bg-red-700 rounded-md text-white p-4">
             Order ID: {selectedOrder.orderNumber}
           </div>
-          <form className="flex justify-between px-2 my-3">
-            {/* <input
-              type="radio"
-              value="Completed"
-              checked={selectedStatus === "Completed"}
-              onChange={handleStatusChange}
-              className="form-checkbox h-4 w-4 rounded-full ring-1 ring-black text-white checked:text-green-800 focus:ring-1 mr-1"
-            />
-            <label className="text-lg text-black mr-2">Completed</label> */}
-            <div className="flex items-center">
-              <input
-                type="radio"
-                value="Placed Order"
-                checked={selectedStatus === "Placed Order"}
-                onChange={handleStatusChange}
-                className="form-checkbox h-4 w-4 rounded-full ring-2 ring-black text-white checked:text-green-800 focus:ring-1 mx-2"
-              />
-              <label className="text-lg text-black">Placed Order</label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="radio"
-                value="Cancel"
-                checked={selectedStatus === "Cancel"}
-                onChange={handleStatusChange}
-                className="form-checkbox h-4 w-4 rounded-full ring-2 ring-black text-white checked:text-green-800 focus:ring-1 mx-2"
-              />
-              <label className="text-lg text-black">Cancel Order</label>
-            </div>
-          </form>
+          <div className="text-lg text-gray-800 my-3">Do you want to cancel this order?</div>
 
           <div>
             <button
               className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
               onClick={handleStatusSubmitBtn}>
-              Change
+              Yes
             </button>
             <button
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
               onClick={() => {
-                handleStsModalClose(selectedOrder.orderNumber, selectedOrder.status);
+                setModalOpen(false) ;
               }}>
-              Cancel
+              No
             </button>
           </div>
         </div>

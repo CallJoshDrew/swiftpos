@@ -30,19 +30,18 @@ export default function TakeAwayOverview() {
   // Modal related states
   const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-  const [isStatusModalOpen, setModalOpen] = useState(false);
+  // const [isStatusModalOpen, setModalOpen] = useState(false);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  // const [selectedStatus, setSelectedStatus] = useState(null);
 
   // Function to handle button click
-  const handleChangeStatusBtn = (orderNumber) => () => {
-    const order = orders.find((order) => order.orderNumber === orderNumber);
-    setSelectedStatus(order.status);
-    setModalOpen(true);
-  };
+  // const handleChangeStatusBtn = (orderNumber) => () => {
+  //   const order = orders.find((order) => order.orderNumber === orderNumber);
+  //   setSelectedStatus(order.status);
+  //   setModalOpen(true);
+  // };
 
-  // Modal related functions
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
     setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
@@ -54,18 +53,6 @@ export default function TakeAwayOverview() {
   };
 
   // Function to handle modal close
-  const handleStsModalClose = (orderID, selectedStatus) => {
-    setModalOpen(false);
-    setOrders(
-      orders.map((order) =>
-        order.orderNumber === orderID ? { ...order, status: selectedStatus } : order
-      )
-    );
-    setSelectedOrder({
-      ...selectedOrder,
-      status: selectedStatus,
-    });
-  };
 
   // if (tables[tableIndex].order && tables[tableIndex].order.items) {
   //   const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
@@ -180,15 +167,15 @@ export default function TakeAwayOverview() {
                     <td className="border px-4 py-2">{order.orderTime}</td>
                     <td className="border px-4 py-2">{order.quantity}</td>
                     <td className="border px-4 py-2">{order.totalPrice.toFixed(2)}</td>
-                    <td className="border px-4 py-2">
-                      <button
-                        onClick={handleChangeStatusBtn(order.orderNumber)}
-                        className={`rounded-md text-sm underline ${
-                          order.status === "Completed" ? "text-green-800" : "text-red-700"
-                        }`}
-                        disabled={order.payment === "Paid"}>
-                        {order.status}
-                      </button>
+                    <td
+                      className={`border px-4 py-2 rounded-md underline text-sm ${
+                        order.status === "Completed"
+                          ? "text-green-800"
+                          : order.status === "Placed Order"
+                          ? "text-yellow-500"
+                          : "text-red-700"
+                      }`}>
+                      {order.status}
                     </td>
                   </tr>
                 ))}
@@ -228,13 +215,13 @@ export default function TakeAwayOverview() {
         setTables={setTables}
         setCartItems={setCartItems}
       />
-      <StatusModal
+      {/* <StatusModal
         isStatusModalOpen={isStatusModalOpen}
         handleStsModalClose={handleStsModalClose}
         selectedOrder={selectedOrder}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
-      />
+      /> */}
       <ConfirmModal
         isOpenMsg={isMsgModalOpen}
         onCloseMsg={handleMsgModalClose}

@@ -11,7 +11,7 @@ function SelectionModal({
   selectedItemID,
   setSelectedItemID,
 }) {
-  console.log("TempCartItems is ", tempCartItems);
+//   console.log("TempCartItems is ", tempCartItems);
   const [selectedChoice, setSelectedChoice] = useState("");
   const [selectedMeatLevel, setSelectedMeatLevel] = useState("");
   const [selectedAddOn, setSelectedAddOn] = useState("");

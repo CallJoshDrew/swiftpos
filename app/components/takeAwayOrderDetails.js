@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import StatusModal from "./statusModal";
 
 function TakeAwayOrderDetails({
   cartItems,
@@ -23,7 +24,20 @@ function TakeAwayOrderDetails({
   setSelectedOrder,
   handlePaymentClick,
 }) {
-  // console.log(selectedOrder);
+  const [isStatusModalOpen, setModalOpen] = useState(false);
+  const handleStsModalClose = (orderID) => {
+    setModalOpen(false);
+    setOrders(
+      orders.map((order) =>
+        order.orderNumber === orderID ? { ...order, status: "Cancel" } : order
+      )
+    );
+    setSelectedOrder({
+      ...selectedOrder,
+      status: "Cancel",
+    });
+  };
+  console.log(selectedOrder);
   // Cart related variables and functions
   let subtotal = 0;
   let serviceCharge = 0;
@@ -217,13 +231,21 @@ function TakeAwayOrderDetails({
         {selectedOrder ? "Cancelled Order" : "Cancel"}
       </button>
     );
-  } 
-  else if (orderCompleted && selectedOrder?.payment != "Paid" && selectedOrder.status !=="Completed") {
+  } else if (
+    orderCompleted &&
+    selectedOrder?.payment != "Paid" &&
+    selectedOrder.status !== "Completed"
+  ) {
     orderStatusBtn = (
       <button
-        className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
-        disabled>
-        Placed Order
+        onClick={() => {
+          setModalOpen(true);
+        }}
+        className={`w-full my-4 rounded-md p-2 text-white text-sm font-medium bg-yellow-500 ${
+          selectedOrder.status === "Completed" ? "text-green-800" : "text-red-700"
+        }`}
+        disabled={selectedOrder.payment === "Paid"}>
+        {selectedOrder.status}
       </button>
     );
   } else if (orderCompleted && selectedOrder?.status == "Completed") {
@@ -234,7 +256,7 @@ function TakeAwayOrderDetails({
         Completed
       </button>
     );
-  } 
+  }
 
   let paymentStatusBtn;
   if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
@@ -469,6 +491,12 @@ function TakeAwayOrderDetails({
         </div>
         {orderStatusBtn}
         {paymentStatusBtn}
+        <StatusModal
+          isStatusModalOpen={isStatusModalOpen}
+          handleStsModalClose={handleStsModalClose}
+          setModalOpen={setModalOpen}
+          selectedOrder={selectedOrder}
+        />
       </div>
     </div>
   );

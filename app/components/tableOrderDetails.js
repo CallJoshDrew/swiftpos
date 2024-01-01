@@ -1,6 +1,7 @@
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import StatusModal from "./statusModal";
 
 function TableOrderDetails({
   tables,
@@ -24,6 +25,29 @@ function TableOrderDetails({
   handlePaymentClick,
   handleCheckOutClick,
 }) {
+  console.log(orders);
+  console.log(selectedOrder);
+  const [isStatusModalOpen, setModalOpen] = useState(false);
+
+  const handleStsModalClose = (orderID) => {
+    setModalOpen(false);
+    setOrders(
+      orders.map((order) =>
+        order.orderNumber === orderID ? { ...order, status: "Cancel" } : order
+      )
+    );
+    setTables(
+      tables.map((table) =>
+        table.orderNumber === orderID
+          ? { ...table, order: [], orderNumber: null, occupied: false }
+          : table
+      )
+    );
+    setSelectedOrder({
+      ...selectedOrder,
+      status: "Cancel",
+    });
+  };
   // console.log(selectedOrder);
   // Cart related variables and functions
   let subtotal = 0;
@@ -206,7 +230,6 @@ function TableOrderDetails({
   };
 
   let orderStatusBtn;
-
   if (tempCartItems.length === 0) {
     orderStatusBtn = (
       <button
@@ -223,15 +246,32 @@ function TableOrderDetails({
         Place Order & Print
       </button>
     );
-  } else if (orderCompleted && selectedOrder?.payment != "Paid") {
+  } else if (selectedOrder?.status === "Cancel") {
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
         disabled>
-        Placed Order
+        {selectedOrder ? "Cancelled Order" : "Cancel"}
       </button>
     );
-  } else if (orderCompleted && selectedOrder?.payment == "Paid") {
+  } else if (
+    orderCompleted &&
+    selectedOrder?.payment != "Paid" &&
+    selectedOrder.status !== "Completed"
+  ) {
+    orderStatusBtn = (
+      <button
+        onClick={() => {
+          setModalOpen(true);
+        }}
+        className={`w-full my-4 rounded-md p-2 text-white text-sm font-medium bg-yellow-500 ${
+          selectedOrder.status === "Completed" ? "text-green-800" : "text-red-700"
+        }`}
+        disabled={selectedOrder.payment === "Paid"}>
+        {selectedOrder.status}
+      </button>
+    );
+  } else if (orderCompleted && selectedOrder?.status == "Completed") {
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -242,7 +282,9 @@ function TableOrderDetails({
   }
   let paymentStatusBtn;
   if (tempCartItems.length > 0 && orderCompleted && !showEditBtn) {
-    if (selectedOrder?.payment != "Paid") {
+    if (selectedOrder?.status === "Cancel") {
+      paymentStatusBtn = null;
+    } else if (selectedOrder?.payment != "Paid") {
       paymentStatusBtn = (
         <button
           className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -250,7 +292,7 @@ function TableOrderDetails({
           Make Payment
         </button>
       );
-    } else {
+    } else if (selectedOrder?.payment === "Paid") {
       paymentStatusBtn = (
         <>
           <button
@@ -293,26 +335,29 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
-          {tempCartItems.length > 0 && !showEditBtn && selectedOrder?.payment != "Paid" && (
-            <div
-              onClick={() => {
-                setShowMenu(true);
-                setShowEditBtn(true);
-                setOrderCompleted(false);
-              }}>
-              <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5 text-white cursor-pointer">
-                  <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                  <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                </svg>
+          {tempCartItems.length > 0 &&
+            !showEditBtn &&
+            selectedOrder?.payment != "Paid" &&
+            selectedOrder?.status === "Placed Order" && (
+              <div
+                onClick={() => {
+                  setShowMenu(true);
+                  setShowEditBtn(true);
+                  setOrderCompleted(false);
+                }}>
+                <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                  <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 text-white cursor-pointer">
+                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                  </svg>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         {tempCartItems.length > 0 ? (
@@ -416,7 +461,8 @@ function TableOrderDetails({
                 {item.selectedChoice && (
                   <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
                     {/* x {item.quantity}:  */}
-                    Add On x {item.quantity}: RM {(parseFloat(itemTotalAddOn) * item.quantity).toFixed(2)}
+                    Add On x {item.quantity}: RM{" "}
+                    {(parseFloat(itemTotalAddOn) * item.quantity).toFixed(2)}
                   </div>
                 )}
                 {showEditBtn && (
@@ -484,6 +530,12 @@ function TableOrderDetails({
         </div>
         {orderStatusBtn}
         {paymentStatusBtn}
+        <StatusModal
+          isStatusModalOpen={isStatusModalOpen}
+          handleStsModalClose={handleStsModalClose}
+          setModalOpen={setModalOpen}
+          selectedOrder={selectedOrder}
+        />
       </div>
     </div>
   );
