@@ -120,29 +120,29 @@ function PaymentModal({
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
               className={`flex-1 text-white font-bold py-3 px-4 rounded-md ${
-                paymentMethod === "Cash" ? "bg-yellow-500" : "bg-gray-500"
+                paymentMethod === "Cash" ? "bg-green-800" : "bg-gray-500"
               }`}
               onClick={() => setPaymentMethod("Cash")}>
               Cash
             </button>
             <button
               className={`flex-1 text-white font-bold py-3 px-4 rounded-md ${
-                paymentMethod === "Boost" ? "bg-red-500" : "bg-gray-500"
+                paymentMethod === "Boost" ? "bg-green-800" : "bg-gray-500"
               }`}
               onClick={() => setPaymentMethod("Boost")}>
               Boost
             </button>
           </div>
-          <div className="text-xl text-gray-800 leading-5 mt-6">Amount Received</div>
+          <div className="text-lg text-gray-800 leading-5 mt-6">Amount Received</div>
           <input
             type="number"
-            placeholder={amountReceived}
+            placeholder={amountReceived.toFixed(2)}
             onChange={(e) => setInputValue(e.target.value)}
-            className="w-full text-gray-500 p-2 mt-2 border-2 border-gray-300 rounded-md"
+            className="w-full text-gray-600 font-bold text-2xl py-2 px-3 mt-2 border-2 border-gray-300 rounded-md"
           />
-          <div className="text-xl text-gray-800 leading-5 mt-6">Change</div>
-          <div className="text-xl px-2 py-3 mt-2 bg-yellow-500 text-white rounded-md font-semibold leading-6">
-            RM {(inputValue - selectedOrder?.totalPrice).toFixed(2)}
+          <div className="text-lg text-gray-800 leading-5 mt-6">Change</div>
+          <div className="text-3xl py-2 text-yellow-500 font-semibold leading-6">
+            {(inputValue - selectedOrder?.totalPrice).toFixed(2)}
           </div>
           <div className="text-xl text-gray-800 leading-5 mt-6">Make payment now?</div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
@@ -158,7 +158,7 @@ function PaymentModal({
               Yes
             </button>
             <button
-              className="flex-1 bg-gray-700 text-sm text-white font-bold py-3 px-4 rounded-md"
+              className="flex-1 bg-gray-500 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={() => {
                 handleModalClose();
                 setAmountReceived(amountReceived);
