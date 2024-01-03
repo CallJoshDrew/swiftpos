@@ -37,7 +37,7 @@ export default function TablesOverview() {
       order: [],
     }))
   );
-  const [selectedTable, setSelectedTable] = useState(null);
+  const [tableNumber, setTableNumber] = useState(null);
   // console.log(orders);
 
   // Modal related functions
@@ -60,9 +60,10 @@ export default function TablesOverview() {
   };
 
   // Table related functions
-  const selectTable = useCallback(
+  const selectedTable = useCallback(
     (tableIndex) => {
-      setSelectedTable(tableIndex);
+      setTableNumber(tableIndex);
+      // do not show menu if the table is seated
       if (tables[tableIndex].occupied) {
         setOrderCompleted(true);
       } else {
@@ -71,6 +72,7 @@ export default function TablesOverview() {
         setShowEditBtn(true);
       }
 
+      // Show the table info if it is seated
       if (tables[tableIndex].order && tables[tableIndex].order.items) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
@@ -146,7 +148,7 @@ export default function TablesOverview() {
             {tables.map((table, index) => {
               let buttonStyle = "bg-yellow-500 text-white";
 
-              if (index === selectedTable) {
+              if (index === tableNumber) {
                 buttonStyle = "bg-green-800 text-white";
               } else if (table.occupied === false) {
                 buttonStyle = "bg-white text-black";
@@ -161,7 +163,7 @@ export default function TablesOverview() {
                 <button
                   key={index}
                   className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
-                  onClick={() => selectTable(index)}>
+                  onClick={() => selectedTable(index)}>
                   <div className="text-md ">Table {index + 1}</div>
                   <div className="text-sm ">
                     <div className="text-sm ">
@@ -185,7 +187,7 @@ export default function TablesOverview() {
       <TableOrderDetails
         tables={tables}
         setTables={setTables}
-        tableNumber={selectedTable + 1}
+        tableNumber={tableNumber + 1}
         cartItems={cartItems}
         setCartItems={setCartItems}
         tempCartItems={tempCartItems}
