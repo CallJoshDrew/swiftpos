@@ -3,7 +3,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 
 function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem }) {
-  const handleAddtoCartBtn = (ItemID) => {
+  const handleAddtoCartBtn = () => {
     // If the item has choices, add it to the cart with a quantity of 1
     if (item.choices || item.meat || item.addOn) {
         // setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.length}` }]);
@@ -44,7 +44,7 @@ function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem })
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
         <button
           className="block bg-[#cce9d4] text-black text-xs py-2 rounded-md w-full hover:bg-green-700 hover:text-white"
-          onClick={()=> handleAddtoCartBtn(item.id)}>
+          onClick={()=> handleAddtoCartBtn()}>
           Add to table
         </button>
       </div>

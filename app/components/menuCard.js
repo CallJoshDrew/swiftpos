@@ -11,11 +11,11 @@ function MenuCard({ menu, selectedCategory, tempCartItems, setTempCartItems }) {
   const [selectedAddOn, setSelectedAddOn] = useState("");
   const handleSelectedItem = (item) => {
     setSelectedItem(item);
-    setSelectedChoice(item.choices?.[0]);
-    setSelectedMeatLevel(item.meat?.[0]);
-    setSelectedAddOn(item.addOn?.[0]);
+    setSelectedChoice(item.choices?.[0] || "");
+    setSelectedMeatLevel(item.meat?.[0] || "");
+    setSelectedAddOn(item.addOn?.[0] || "");
     setSelectionModalOpen(true);
-  };
+};
 
   if (selectedCategory !== "All") {
     menu = menu.filter((item) => item.category === selectedCategory);
