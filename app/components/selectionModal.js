@@ -8,29 +8,33 @@ function SelectionModal({
   setSelectionModalOpen,
   tempCartItems,
   setTempCartItems,
-  selectedItemID,
-  setSelectedItemID,
+  selectedItem,
+  setSelectedItem,
+  selectedChoice,
+  setSelectedChoice,
+  selectedMeatLevel,
+  setSelectedMeatLevel,
+  selectedAddOn,
+  setSelectedAddOn,
 }) {
 //   console.log("TempCartItems is ", tempCartItems);
-  const [selectedChoice, setSelectedChoice] = useState("");
-  const [selectedMeatLevel, setSelectedMeatLevel] = useState("");
-  const [selectedAddOn, setSelectedAddOn] = useState("");
+  
  
   const handleSelectionBtn = () => {
     const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
     setTempCartItems([
       ...tempCartItems,
       {
-        ...selectedItemID,
+        ...selectedItem,
         quantity: 1,
-        id: `${selectedItemID.id}-${tempCartItems.length}-${uniqueId}`,
+        id: `${selectedItem.id}-${tempCartItems.length}-${uniqueId}`,
         selectedChoice,
         selectedMeatLevel,
         selectedAddOn,
       },
     ]);
     setSelectionModalOpen(false);
-    setSelectedItemID("");
+    setSelectedItem("");
     toast.success("Added to Cart", {
       duration: 2000,
       position: "top-left",
@@ -45,6 +49,7 @@ function SelectionModal({
   if (!isSelectionModalOpen) {
     return null;
   }
+  
 
   return (
     <>
@@ -52,11 +57,11 @@ function SelectionModal({
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-[400px]">
           <div className="flex flex-col gap-4">
-            {selectedItemID && (
-              <div key={selectedItemID.id} className="border rounded-md p-2 shadow-sm my-2">
+            {selectedItem && (
+              <div key={selectedItem.id} className="border rounded-md p-2 shadow-sm my-2">
                 <div className="flex">
                   <Image
-                    src={selectedItemID.image}
+                    src={selectedItem.image}
                     alt="stew"
                     width="100"
                     height="100"
@@ -64,22 +69,22 @@ function SelectionModal({
                   />
                   <div className="flex w-full items-center py-1 pl-2 pr-1">
                     <div className="flex w-full justify-between px-1 space-x-2">
-                      <div className="text-black text-base ">{selectedItemID.name} x 1</div>
+                      <div className="text-black text-base ">{selectedItem.name} x 1</div>
                       <div className="text-green-800 font-bold text-base ">
-                        {parseFloat(selectedItemID.price).toFixed(2)}
+                        {parseFloat(selectedItem.price).toFixed(2)}
                       </div>
                     </div>
                   </div>
                 </div>
-                {selectedItemID.choices && (
+                {selectedItem.choices && (
                   <select
                     id="choices"
                     className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                     onChange={(e) => {
-                      const selectedChoice = selectedItemID.choices[e.target.selectedIndex];
+                      const selectedChoice = selectedItem.choices[e.target.selectedIndex];
                       setSelectedChoice(selectedChoice);
                     }}>
-                    {selectedItemID.choices.map((choice, index) => (
+                    {selectedItem.choices.map((choice, index) => (
                       <option key={index} value={choice.name}>
                         {choice.name} + RM {choice.price.toFixed(2)}
                       </option>
@@ -87,28 +92,28 @@ function SelectionModal({
                   </select>
                 )}
 
-                {selectedItemID.meat && (
+                {selectedItem.meat && (
                   <select
                     id="meat"
                     className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                     onChange={(e) => {
-                        const selectedLevel = selectedItemID.meat[e.target.selectedIndex];
+                        const selectedLevel = selectedItem.meat[e.target.selectedIndex];
                         setSelectedMeatLevel(selectedLevel)}}>
-                    {selectedItemID.meat.map((meat, index) => (
+                    {selectedItem.meat.map((meat, index) => (
                       <option key={index} value={meat.level}>
                         {meat.level} + RM {meat.price.toFixed(2)}
                       </option>
                     ))}
                   </select>
                 )}
-                {selectedItemID.addOn && (
+                {selectedItem.addOn && (
                   <select
                     id="meat"
                     className="block appearance-none w-full py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                     onChange={(e) => {
-                        const selectedAddOn = selectedItemID.addOn[e.target.selectedIndex];
+                        const selectedAddOn = selectedItem.addOn[e.target.selectedIndex];
                         setSelectedAddOn(selectedAddOn)}}>
-                    {selectedItemID.addOn.map((addOn, index) => (
+                    {selectedItem.addOn.map((addOn, index) => (
                       <option key={index} value={addOn.type}>
                         {addOn.type} + RM {addOn.price.toFixed(2)}
                       </option>

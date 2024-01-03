@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem }) {
   const handleAddtoCartBtn = (ItemID) => {
     // If the item has choices, add it to the cart with a quantity of 1
-    if (item.choices) {
+    if (item.choices || item.meat || item.addOn) {
         // setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.length}` }]);
         handleSelectedItem(item);
     } else {

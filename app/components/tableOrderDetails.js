@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import StatusModal from "./statusModal";
+import {saveOrder} from './crudLocalStorage';
 
 function TableOrderDetails({
   tables,
@@ -26,7 +27,7 @@ function TableOrderDetails({
   handleCheckOutClick,
 }) {
   // console.log(orders);
-  console.log(selectedOrder);
+  // console.log(selectedOrder);
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
   const handleStsModalClose = (orderID) => {
@@ -221,7 +222,8 @@ function TableOrderDetails({
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-
+    // save to local storage
+    // saveOrder(order);
     toast.success("Order Accepted", {
       duration: 3000,
       position: "top-left",
@@ -318,10 +320,10 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    // console.log("Selected Order is ", selectedOrder?.items);
+    // console.log("Selected Order is", selectedOrder);
     // console.log("tempCartItems: ", tempCartItems);
     // console.log("Orders list is:",orders);
-    // console.log(tables);
+    // console.log("Tables list is", tables);
     // console.log(orderCounter);
   }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
 
