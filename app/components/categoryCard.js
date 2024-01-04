@@ -37,21 +37,27 @@ function CategoryCard({
   }, {});
   // Close Menu related functions
   const handleCloseMenu = () => {
-    const sortedCartItems = [...cartItems].sort((a, b) => a.id - b.id);
-    const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.id - b.id);
+    const cartItemsArray = cartItems && cartItems.items && Array.isArray(cartItems.items) ? cartItems.items : [];
+    const tempCartItemsArray = tempCartItems && tempCartItems.items && Array.isArray(tempCartItems.items) ? tempCartItems.items : [];
+  
+    const sortedCartItems = [...cartItemsArray].sort((a, b) => a.id - b.id);
+    const sortedTempCartItems = [...tempCartItemsArray].sort((a, b) => a.id - b.id);
+  
     if (
       JSON.stringify(sortedCartItems) === JSON.stringify(sortedTempCartItems) ||
-      tempCartItems.length === 0
+      tempCartItemsArray.length === 0
     ) {
       setShowMenu(false);
       setShowEditBtn(false);
       setOrderCompleted(true);
-      // setTempCartItems([]);
+      // setTempCartItems({ orderNumber: null, items: [] });
     } else {
       // Arrays are not equal
       setMsgModalOpen(true);
     }
   };
+  
+  
   return (
     <>
       <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">

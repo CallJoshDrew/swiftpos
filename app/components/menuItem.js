@@ -3,25 +3,30 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 
 function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem }) {
+  
   const handleAddtoCartBtn = () => {
     // If the item has choices, add it to the cart with a quantity of 1
     if (item.choices || item.meat || item.addOn) {
-        // setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.length}` }]);
+        // setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.items.length}` }]);
         handleSelectedItem(item);
     } else {
       setTempCartItems((prevItems) => {
         // If the item doesn't have choices, check if it's already in the cart
-        const existingCartItem = prevItems.find((cartItem) => cartItem.id === item.id);
+        const existingCartItem = prevItems.items.find((cartItem) => cartItem.id === item.id);
         if (existingCartItem) {
           // If the item is already in the cart, increase its quantity
-          return prevItems.map((cartItem) =>
-            cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-          );
+          return {
+            ...prevItems,
+            items: prevItems.items.map((cartItem) =>
+              cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+            ),
+          };
         } else {
           // If the item is not in the cart, add it with a quantity of 1
-          return [...prevItems, { ...item, quantity: 1 }];
+          return { ...prevItems, items: [...prevItems.items, { ...item, quantity: 1 }] };
         }
       });
+      
     }
   };
   

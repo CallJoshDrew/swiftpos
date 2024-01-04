@@ -22,17 +22,20 @@ function SelectionModal({
  
   const handleSelectionBtn = () => {
     const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
-    setTempCartItems([
+    setTempCartItems({
       ...tempCartItems,
-      {
-        ...selectedItem,
-        quantity: 1,
-        id: `${selectedItem.id}-${tempCartItems.length}-${uniqueId}`,
-        selectedChoice,
-        selectedMeatLevel,
-        selectedAddOn,
-      },
-    ]);
+      items: [
+        ...tempCartItems.items,
+        {
+          ...selectedItem,
+          quantity: 1,
+          id: `${selectedItem.id}-${tempCartItems.items.length}-${uniqueId}`,
+          selectedChoice,
+          selectedMeatLevel,
+          selectedAddOn,
+        },
+      ],
+    });    
     setSelectionModalOpen(false);
     setSelectedItem("");
     toast.success("Added to Cart", {

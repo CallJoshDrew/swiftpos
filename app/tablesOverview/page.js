@@ -13,7 +13,7 @@ export default function TablesOverview() {
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartItems, setCartItems] = useState([]);
-  const [tempCartItems, setTempCartItems] = useState([]);
+  const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] });
   const [showEditBtn, setShowEditBtn] = useState(true);
 
   // Order related states
@@ -42,6 +42,8 @@ export default function TablesOverview() {
 
   // Modal related functions
   const handlePaymentClick = (selectedOrderID) => () => {
+    // use orders array instead of tables because sharing the same component with tapao. 
+    //tapao don't have tables array... 
     setSelectedOrder(
       orders.find((order) => order.orderNumber === selectedOrderID)
     );
@@ -73,21 +75,20 @@ export default function TablesOverview() {
       }
 
       // Show the table info if it is seated
-      if (tables[tableIndex].order && tables[tableIndex].order.items) {
+      if (tables[tableIndex].order && Array.isArray(tables[tableIndex].order.items)) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
-          orderNumber: tables[tableIndex].order.orderNumber,
         }));
         setSelectedOrder(tables[tableIndex].order);
-        setCartItems(itemsWithOrderID);
-        setTempCartItems(itemsWithOrderID); // Also set tempCartItems
+        setCartItems({ orderNumber: tables[tableIndex].order.orderNumber, items: itemsWithOrderID }); // Set CartItems
+        setTempCartItems({ orderNumber: tables[tableIndex].order.orderNumber, items: itemsWithOrderID }); // Also set tempCartItems
         setShowEditBtn(false);
       } else {
         setSelectedOrder(null); // Clear the selected order
         setCartItems([]);
-        setTempCartItems([]); // Also clear tempCartItems
+        setTempCartItems({ orderNumber: null, items: [] }); // Also clear tempCartItems
       }
-      // console.log(tables);
+      console.log(tables);
       // console.log(selectedOrder);
     },
     [tables]

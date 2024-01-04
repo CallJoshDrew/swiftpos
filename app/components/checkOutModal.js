@@ -63,7 +63,7 @@ function CheckOutModal({
     setCheckOutModalOpen(false);
     setOrders(updatedOrders);
     setTables(updatedTables);
-    setTempCartItems([]);
+    setTempCartItems({ orderNumber: null, items: [] });
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
         const tableNumber = prevSelectedOrder.tableNumber;
