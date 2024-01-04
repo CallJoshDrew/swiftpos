@@ -52,33 +52,16 @@ export default function TakeAwayOverview() {
     setMsgModalOpen(false);
   };
 
-  // Function to handle modal close
-
-  // if (tables[tableIndex].order && tables[tableIndex].order.items) {
-  //   const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
-  //     ...item,
-  //     orderNumber: tables[tableIndex].order.orderNumber,
-  //   }));
-  //   setSelectedOrder(tables[tableIndex].order);
-  //   setCartItems(itemsWithOrderID);
-  //   setTempCartItems(itemsWithOrderID); // Also set tempCartItems
-  //   setShowEditBtn(false);
-  // } else {
-  //   setSelectedOrder(null); // Clear the selected order
-  //   setCartItems([]);
-  //   setTempCartItems([]); // Also clear tempCartItems
-  // }
   // Function to handle detail button click
   const handleSelectedOrderBtn = (orderNumber) => {
     const order = orders.find((order) => order.orderNumber === orderNumber);
     const itemsWithOrderID = order.items.map((item) => ({
       ...item,
-      orderNumber: order.orderNumber,
     }));
     // need to set the selectedOrder with the latest selection. If not it will remain previous updated selected order.
     setSelectedOrder(order);
-    setCartItems(itemsWithOrderID);
-    setTempCartItems(itemsWithOrderID);
+    setCartItems({ orderNumber, items: itemsWithOrderID }); // Set CartItems
+    setTempCartItems({ orderNumber, items: itemsWithOrderID }); // Also set tempCartItems
     setShowEditBtn(false);
   };
 
@@ -136,8 +119,8 @@ export default function TakeAwayOverview() {
               onClick={() => {
                 setShowMenu(true);
                 setOrderCompleted(false);
-                setCartItems([]);
-                setTempCartItems([]);
+                setCartItems({ orderNumber: null, items: [] });
+                setTempCartItems({ orderNumber: null, items: [] });
                 setShowEditBtn(true);
               }}>
               + New Order
