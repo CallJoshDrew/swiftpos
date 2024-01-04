@@ -30,7 +30,6 @@ function MenuCard({ menu, selectedCategory, tempCartItems, setTempCartItems }) {
         <MenuItem
           key={item.id}
           item={item}
-          tempCartItems={tempCartItems}
           setTempCartItems={setTempCartItems}
           handleSelectedItem={handleSelectedItem}
         />

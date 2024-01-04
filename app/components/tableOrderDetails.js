@@ -27,17 +27,22 @@ function TableOrderDetails({
   handlePaymentClick,
   handleCheckOutClick,
 }) {
-  // console.log(orders);
-  // console.log(selectedOrder);
+  // State to control the visibility of the status modal
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
+  // Function to handle the closing of the status modal
   const handleStsModalClose = (orderID) => {
+    // Close the modal
     setModalOpen(false);
+
+    // Update the status of the order to "Cancel"
     setOrders(
       orders.map((order) =>
         order.orderNumber === orderID ? { ...order, status: "Cancel" } : order
       )
     );
+
+    // Update the table's order and status
     setTables(
       tables.map((table) =>
         table.orderNumber === orderID
@@ -45,18 +50,22 @@ function TableOrderDetails({
           : table
       )
     );
+
+    // Update the selected order's status
     setSelectedOrder({
       ...selectedOrder,
       status: "Cancel",
     });
   };
-  // console.log(selectedOrder);
-  // Cart related variables and functions
+
+  // Variables to hold the subtotal, service charge, and total
   let subtotal = 0;
   let serviceCharge = 0;
   let total = 0;
 
+  // Calculate the subtotal, service charge, and total if there are items in the cart
   if (tempCartItems && tempCartItems.items && tempCartItems.items.length > 0) {
+    // Calculate the subtotal
     subtotal = tempCartItems.items.reduce(
       (total, item) =>
         total +
@@ -67,12 +76,19 @@ function TableOrderDetails({
       0
     );
     subtotal = parseFloat(subtotal.toFixed(2)); // Round to 2 decimal places
+
+    // Calculate the service charge
     serviceCharge = subtotal * serviceTax;
     serviceCharge = parseFloat(serviceCharge.toFixed(2)); // Round to 2 decimal places
+
+    // Calculate the total
     total = subtotal + serviceCharge;
     total = parseFloat(total.toFixed(2)); // Round to 2 decimal places
   }
+
+  // Function to handle the increase of an item's quantity
   const handleIncrease = (id) => {
+    // Increase the item's quantity by 1
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
@@ -81,6 +97,8 @@ function TableOrderDetails({
         ),
       };
     });
+
+    // Show a success toast
     toast.success("Added to Cart!", {
       duration: 1000,
       position: "top-left",
@@ -88,7 +106,9 @@ function TableOrderDetails({
     });
   };
 
+  // Function to handle the decrease of an item's quantity
   const handleDecrease = (id) => {
+    // Decrease the item's quantity by 1, but not less than 1
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
@@ -97,6 +117,8 @@ function TableOrderDetails({
         ),
       };
     });
+
+    // Show an error toast
     toast.error("Item is removed!", {
       duration: 1000,
       position: "top-left",
@@ -104,13 +126,17 @@ function TableOrderDetails({
     });
   };
 
+  // Function to handle the removal of an item
   const handleRemove = (id) => {
+    // Remove the item from the cart
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
         items: prevItems.items.filter((item) => item.id !== id),
       };
     });
+
+    // Show an error toast
     toast.error("Item is removed!", {
       duration: 1000,
       position: "top-left",
@@ -118,7 +144,9 @@ function TableOrderDetails({
     });
   };
 
+  // Function to handle the change of an item's choice
   const handleChoiceChange = (itemId, choiceName) => {
+    // Update the item's selected choice
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
@@ -134,7 +162,9 @@ function TableOrderDetails({
     });
   };
 
+  // Function to handle the change of an item's meat level
   const handleMeatLevel = (itemId, level) => {
+    // Update the item's selected meat level
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
@@ -147,7 +177,9 @@ function TableOrderDetails({
     });
   };
 
+  // Function to handle the addition of an add-on to an item
   const handleAddOn = (itemId, type) => {
+    // Update the item's selected add-on
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
@@ -160,6 +192,7 @@ function TableOrderDetails({
     });
   };
 
+  // Function to calculate the total quantity of items in the cart
   const calculateTotalQuantity = (tempCartItems) => {
     let totalQuantity = 0;
     tempCartItems.items.forEach((item) => {
@@ -167,23 +200,29 @@ function TableOrderDetails({
     });
     return totalQuantity;
   };
-  // console.log(calculateTotalQuantity(tempCartItems));
 
+  // Function to update the orders
   const updateOrders = (prevOrders, order) => {
+    // Find the index of the order in the previous orders
     const orderIndex = prevOrders.findIndex(
       (prevOrder) => prevOrder.orderNumber === order.orderNumber
     );
+
+    // If the order is found, update it
     if (orderIndex !== -1) {
       const updatedOrders = [...prevOrders];
       updatedOrders[orderIndex] = order;
       return updatedOrders;
     } else {
+      // If the order is not found, add it to the beginning of the orders array
       return [order, ...prevOrders];
     }
   };
 
+  // Function to update the tables
   const updateTables = (prevTables, tableNumber, order) => {
     const updatedTables = [...prevTables];
+    // Update the table with the given table number
     updatedTables[tableNumber - 1] = {
       ...updatedTables[tableNumber - 1],
       orderNumber: order.orderNumber,
@@ -193,9 +232,11 @@ function TableOrderDetails({
     return updatedTables;
   };
 
+  // Function to handle the click event of the "Place Order" button
   const handlePlaceOrderBtn = () => {
-    // console.log("handlePlaceOrderBtn called, orderCounter is", orderCounter);
+    // Hide the menu
     setShowMenu(false);
+
     // Find an existing order number
     const existingOrderNumber = tempCartItems.orderNumber;
     let orderNumber;
@@ -210,16 +251,20 @@ function TableOrderDetails({
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
     }
 
+    // Function to update the items
     const updatedItems = (prevItems) => {
       return { ...prevItems, orderNumber };
     };
 
+    // Update the cart items and temporary cart items
     setCartItems(updatedItems(cartItems));
     setTempCartItems(updatedItems(tempCartItems));
 
+    // Mark the order as completed and hide the edit button
     setOrderCompleted(true);
     setShowEditBtn(false);
 
+    // Get the current date and time
     const now = new Date();
     const timeOptions = {
       hour: "2-digit",
@@ -234,10 +279,13 @@ function TableOrderDetails({
       year: "numeric",
       timeZone: "Asia/Kuala_Lumpur",
     };
-
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
+
+    // Calculate the total quantity of items in the cart
     const totalQuantity = calculateTotalQuantity(tempCartItems);
+
+    // Create the order
     const order = {
       orderNumber,
       tableNumber,
@@ -252,11 +300,13 @@ function TableOrderDetails({
       payment: "Pending",
       paymentMethod: "Cash",
     };
+
+    // Set the selected order and update the orders and tables
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-    // save to local storage
-    // saveOrder(order);
+
+    // Show a success toast
     toast.success("Order has been accepted", {
       duration: 3000,
       position: "top-left",
@@ -264,7 +314,9 @@ function TableOrderDetails({
     });
   };
 
+  // Variable to hold the order status button
   let orderStatusBtn;
+  // If the cart is empty, show the "Empty Cart" button
   if (tempCartItems && tempCartItems.items && tempCartItems.items.length === 0) {
     orderStatusBtn = (
       <button
@@ -274,6 +326,7 @@ function TableOrderDetails({
       </button>
     );
   } else if (!orderCompleted) {
+     // If the order is not completed, show the "Place Order & Print" button
     orderStatusBtn = (
       <button
         className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -282,6 +335,7 @@ function TableOrderDetails({
       </button>
     );
   } else if (selectedOrder?.status === "Cancel") {
+     // If the order is cancelled, show the "Cancelled Order" button
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -294,6 +348,7 @@ function TableOrderDetails({
     selectedOrder?.payment != "Paid" &&
     selectedOrder?.status !== "Completed"
   ) {
+    // If the order is completed but not paid, show the order status button and the cancel button
     orderStatusBtn = (
       <div className="flex space-x-2">
         <button
@@ -321,6 +376,7 @@ function TableOrderDetails({
       </div>
     );
   } else if (orderCompleted && selectedOrder?.status == "Completed") {
+     // If the order is completed, show the "Completed" button
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -329,7 +385,9 @@ function TableOrderDetails({
       </button>
     );
   }
+  // Variable to hold the payment status button
   let paymentStatusBtn;
+  // If there are items in the cart, the order is completed, and the edit button is not shown
   if (
     tempCartItems &&
     tempCartItems.items &&
@@ -338,8 +396,10 @@ function TableOrderDetails({
     !showEditBtn
   ) {
     if (selectedOrder?.status === "Cancel") {
+      // If the order is cancelled, don't show the payment status button
       paymentStatusBtn = null;
     } else if (selectedOrder?.payment != "Paid") {
+      // If the order is not paid, show the "Make Payment" button
       paymentStatusBtn = (
         <button
           className="bg-green-800 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -348,6 +408,7 @@ function TableOrderDetails({
         </button>
       );
     } else if (selectedOrder?.payment === "Paid") {
+      // If the order is paid, show the "Check Out" button
       paymentStatusBtn = (
         <button
           className="bg-yellow-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -359,10 +420,10 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    console.log("Selected Order is", selectedOrder);
-    console.log("tempCartItems: ", tempCartItems);
-    console.log("Orders list is:", orders);
-    console.log("Tables list is", tables);
+    // console.log("Selected Order is", selectedOrder);
+    // console.log("tempCartItems: ", tempCartItems);
+    // console.log("Orders list is:", orders);
+    // console.log("Tables list is", tables);
     // console.log(orderCounter);
   }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
 
@@ -517,7 +578,6 @@ function TableOrderDetails({
                   )}
                   {item.selectedChoice && (
                     <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
-                      {/* x {item.quantity}:  */}
                       Add On x {item.quantity}: RM{" "}
                       {(parseFloat(itemTotalAddOn) * item.quantity).toFixed(2)}
                     </div>

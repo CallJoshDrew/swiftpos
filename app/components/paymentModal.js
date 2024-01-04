@@ -12,11 +12,13 @@ function PaymentModal({
   tables = [], // default value for tables
   setTables = () => {}, // default value for setTables
 }) {
+  // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
   const [amountChange, setAmountChange] = useState(0);
   const [inputValue, setInputValue] = useState(0);
 
+  // Use an effect hook to update the amount received and input value when the selected order changes
   useEffect(() => {
     if (selectedOrder && typeof selectedOrder.totalPrice === "number") {
       setAmountReceived(Number(selectedOrder.totalPrice.toFixed(2)));
@@ -24,26 +26,30 @@ function PaymentModal({
     }
   }, [selectedOrder]);
 
+  // Define a function to handle the payment status
   const handlePaymentStatus = (newAmountReceived, newAmountChange) => {
+    // Close the payment modal
     setPayModalOpen(false);
+
+    // Get the current date and time
     const now = new Date();
-      const timeOptions = {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-        timeZone: "Asia/Kuala_Lumpur",
-      };
-
-      const dateOptions = {
-        weekday: "short",
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-        timeZone: "Asia/Kuala_Lumpur",
-      };
-
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kuala_Lumpur",
+    };
+    const dateOptions = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Kuala_Lumpur",
+    };
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
+
+    // Update the orders with the payment details
     const updatedOrders = orders.map((order) => {
       if (order.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -59,17 +65,16 @@ function PaymentModal({
         return order;
       }
     });
-
     setOrders(updatedOrders);
 
-    // Update tables array only if tables and setTables are defined
+    // Update the tables with the payment details, if tables and setTables are defined
     if (Array.isArray(tables) && tables && setTables) {
       const updatedTables = tables.map((table) => {
         if (table.order.orderNumber === selectedOrder?.orderNumber) {
           return {
             ...table,
             order: {
-              ...table.order, // keep existing properties
+              ...table.order,
               payment: "Paid",
               status: "Completed",
               paymentMethod,
@@ -82,10 +87,10 @@ function PaymentModal({
           return table;
         }
       });
-
       setTables(updatedTables);
     }
 
+    // Update the selected order with the payment details
     setSelectedOrder((prevSelectedOrder) => {
       if (prevSelectedOrder.orderNumber === selectedOrder?.orderNumber) {
         return {
@@ -102,9 +107,10 @@ function PaymentModal({
       }
     });
 
-    // Reset paymentMethod back to "Cash"
+    // Reset the payment method back to "Cash"
     setPaymentMethod("Cash");
 
+    // Show a success message to the user
     toast.success("Payment was successful!", {
       duration: 2000,
       position: "top-left",
@@ -112,10 +118,12 @@ function PaymentModal({
     });
   };
 
+  // Define a function to close the payment modal
   const handleModalClose = () => {
     setPayModalOpen(false);
   };
 
+  // If the payment modal is not open, don't render anything
   if (!isPayModalOpen) {
     return null;
   }
@@ -170,7 +178,9 @@ function PaymentModal({
               className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={() => {
                 const newAmountReceived = Number(Number(inputValue).toFixed(2));
-                const newAmountChange = Number((Number(inputValue) - Number(selectedOrder?.totalPrice)).toFixed(2));
+                const newAmountChange = Number(
+                  (Number(inputValue) - Number(selectedOrder?.totalPrice)).toFixed(2)
+                );
                 handlePaymentStatus(newAmountReceived, newAmountChange);
                 setAmountReceived(newAmountReceived);
                 setAmountChange(newAmountChange);

@@ -2,19 +2,19 @@ import React from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem }) {
-  
+function MenuItem({ item, setTempCartItems, handleSelectedItem }) {
   const handleAddtoCartBtn = () => {
-    // If the item has choices, add it to the cart with a quantity of 1
+    // Check if the item has choices, meat, or addOn properties
     if (item.choices || item.meat || item.addOn) {
-        // setTempCartItems([...tempCartItems, { ...item, quantity: 1, id: `${item.id}-${tempCartItems.items.length}` }]);
-        handleSelectedItem(item);
+      // If it does, handle the selected item (this could be a separate function that handles these types of items)
+      handleSelectedItem(item);
     } else {
+      // If the item doesn't have choices, meat, or addOn properties, we'll handle it here
       setTempCartItems((prevItems) => {
-        // If the item doesn't have choices, check if it's already in the cart
+        // Check if the item is already in the cart
         const existingCartItem = prevItems.items.find((cartItem) => cartItem.id === item.id);
         if (existingCartItem) {
-          // If the item is already in the cart, increase its quantity
+          // If the item is already in the cart, we'll increase its quantity by 1
           return {
             ...prevItems,
             items: prevItems.items.map((cartItem) =>
@@ -22,10 +22,11 @@ function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem })
             ),
           };
         } else {
-          // If the item is not in the cart, add it with a quantity of 1
+          // If the item is not in the cart, we'll add it to the cart with a quantity of 1
           return { ...prevItems, items: [...prevItems.items, { ...item, quantity: 1 }] };
         }
       });
+      // Show a success message to the user
       toast.success("Added to Cart!", {
         duration: 1000,
         position: "top-left",
@@ -33,7 +34,7 @@ function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem })
       });
     }
   };
-  
+
   return (
     <div
       key={item.id}
@@ -53,7 +54,7 @@ function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem })
       <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
         <button
           className="block bg-[#cce9d4] text-black text-xs py-2 rounded-md w-full hover:bg-green-700 hover:text-white"
-          onClick={()=> handleAddtoCartBtn()}>
+          onClick={() => handleAddtoCartBtn()}>
           Add to table
         </button>
       </div>

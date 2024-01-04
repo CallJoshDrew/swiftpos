@@ -8,64 +8,64 @@ import ConfirmModal from "../components/confirmModal";
 import CheckOutModal from "../components/checkOutModal";
 
 export default function TablesOverview() {
-  // Menu related states
-  const [showMenu, setShowMenu] = useState(false);
-  const [menu, setMenu] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [cartItems, setCartItems] = useState({ orderNumber: null, items: [] });
-  const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] });
-  const [showEditBtn, setShowEditBtn] = useState(true);
+  // State variables related to the menu
+  const [showMenu, setShowMenu] = useState(false); // Controls whether the menu is shown
+  const [menu, setMenu] = useState([]); // Stores the menu items
+  const [selectedCategory, setSelectedCategory] = useState("All"); // Stores the currently selected category
+  const [cartItems, setCartItems] = useState({ orderNumber: null, items: [] }); 
+  const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] }); 
+  const [showEditBtn, setShowEditBtn] = useState(true); // Controls whether the edit button is shown
 
-  // Order related states
-  const [serviceTax, setServiceTax] = useState(0);
-  const [orderCompleted, setOrderCompleted] = useState(false);
-  const [orderCounter, setOrderCounter] = useState(1);
-  const [orders, setOrders] = useState([]);
-  const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [selectedOrder, setSelectedOrder] = useState([]);
+  // State variables related to orders
+  const [serviceTax, setServiceTax] = useState(0); // Stores the service tax or service charges
+  const [orderCompleted, setOrderCompleted] = useState(false); // Indicates whether the order is completed
+  const [orderCounter, setOrderCounter] = useState(1); 
+  const [orders, setOrders] = useState([]); // Stores the orders
+  const [currentDate, setCurrentDate] = useState(new Date().toDateString()); // Stores the current date
+  const [selectedOrder, setSelectedOrder] = useState([]); // Stores the currently selected order
 
-  // Modal related states
-  const [isPayModalOpen, setPayModalOpen] = useState(false);
-  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
+  // State variables related to modals
+  const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false); // Controls whether the message modal is open
+  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
 
-  // Table related states
+  // State variables related to tables
   const [tables, setTables] = useState(
     Array.from({ length: 18 }, () => ({
       occupied: false,
       orderNumber: null,
       order: [],
     }))
-  );
-  const [tableNumber, setTableNumber] = useState(null);
-  // console.log(orders);
+  ); // Stores the tables
+  const [tableNumber, setTableNumber] = useState(null); // Stores the currently selected table number
 
-  // Modal related functions
+  // Functions related to modals
   const handlePaymentClick = (selectedOrderID) => () => {
-    // use orders array instead of tables because sharing the same component with tapao. 
-    //tapao don't have tables array... 
-    setSelectedOrder(
-      orders.find((order) => order.orderNumber === selectedOrderID)
-    );
+    // Find the selected order in the orders array and set it as the selected order
+    setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
+    // Open the payment modal
     setPayModalOpen(true);
   };
 
   const handleMsgModalClose = () => {
+    // Close the message modal
     setMsgModalOpen(false);
   };
 
   const handleCheckOutClick = (selectedOrderID) => () => {
-    setSelectedOrder(
-      orders.find((order) => order.orderNumber === selectedOrderID)
-    );
+    // Find the selected order in the orders array and set it as the selected order
+    setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
+    // Open the checkout modal
     setCheckOutModalOpen(true);
   };
 
-  // Table related functions
+  // Functions related to tables
   const selectedTable = useCallback(
     (tableIndex) => {
+      // Set the selected table number
       setTableNumber(tableIndex);
-      // do not show menu if the table is seated
+      // If the table is occupied, set orderCompleted to true and hide the menu and edit button
+      // If the table is not occupied, set orderCompleted to false and show the menu and edit button
       if (tables[tableIndex].occupied) {
         setOrderCompleted(true);
       } else {
@@ -74,36 +74,39 @@ export default function TablesOverview() {
         setShowEditBtn(true);
       }
 
-      // Show the table info if it is seated
+      // If the table is occupied, show the table info
       if (tables[tableIndex].order && Array.isArray(tables[tableIndex].order.items)) {
         const itemsWithOrderID = tables[tableIndex].order.items.map((item) => ({
           ...item,
         }));
         setSelectedOrder(tables[tableIndex].order);
-        setCartItems({ orderNumber: tables[tableIndex].order.orderNumber, items: itemsWithOrderID }); // Set CartItems
-        setTempCartItems({ orderNumber: tables[tableIndex].order.orderNumber, items: itemsWithOrderID }); // Also set tempCartItems
+        setCartItems({
+          orderNumber: tables[tableIndex].order.orderNumber,
+          items: itemsWithOrderID,
+        }); // Set CartItems
+        setTempCartItems({
+          orderNumber: tables[tableIndex].order.orderNumber,
+          items: itemsWithOrderID,
+        }); // Also set tempCartItems
         setShowEditBtn(false);
       } else {
-        setSelectedOrder(null); // Clear the selected order
+        // If the table is not occupied, clear the selected order and cart items
+        setSelectedOrder(null);
         setCartItems({ orderNumber: null, items: [] });
-        setTempCartItems({ orderNumber: null, items: [] }); // Also clear tempCartItems
+        setTempCartItems({ orderNumber: null, items: [] });
       }
-      console.log(tables);
-      // console.log(selectedOrder);
     },
     [tables]
   );
 
-  // dependencies
-
-  // Fetch menu data
+  // Fetch the menu data when the component mounts
   useEffect(() => {
     fetch("/api/menu")
       .then((response) => response.json())
       .then((data) => setMenu(data));
   }, []);
 
-  // Update order counter
+  // Update the order counter when the date changes
   useEffect(() => {
     const today = new Date().toDateString();
     if (today !== currentDate) {
@@ -114,24 +117,26 @@ export default function TablesOverview() {
 
   return (
     <>
+      {/* // If the menu is shown, render the menu and category cards */}
       {showMenu ? (
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 py-10">
           <div className="relative">
+            {/* Category card component with various props */}
             <CategoryCard
               menu={menu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
               cartItems={cartItems}
               tempCartItems={tempCartItems}
-              setTempCartItems={setTempCartItems}
               setOrderCompleted={setOrderCompleted}
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}
             />
           </div>
-          {/* card begins here */}
+          {/* Menu card component begins here */}
           <div className="mt-[130px] px-4">
+            {/* Menu card component with various props */}
             <MenuCard
               menu={menu}
               selectedCategory={selectedCategory}
@@ -141,22 +146,19 @@ export default function TablesOverview() {
           </div>
         </div>
       ) : (
+        // If the menu is not shown, render the table selection interface
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
-          <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">
-            Select Table
-          </div>
+          <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">Select Table</div>
           <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
+            {/* Map over the tables and render a button for each one */}
             {tables.map((table, index) => {
+              // Determine the button style based on the table's state
               let buttonStyle = "bg-yellow-500 text-white";
-
               if (index === tableNumber) {
                 buttonStyle = "bg-green-800 text-white";
               } else if (table.occupied === false) {
                 buttonStyle = "bg-white text-black";
-              } else if (
-                table.occupied === true &&
-                table.order.payment === "Paid"
-              ) {
+              } else if (table.occupied === true && table.order.payment === "Paid") {
                 buttonStyle = "bg-gray-500 text-white";
               }
 
@@ -168,6 +170,7 @@ export default function TablesOverview() {
                   <div className="text-md ">Table {index + 1}</div>
                   <div className="text-sm ">
                     <div className="text-sm ">
+                      {/* Display the table's status */}
                       {table.occupied
                         ? table.order.payment === "Paid"
                           ? table.order.paymentMethod === "Cash"

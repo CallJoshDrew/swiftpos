@@ -3,76 +3,61 @@ import { useEffect, useState } from "react";
 import TakeAwayOrderDetails from "../components/takeAwayOrderDetails";
 import MenuCard from "../components/menuCard";
 import CategoryCard from "../components/categoryCard";
-import StatusModal from "../components/statusModal";
 import ConfirmModal from "../components/confirmModal";
 import PaymentModal from "../components/paymentModal";
 
 export default function TakeAwayOverview() {
-  // Menu related states
-  const [showMenu, setShowMenu] = useState(false);
-  const [menu, setMenu] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [cartItems, setCartItems] = useState([]);
-  const [tempCartItems, setTempCartItems] = useState([]);
-  const [showEditBtn, setShowEditBtn] = useState(true);
+  // States related to the menu and cart
+  const [showMenu, setShowMenu] = useState(false); // State to control the visibility of the menu
+  const [menu, setMenu] = useState([]); // State to store the menu items
+  const [selectedCategory, setSelectedCategory] = useState("All"); 
+  const [cartItems, setCartItems] = useState([]); 
+  const [tempCartItems, setTempCartItems] = useState([]); 
+  const [showEditBtn, setShowEditBtn] = useState(true); // State to control the visibility of the edit button
 
-  // State for cart and order details
-
-  const [serviceTax, setServiceTax] = useState(0);
-  const [orderCompleted, setOrderCompleted] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const [orderCounter, setOrderCounter] = useState(1);
+  // States related to the order details
+  const [serviceTax, setServiceTax] = useState(0); // State to store the service tax or service charges
+  const [orderCompleted, setOrderCompleted] = useState(false); 
+  const [orders, setOrders] = useState([]); 
+  const [orderCounter, setOrderCounter] = useState(1); // State to count the number of orders
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
 
-  // temp
-  const [tables, setTables] = useState("TAPAO");
+  // States related to the modals
+  const [isPayModalOpen, setPayModalOpen] = useState(false); // State to control the visibility of the payment modal
+  const [isMsgModalOpen, setMsgModalOpen] = useState(false); // State to control the visibility of the message modal
+  const [selectedOrder, setSelectedOrder] = useState(null); // State to store the selected order
 
-  // Modal related states
-  const [isPayModalOpen, setPayModalOpen] = useState(false);
-  const [isMsgModalOpen, setMsgModalOpen] = useState(false);
-  // const [isStatusModalOpen, setModalOpen] = useState(false);
-
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  // const [selectedStatus, setSelectedStatus] = useState(null);
-
-  // Function to handle button click
-  // const handleChangeStatusBtn = (orderNumber) => () => {
-  //   const order = orders.find((order) => order.orderNumber === orderNumber);
-  //   setSelectedStatus(order.status);
-  //   setModalOpen(true);
-  // };
-
-  // Modal related functions
+  // Function to handle the click event of the payment button
   const handlePaymentClick = (selectedOrderID) => () => {
     setSelectedOrder(orders.find((order) => order.orderNumber === selectedOrderID));
     setPayModalOpen(true);
   };
 
+  // Function to handle the close event of the message modal
   const handleMsgModalClose = () => {
     setMsgModalOpen(false);
   };
 
-  // Function to handle detail button click
+  // Function to handle the click event of the order button
   const handleSelectedOrderBtn = (orderNumber) => {
     const order = orders.find((order) => order.orderNumber === orderNumber);
     const itemsWithOrderID = order.items.map((item) => ({
       ...item,
     }));
-    // need to set the selectedOrder with the latest selection. If not it will remain previous updated selected order.
     setSelectedOrder(order);
-    setCartItems({ orderNumber, items: itemsWithOrderID }); // Set CartItems
-    setTempCartItems({ orderNumber, items: itemsWithOrderID }); // Also set tempCartItems
+    setCartItems({ orderNumber, items: itemsWithOrderID });
+    setTempCartItems({ orderNumber, items: itemsWithOrderID });
     setShowEditBtn(false);
   };
 
-  // Fetch menu data
+  // Fetch the menu data when the component mounts
   useEffect(() => {
     fetch("/api/menu")
       .then((response) => response.json())
       .then((data) => setMenu(data));
   }, []);
 
-  // Update order counter
+  // Update the order counter when the date changes
   useEffect(() => {
     const today = new Date().toDateString();
     if (today !== currentDate) {
@@ -81,7 +66,6 @@ export default function TakeAwayOverview() {
     }
   }, [currentDate]);
 
-  // console.log(orders);
   return (
     <>
       {showMenu ? (
@@ -93,7 +77,6 @@ export default function TakeAwayOverview() {
               setSelectedCategory={setSelectedCategory}
               cartItems={cartItems}
               tempCartItems={tempCartItems}
-              setTempCartItems={setTempCartItems}
               setOrderCompleted={setOrderCompleted}
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
@@ -194,16 +177,7 @@ export default function TakeAwayOverview() {
         orders={orders}
         setOrders={setOrders}
         setSelectedOrder={setSelectedOrder}
-        tables={tables}
-        setTables={setTables}
       />
-      {/* <StatusModal
-        isStatusModalOpen={isStatusModalOpen}
-        handleStsModalClose={handleStsModalClose}
-        selectedOrder={selectedOrder}
-        selectedStatus={selectedStatus}
-        setSelectedStatus={setSelectedStatus}
-      /> */}
       <ConfirmModal
         isOpenMsg={isMsgModalOpen}
         onCloseMsg={handleMsgModalClose}

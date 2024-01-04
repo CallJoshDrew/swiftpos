@@ -9,7 +9,6 @@ export default function StatusModal({
 }) {
 
   const handleStatusSubmitBtn = () => {
-    // console.log("clicked");
     handleStsModalClose(selectedOrder.orderNumber);
     toast.success("Order is Cancelled'", {
       duration: 1000,
