@@ -12,7 +12,7 @@ export default function StatusModal({
     // console.log("clicked");
     handleStsModalClose(selectedOrder.orderNumber);
     toast.success("Order is Cancelled'", {
-      duration: 2000,
+      duration: 1000,
       position: "top-left",
       reverseOrder: false,
     });

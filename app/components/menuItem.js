@@ -26,7 +26,11 @@ function MenuItem({ item, tempCartItems, setTempCartItems, handleSelectedItem })
           return { ...prevItems, items: [...prevItems.items, { ...item, quantity: 1 }] };
         }
       });
-      
+      toast.success("Added to Cart!", {
+        duration: 1000,
+        position: "top-left",
+        reverseOrder: false,
+      });
     }
   };
   

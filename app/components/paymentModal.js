@@ -105,7 +105,7 @@ function PaymentModal({
     // Reset paymentMethod back to "Cash"
     setPaymentMethod("Cash");
 
-    toast.success("Payment Done", {
+    toast.success("Payment was successful!", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,

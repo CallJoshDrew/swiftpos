@@ -68,6 +68,11 @@ function TakeAwayOrderDetails({
         ),
       };
     });
+    toast.success("Added to Cart!", {
+      duration: 1000,
+      position: "top-left",
+      reverseOrder: false,
+    });
   };
 
   const handleDecrease = (id) => {
@@ -79,6 +84,11 @@ function TakeAwayOrderDetails({
         ),
       };
     });
+    toast.error("Item is removed!", {
+      duration: 1000,
+      position: "top-left",
+      reverseOrder: false,
+    });
   };
 
   const handleRemove = (id) => {
@@ -88,8 +98,8 @@ function TakeAwayOrderDetails({
         items: prevItems.items.filter((item) => item.id !== id),
       };
     });
-    toast.success("Item is removed!", {
-      duration: 2000,
+    toast.error("Item is removed!", {
+      duration: 1000,
       position: "top-left",
       reverseOrder: false,
     });
@@ -220,7 +230,7 @@ function TakeAwayOrderDetails({
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
 
-    toast.success("Order Accepted", {
+    toast.success("Order has been accepted", {
       duration: 3000,
       position: "top-left",
       reverseOrder: false,
@@ -255,16 +265,16 @@ function TakeAwayOrderDetails({
   } else if (
     orderCompleted &&
     selectedOrder?.payment != "Paid" &&
-    selectedOrder.status !== "Completed"
+    selectedOrder?.status !== "Completed"
   ) {
     orderStatusBtn = (
       <div className="flex space-x-2">
         <button
           className={`flex-1  rounded-md p-2 text-white text-sm font-medium bg-gray-500 ${
-            selectedOrder.status === "Completed" ? "text-green-800" : "text-red-700"
+            selectedOrder?.status === "Completed" ? "text-green-800" : "text-red-700"
           }`}
           disabled>
-          {selectedOrder.status}
+          {selectedOrder?.status}
         </button>
         <button
           className="bg-red-700 px-2 rounded-md"

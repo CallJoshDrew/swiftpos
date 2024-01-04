@@ -12,7 +12,7 @@ export default function TablesOverview() {
   const [showMenu, setShowMenu] = useState(false);
   const [menu, setMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState({ orderNumber: null, items: [] });
   const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] });
   const [showEditBtn, setShowEditBtn] = useState(true);
 
@@ -85,7 +85,7 @@ export default function TablesOverview() {
         setShowEditBtn(false);
       } else {
         setSelectedOrder(null); // Clear the selected order
-        setCartItems([]);
+        setCartItems({ orderNumber: null, items: [] });
         setTempCartItems({ orderNumber: null, items: [] }); // Also clear tempCartItems
       }
       console.log(tables);
@@ -218,7 +218,6 @@ export default function TablesOverview() {
         setSelectedOrder={setSelectedOrder}
         tables={tables}
         setTables={setTables}
-        setCartItems={setCartItems}
       />
       <ConfirmModal
         isOpenMsg={isMsgModalOpen}

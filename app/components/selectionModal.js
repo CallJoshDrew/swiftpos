@@ -38,8 +38,8 @@ function SelectionModal({
     });    
     setSelectionModalOpen(false);
     setSelectedItem("");
-    toast.success("Added to Cart", {
-      duration: 2000,
+    toast.success("Added to cart!", {
+      duration: 1000,
       position: "top-left",
       reverseOrder: false,
     });

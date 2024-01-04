@@ -26,7 +26,7 @@ export default function SalesReport() {
         </svg>
         <div className="flex flex-col py-2 px-4">
           <div className="text-gray-500 text-sm">Total Sales</div>
-          <div className="text-gray-500 text-md text-green-700">RM 88,888</div>
+          <div className="text-md text-green-700">RM 88,888</div>
         </div>
       </div>
       <div className="bg-gray-100 text-black py-4">

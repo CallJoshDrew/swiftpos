@@ -15,6 +15,7 @@ function ConfirmModal({
     setOrderCompleted(true);
     // Update tempCartItems with cartItems when "Yes" is clicked
     setTempCartItems(cartItems);
+    console.log(cartItems);
     onCloseMsg();
   };
 

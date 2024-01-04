@@ -74,7 +74,7 @@ function CheckOutModal({
         return prevSelectedOrder;
       }
     });
-    toast.success("Successfully Check Out", {
+    toast.success("Successfully Check Out!", {
       duration: 2000,
       position: "top-left",
       reverseOrder: false,

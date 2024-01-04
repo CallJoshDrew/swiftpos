@@ -196,7 +196,6 @@ export default function TakeAwayOverview() {
         setSelectedOrder={setSelectedOrder}
         tables={tables}
         setTables={setTables}
-        setCartItems={setCartItems}
       />
       {/* <StatusModal
         isStatusModalOpen={isStatusModalOpen}
