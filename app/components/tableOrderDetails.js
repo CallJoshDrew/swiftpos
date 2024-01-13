@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import StatusModal from "./statusModal";
 import { saveOrder } from "./crudLocalStorage";
+import RemarksModal from "./reMarksModal";
 
 function TableOrderDetails({
   tables,
@@ -56,6 +57,14 @@ function TableOrderDetails({
       ...selectedOrder,
       status: "Cancel",
     });
+  };
+
+  // Add Remarks Modal and useState
+  const [isRemarksModalOpen, setRemarksOpen] = useState(false);
+  const [remarks, setRemarks] = useState("");
+  const handleRemarksModalClose = (customerRemarks) => {
+    setRemarksOpen(false);
+    console.log(customerRemarks);
   };
 
   // Variables to hold the subtotal, service charge, and total
@@ -299,13 +308,15 @@ function TableOrderDetails({
       status: "Placed Order",
       payment: "Pending",
       paymentMethod: "Cash",
+      remarks,
     };
 
     // Set the selected order and update the orders and tables
     setSelectedOrder(order);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-
+    setRemarks("");
+    console.log("Remarks from update Order is", remarks);
     // Show a success toast
     toast.success("Order has been accepted", {
       duration: 3000,
@@ -326,7 +337,7 @@ function TableOrderDetails({
       </button>
     );
   } else if (!orderCompleted) {
-     // If the order is not completed, show the "Place Order & Print" button
+    // If the order is not completed, show the "Place Order & Print" button
     orderStatusBtn = (
       <button
         className="bg-green-700 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -335,7 +346,7 @@ function TableOrderDetails({
       </button>
     );
   } else if (selectedOrder?.status === "Cancel") {
-     // If the order is cancelled, show the "Cancelled Order" button
+    // If the order is cancelled, show the "Cancelled Order" button
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -376,7 +387,7 @@ function TableOrderDetails({
       </div>
     );
   } else if (orderCompleted && selectedOrder?.status == "Completed") {
-     // If the order is completed, show the "Completed" button
+    // If the order is completed, show the "Completed" button
     orderStatusBtn = (
       <button
         className="bg-gray-500 w-full my-4 rounded-md p-2 text-white text-sm font-medium"
@@ -420,15 +431,15 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    // console.log("Selected Order is", selectedOrder);
+    console.log("Selected Order is", selectedOrder);
     // console.log("tempCartItems: ", tempCartItems);
-    // console.log("Orders list is:", orders);
+    console.log("Orders list is:", orders);
     // console.log("Tables list is", tables);
     // console.log(orderCounter);
   }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
 
   return (
-    <div className="py-10 w-2/6 flex-auto flex flex-col relative">
+    <div className="py-10 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
         <div className="rounded-lg px-2 flex my-1 justify-between items-center">
           <div className="flex">
@@ -444,6 +455,31 @@ function TableOrderDetails({
               </div>
             </div>
           </div>
+          {tempCartItems &&
+            tempCartItems.items &&
+            tempCartItems.items.length > 0 &&
+            showEditBtn && (
+              <div
+                className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
+                onClick={() => {
+                  setRemarksOpen(true);
+                }}>
+                <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-white cursor-pointer">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                  />
+                </svg>
+              </div>
+            )}
           {tempCartItems &&
             tempCartItems.items &&
             tempCartItems.items.length > 0 &&
@@ -666,6 +702,13 @@ function TableOrderDetails({
         </div>
         {orderStatusBtn}
         {paymentStatusBtn}
+        <RemarksModal
+          isRemarksModalOpen={isRemarksModalOpen}
+          handleRemarksModalClose={handleRemarksModalClose}
+          setRemarksOpen={setRemarksOpen}
+          setRemarks={setRemarks}
+          remarks={remarks}
+        />
         <StatusModal
           isStatusModalOpen={isStatusModalOpen}
           handleStsModalClose={handleStsModalClose}
