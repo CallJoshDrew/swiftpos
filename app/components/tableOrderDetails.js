@@ -266,7 +266,7 @@ function TableOrderDetails({
     };
 
     // Update the cart items and temporary cart items
-    setCartItems(updatedItems(cartItems));
+    setCartItems(updatedItems(tempCartItems));
     setTempCartItems(updatedItems(tempCartItems));
 
     // Mark the order as completed and hide the edit button
@@ -431,12 +431,13 @@ function TableOrderDetails({
   }
 
   useEffect(() => {
-    console.log("Selected Order is", selectedOrder);
+    // console.log("Selected Order is", selectedOrder);
     // console.log("tempCartItems: ", tempCartItems);
-    console.log("Orders list is:", orders);
+    // console.log("cartItems: ", cartItems);
+    // console.log("Orders list is:", orders);
     // console.log("Tables list is", tables);
     // console.log(orderCounter);
-  }, [selectedOrder, tables, tempCartItems, orders, orderCounter]);
+  }, [selectedOrder, tables, cartItems, tempCartItems, orders, orderCounter]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative z-20">

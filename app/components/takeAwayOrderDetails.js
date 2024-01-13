@@ -241,7 +241,7 @@ function TakeAwayOrderDetails({
     };
 
     // Update the cart items and temporary cart items
-    setCartItems(updatedItems(cartItems));
+    setCartItems(updatedItems(tempCartItems));
     setTempCartItems(updatedItems(tempCartItems));
 
     // Mark the order as completed and hide the edit button

@@ -41,7 +41,6 @@ function CategoryCard({
       tempCartItems && tempCartItems.items && Array.isArray(tempCartItems.items)
         ? tempCartItems.items
         : [];
-
     // Sort the items in cartItems and tempCartItems by their id
     const sortedCartItems = [...cartItemsArray].sort((a, b) => a.id - b.id);
     const sortedTempCartItems = [...tempCartItemsArray].sort((a, b) => a.id - b.id);

@@ -177,6 +177,7 @@ export default function TakeAwayOverview() {
         orders={orders}
         setOrders={setOrders}
         setSelectedOrder={setSelectedOrder}
+        tables="TAPAO"
       />
       <ConfirmModal
         isOpenMsg={isMsgModalOpen}
