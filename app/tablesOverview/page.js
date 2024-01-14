@@ -29,9 +29,11 @@ export default function TablesOverview() {
   const [isMsgModalOpen, setMsgModalOpen] = useState(false); // Controls whether the message modal is open
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
 
-  const [remarks, setRemarks] = useState("No Remarks");
+  // State variables related to remarks
+  const [remarks, setRemarks] = useState("Initial");
   const [isRemarksModalOpen, setRemarksOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [showRemarksBtn, setShowRemarksBtn] = useState(true);
 
   // State variables related to tables
   const [tables, setTables] = useState(
@@ -79,8 +81,8 @@ export default function TablesOverview() {
         setOrderCompleted(false);
         setShowMenu(true);
         setShowEditBtn(true);
-        setRemarks("No Remarks");
         setRemarksOpen(false);
+        setRemarks("Initial");
       }
 
       // If the table is occupied, show the table info
@@ -233,6 +235,8 @@ export default function TablesOverview() {
         setRemarksOpen={setRemarksOpen}
         isEditing={isEditing}
         setIsEditing={setIsEditing}
+        showRemarksBtn={showRemarksBtn}
+        setShowRemarksBtn={setShowRemarksBtn}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}

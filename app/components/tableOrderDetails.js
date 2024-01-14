@@ -33,8 +33,10 @@ function TableOrderDetails({
   setRemarksOpen,
   isEditing,
   setIsEditing,
+  showRemarksBtn,
+  setShowRemarksBtn,
 }) {
-  console.log(remarks);
+  // console.log("Remarks is now ", remarks);
   // State to control the visibility of the status modal
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
@@ -65,15 +67,32 @@ function TableOrderDetails({
       status: "Cancel",
     });
   };
-
-  // When user starts editing
-  const handleEditStart = () => {
-    setIsEditing(true);
+  
+  // Remove Remarks
+  const handleRemoveRemarks = () => {
+    setSelectedOrder((prevOrder) => {
+      if (prevOrder) {
+        const newOrder = { ...prevOrder };
+        delete newOrder.remarks;
+        return newOrder;
+      }
+      return null;
+    });
+    setRemarksOpen(false);
+    setIsEditing(false);
+    setRemarks("Initial");
+    setShowRemarksBtn(true);
   };
 
-  const handleRemarksModalClose = (customerRemarks) => {
-    setRemarksOpen(false);
-    // console.log(customerRemarks);
+  const handleAddRemarks = () => {
+    setSelectedOrder({
+      ...selectedOrder,
+      // reason why it is empty string is convenience for user to type straight away wihtout removing the words
+      remarks: "",
+    });
+    setRemarksOpen(true);
+    setIsEditing(true);
+    setShowRemarksBtn(false);
   };
 
   const [rows, setRows] = useState(2);
@@ -320,12 +339,13 @@ function TableOrderDetails({
       payment: "Pending",
       paymentMethod: "Cash",
     };
-    if (remarks !== "No Remarks") {
+    if (remarks !== "Initial") {
       order.remarks = remarks;
     }
     // Set the selected order and update the orders and tables
     setSelectedOrder(order);
     console.log(remarks);
+    setShowRemarksBtn(true);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
     // setRemarks("No Remarks");
@@ -477,17 +497,10 @@ function TableOrderDetails({
           {tempCartItems &&
             tempCartItems.items &&
             tempCartItems.items.length > 0 &&
-            showEditBtn && (
+            showEditBtn && showRemarksBtn && (
               <div
                 className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
-                onClick={() => {
-                  setRemarksOpen(true);
-                  setIsEditing(true);
-                  setSelectedOrder({
-                    ...selectedOrder,
-                    remarks: "",
-                  });
-                }}>
+                onClick={() => handleAddRemarks()}>
                 <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -516,11 +529,9 @@ function TableOrderDetails({
                   setShowEditBtn(true);
                   setOrderCompleted(false);
                   setIsEditing(true);
+                  // if first time selectedOrder don't have remarks, during edit the value of remarks will be undefined.
                   setRemarks(selectedOrder?.remarks);
-                  // setSelectedOrder({
-                  //   ...selectedOrder,
-                  //   remarks: "",
-                  // });
+                  setShowRemarksBtn(true);
                 }}>
                 <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                   <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
@@ -695,7 +706,7 @@ function TableOrderDetails({
               );
             })}
         </div>
-        {isRemarksModalOpen &&
+        {isRemarksModalOpen && showRemarksBtn ===false &&
           ((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) && (
             <div className="bg-gray-100 p-2 rounded-md">
               {/* <div className="flex justify-between items-center">
@@ -750,11 +761,7 @@ function TableOrderDetails({
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     className="w-6 h-6 text-red-700"
-                    onClick={() => {
-                      setRemarksOpen(false);
-                      setIsEditing(false);
-                      setRemarks("");
-                    }}>
+                    onClick={() => handleRemoveRemarks()}>
                     <path
                       fillRule="evenodd"
                       d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
