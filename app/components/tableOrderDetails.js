@@ -706,8 +706,10 @@ function TableOrderDetails({
               );
             })}
         </div>
-        {isRemarksModalOpen &&
-          ((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) && (
+        {/* Sequence is important, this will check first before checking isRemarksModalOpen is true */}
+        {/* The first condition is for the second action editing order whereby it has remarks value of undefined */}
+        {((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) &&
+           isRemarksModalOpen && (
             <div className="bg-gray-100 p-2 rounded-md">
               {/* <div className="flex justify-between items-center">
                 <div

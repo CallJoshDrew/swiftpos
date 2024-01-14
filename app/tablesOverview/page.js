@@ -259,6 +259,8 @@ export default function TablesOverview() {
         setIsEditing={setIsEditing}
         setRemarksOpen={setRemarksOpen}
         setRemarks={setRemarks}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}

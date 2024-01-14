@@ -11,6 +11,8 @@ function ConfirmModal({
   setIsEditing,
   setRemarksOpen,
   setRemarks,
+  selectedOrder,
+  setSelectedOrder,
 }) {
   const handleMessageStatus = () => {
     setShowMenu(false);
@@ -18,10 +20,15 @@ function ConfirmModal({
     setOrderCompleted(true);
     // Update tempCartItems with cartItems when "Yes" is clicked
     setTempCartItems(cartItems);
+    // setRemarks(selectedOrder.remarks);
+    // setSelectedOrder({
+    //   ...selectedOrder,
+    //   // reason why it is empty string is convenience for user to type straight away wihtout removing the words
+    //   remarks: "",
+    // });
     setIsEditing(false);
     // console.log(cartItems);
-    // setRemarksOpen(false);
-    // setRemarks("No Remarks");
+    setRemarksOpen(true);
     onCloseMsg();
   };
 
