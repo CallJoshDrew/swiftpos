@@ -72,8 +72,8 @@ export default function TablesOverview() {
       // If the table is not occupied, set orderCompleted to false and show the menu and edit button
       if (tables[tableIndex].occupied) {
         setOrderCompleted(true);
-        if (selectedOrder?.remarks) {
-            setRemarksOpen(true);
+        if (tables[tableIndex].order?.remarks) {
+          setRemarksOpen(true);
         }
       } else {
         setOrderCompleted(false);
@@ -89,6 +89,9 @@ export default function TablesOverview() {
           ...item,
         }));
         setSelectedOrder(tables[tableIndex].order);
+        if (tables[tableIndex].order.remarks) {
+          setRemarksOpen(true);
+        }
         setCartItems({
           orderNumber: tables[tableIndex].order.orderNumber,
           items: itemsWithOrderID,
@@ -105,7 +108,7 @@ export default function TablesOverview() {
         setTempCartItems({ orderNumber: null, items: [] });
       }
     },
-    [tables, selectedOrder]
+    [tables]
   );
 
   // Fetch the menu data when the component mounts
@@ -141,6 +144,7 @@ export default function TablesOverview() {
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}
+              setRemarksOpen={setRemarksOpen}
               setRemarks={setRemarks}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
@@ -249,6 +253,8 @@ export default function TablesOverview() {
         setTempCartItems={setTempCartItems}
         cartItems={cartItems}
         setIsEditing={setIsEditing}
+        setRemarksOpen={setRemarksOpen}
+        setRemarks={setRemarks}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}

@@ -9,6 +9,8 @@ function ConfirmModal({
   setTempCartItems,
   cartItems,
   setIsEditing,
+  setRemarksOpen,
+  setRemarks,
 }) {
   const handleMessageStatus = () => {
     setShowMenu(false);
@@ -18,6 +20,8 @@ function ConfirmModal({
     setTempCartItems(cartItems);
     setIsEditing(false);
     // console.log(cartItems);
+    // setRemarksOpen(false);
+    // setRemarks("No Remarks");
     onCloseMsg();
   };
 
@@ -30,9 +34,7 @@ function ConfirmModal({
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-[300px]">
-          <div className="text-2xl text-center font-bold text-green-800 mb-4">
-            Are you sure?
-          </div>
+          <div className="text-2xl text-center font-bold text-green-800 mb-4">Are you sure?</div>
           <div className="text-center">
             <button
               className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"

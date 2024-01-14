@@ -24,6 +24,7 @@ function CategoryCard({
   setShowMenu,
   setShowEditBtn,
   setMsgModalOpen,
+  setRemarksOpen,
   setRemarks,
   setIsEditing,
 }) {
@@ -56,7 +57,9 @@ function CategoryCard({
       setShowMenu(false);
       setShowEditBtn(false);
       setOrderCompleted(true);
-      setRemarks("No Remarks");
+      // setRemarksOpen(false);
+      // setRemarks("");
+      // setRemarks("No Remarks");
       setIsEditing(false);
     } else {
       // If they are not the same and tempCartItems is not empty, open the message modal
