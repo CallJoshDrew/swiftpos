@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, {useState} from "react";
 import toast from "react-hot-toast";
 
 export default function RemarksModal({
@@ -7,6 +8,7 @@ export default function RemarksModal({
   setRemarksOpen,
   remarks,
   setRemarks,
+  selectedOrder,
 }) {
 
   const handleRemarksSubmitBtn = () => {
@@ -32,7 +34,7 @@ export default function RemarksModal({
             <textarea
               rows="5"
               value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
+              onInput={(e) => setRemarks(e.target.value)}
               className="mt-1 block w-full text-black rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
               placeholder="Type remarks here..."
             />
@@ -47,7 +49,7 @@ export default function RemarksModal({
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
               onClick={() => {
                 setRemarksOpen(false);
-                console.log(remarks);
+                // console.log(remarks);
               }}>
               Cancel
             </button>

@@ -21,7 +21,7 @@ function MenuCard({ menu, selectedCategory, tempCartItems, setTempCartItems }) {
     menu = menu.filter((item) => item.category === selectedCategory);
   }
   useEffect(() => {
-    console.log(selectedItem);
+    // console.log(selectedItem);
   }, [selectedItem]);
 
   return (

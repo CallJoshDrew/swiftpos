@@ -27,7 +27,14 @@ function TableOrderDetails({
   setSelectedOrder,
   handlePaymentClick,
   handleCheckOutClick,
+  remarks,
+  setRemarks,
+  isRemarksModalOpen,
+  setRemarksOpen,
+  isEditing,
+  setIsEditing,
 }) {
+  console.log(remarks);
   // State to control the visibility of the status modal
   const [isStatusModalOpen, setModalOpen] = useState(false);
 
@@ -59,12 +66,15 @@ function TableOrderDetails({
     });
   };
 
-  // Add Remarks Modal and useState
-  const [isRemarksModalOpen, setRemarksOpen] = useState(false);
-  const [remarks, setRemarks] = useState("");
+  
+  // When user starts editing
+  const handleEditStart = () => {
+    setIsEditing(true);
+  };
+
   const handleRemarksModalClose = (customerRemarks) => {
     setRemarksOpen(false);
-    console.log(customerRemarks);
+    // console.log(customerRemarks);
   };
 
   // Variables to hold the subtotal, service charge, and total
@@ -308,15 +318,18 @@ function TableOrderDetails({
       status: "Placed Order",
       payment: "Pending",
       paymentMethod: "Cash",
-      remarks,
     };
-
+    if (remarks !== "No Remarks") {
+      order.remarks = remarks;
+    }
     // Set the selected order and update the orders and tables
     setSelectedOrder(order);
+    console.log(remarks);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-    setRemarks("");
-    console.log("Remarks from update Order is", remarks);
+    // setRemarks("No Remarks");
+    setIsEditing(false);
+    // console.log("Remarks from update Order is", remarks);
     // Show a success toast
     toast.success("Order has been accepted", {
       duration: 3000,
@@ -429,9 +442,13 @@ function TableOrderDetails({
       );
     }
   }
+  useEffect(() => {
+    setRemarks(selectedOrder?.remarks);
+    console.log("Selected Order is", selectedOrder?.remarks);
+  }, [selectedOrder?.remarks, setRemarks]);
 
   useEffect(() => {
-    // console.log("Selected Order is", selectedOrder);
+    // setRemarks(selectedOrder?.remarks);
     // console.log("tempCartItems: ", tempCartItems);
     // console.log("cartItems: ", cartItems);
     // console.log("Orders list is:", orders);
@@ -464,6 +481,11 @@ function TableOrderDetails({
                 className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
                 onClick={() => {
                   setRemarksOpen(true);
+                  setIsEditing(true);
+                  setSelectedOrder({
+                    ...selectedOrder,
+                    remarks: "",
+                  });
                 }}>
                 <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
                 <svg
@@ -492,6 +514,12 @@ function TableOrderDetails({
                   setShowMenu(true);
                   setShowEditBtn(true);
                   setOrderCompleted(false);
+                  setIsEditing(true);
+                  setRemarks(selectedOrder?.remarks);
+                  // setSelectedOrder({
+                  //   ...selectedOrder,
+                  //   remarks: "",
+                  // });
                 }}>
                 <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                   <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
@@ -666,6 +694,45 @@ function TableOrderDetails({
               );
             })}
         </div>
+        {isRemarksModalOpen &&
+          ((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) && (
+            <div className="bg-gray-100 pt-3 py-4 px-4 mb-10 rounded-md">
+              <div className="text-sm text-left text-gray-600 pl-2">Undefined:</div>
+              <textarea
+                rows="4"
+                value={remarks || ""}
+                onChange={(e) => setRemarks(e.target.value)}
+                className="mt-1 block w-full text-sm text-black rounded-md bg-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                placeholder="Type here..."
+                disabled={isEditing ? false : true}
+              />
+            </div>
+          )}
+
+        {/* {isRemarksModalOpen && selectedOrder?.remarks && (
+          <div className="bg-gray-100 pt-3 py-4 px-4 mb-10 rounded-md">
+            <div className="text-sm text-left text-gray-600 pl-2">Remarks:</div>
+            <textarea
+              rows="4"
+              value={remarks || ""}
+              onChange={(e) => setRemarks(e.target.value)}
+              className="mt-1 block w-full text-sm text-black rounded-md bg-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+              placeholder="Type here..."
+            />
+          </div>
+        )} */}
+        {/* {remarks !== "" ? (
+          <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
+            <div className="text-gray-600 text-base font-bold">Remarks</div>
+            <div className="text-gray-600 text-sm">{remarks}</div>
+          </div>
+        ) : null}*/}
+        {/* {selectedOrder?.remarks !== undefined && remarks === "" ? (
+          <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
+            <div className="text-gray-600 text-base font-bold">Remarks</div>
+            <div className="text-gray-600 text-sm">{selectedOrder?.remarks}</div>
+          </div>
+        ) : null}  */}
         {/* Subtotal, serviceCharge and Total Section */}
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
@@ -703,13 +770,14 @@ function TableOrderDetails({
         </div>
         {orderStatusBtn}
         {paymentStatusBtn}
-        <RemarksModal
+        {/* <RemarksModal
           isRemarksModalOpen={isRemarksModalOpen}
           handleRemarksModalClose={handleRemarksModalClose}
           setRemarksOpen={setRemarksOpen}
           setRemarks={setRemarks}
           remarks={remarks}
-        />
+          selectedOrder={selectedOrder}
+        /> */}
         <StatusModal
           isStatusModalOpen={isStatusModalOpen}
           handleStsModalClose={handleStsModalClose}

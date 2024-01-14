@@ -52,7 +52,7 @@ function TakeAwayOrderDetails({
   const [remarks, setRemarks] = useState("");
   const handleRemarksModalClose = (customerRemarks) => {
     setRemarksOpen(false);
-    console.log(customerRemarks);
+    // console.log(customerRemarks);
   };
 
   // Variables to hold the subtotal, service charge, and total

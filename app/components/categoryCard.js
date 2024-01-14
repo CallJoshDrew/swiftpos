@@ -24,6 +24,8 @@ function CategoryCard({
   setShowMenu,
   setShowEditBtn,
   setMsgModalOpen,
+  setRemarks,
+  setIsEditing,
 }) {
   // Create an object to count the number of items in each category
   let itemCounts = menu.reduce((counts, item) => {
@@ -54,6 +56,8 @@ function CategoryCard({
       setShowMenu(false);
       setShowEditBtn(false);
       setOrderCompleted(true);
+      setRemarks("No Remarks");
+      setIsEditing(false);
     } else {
       // If they are not the same and tempCartItems is not empty, open the message modal
       setMsgModalOpen(true);

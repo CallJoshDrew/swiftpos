@@ -12,14 +12,14 @@ export default function TablesOverview() {
   const [showMenu, setShowMenu] = useState(false); // Controls whether the menu is shown
   const [menu, setMenu] = useState([]); // Stores the menu items
   const [selectedCategory, setSelectedCategory] = useState("All"); // Stores the currently selected category
-  const [cartItems, setCartItems] = useState({ orderNumber: null, items: [] }); 
-  const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] }); 
+  const [cartItems, setCartItems] = useState({ orderNumber: null, items: [] });
+  const [tempCartItems, setTempCartItems] = useState({ orderNumber: null, items: [] });
   const [showEditBtn, setShowEditBtn] = useState(true); // Controls whether the edit button is shown
 
   // State variables related to orders
   const [serviceTax, setServiceTax] = useState(0); // Stores the service tax or service charges
   const [orderCompleted, setOrderCompleted] = useState(false); // Indicates whether the order is completed
-  const [orderCounter, setOrderCounter] = useState(1); 
+  const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]); // Stores the orders
   const [currentDate, setCurrentDate] = useState(new Date().toDateString()); // Stores the current date
   const [selectedOrder, setSelectedOrder] = useState([]); // Stores the currently selected order
@@ -28,6 +28,10 @@ export default function TablesOverview() {
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
   const [isMsgModalOpen, setMsgModalOpen] = useState(false); // Controls whether the message modal is open
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
+
+  const [remarks, setRemarks] = useState("No Remarks");
+  const [isRemarksModalOpen, setRemarksOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   // State variables related to tables
   const [tables, setTables] = useState(
@@ -68,10 +72,15 @@ export default function TablesOverview() {
       // If the table is not occupied, set orderCompleted to false and show the menu and edit button
       if (tables[tableIndex].occupied) {
         setOrderCompleted(true);
+        if (selectedOrder?.remarks) {
+            setRemarksOpen(true);
+        }
       } else {
         setOrderCompleted(false);
         setShowMenu(true);
         setShowEditBtn(true);
+        setRemarks("No Remarks");
+        setRemarksOpen(false);
       }
 
       // If the table is occupied, show the table info
@@ -96,7 +105,7 @@ export default function TablesOverview() {
         setTempCartItems({ orderNumber: null, items: [] });
       }
     },
-    [tables]
+    [tables, selectedOrder]
   );
 
   // Fetch the menu data when the component mounts
@@ -132,6 +141,9 @@ export default function TablesOverview() {
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}
+              setRemarks={setRemarks}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
             />
           </div>
           {/* Menu card component begins here */}
@@ -211,6 +223,12 @@ export default function TablesOverview() {
         setSelectedOrder={setSelectedOrder}
         handlePaymentClick={handlePaymentClick}
         handleCheckOutClick={handleCheckOutClick}
+        remarks={remarks}
+        setRemarks={setRemarks}
+        isRemarksModalOpen={isRemarksModalOpen}
+        setRemarksOpen={setRemarksOpen}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}
@@ -230,6 +248,7 @@ export default function TablesOverview() {
         setOrderCompleted={setOrderCompleted}
         setTempCartItems={setTempCartItems}
         cartItems={cartItems}
+        setIsEditing={setIsEditing}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}
