@@ -68,6 +68,8 @@ function TableOrderDetails({
     });
   };
   
+  const [rows, setRows] = useState(1);
+
   // Remove Remarks
   const handleRemoveRemarks = () => {
     setSelectedOrder((prevOrder) => {
@@ -94,8 +96,6 @@ function TableOrderDetails({
     setIsEditing(true);
     setShowRemarksBtn(false);
   };
-
-  const [rows, setRows] = useState(2);
 
   // Variables to hold the subtotal, service charge, and total
   let subtotal = 0;
@@ -706,7 +706,7 @@ function TableOrderDetails({
               );
             })}
         </div>
-        {isRemarksModalOpen && showRemarksBtn ===false &&
+        {isRemarksModalOpen &&
           ((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) && (
             <div className="bg-gray-100 p-2 rounded-md">
               {/* <div className="flex justify-between items-center">
