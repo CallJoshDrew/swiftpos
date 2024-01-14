@@ -11,16 +11,22 @@ function ConfirmModal({
   setIsEditing,
   setRemarksOpen,
   setRemarks,
+  remarks,
   selectedOrder,
   setSelectedOrder,
 }) {
+  console.log(remarks);
+  console.log(selectedOrder?.remarks);
   const handleMessageStatus = () => {
     setShowMenu(false);
     setShowEditBtn(false);
     setOrderCompleted(true);
     // Update tempCartItems with cartItems when "Yes" is clicked
     setTempCartItems(cartItems);
-    // setRemarks(selectedOrder.remarks);
+    // console.log("Do i have you", selectedOrder);
+    const orderRemarks = selectedOrder?.remarks;
+    console.log (orderRemarks);
+    setRemarks(orderRemarks);
     // setSelectedOrder({
     //   ...selectedOrder,
     //   // reason why it is empty string is convenience for user to type straight away wihtout removing the words

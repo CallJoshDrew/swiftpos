@@ -30,7 +30,7 @@ export default function TablesOverview() {
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
 
   // State variables related to remarks
-  const [remarks, setRemarks] = useState("Initial");
+  const [remarks, setRemarks] = useState(undefined);
   const [isRemarksModalOpen, setRemarksOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showRemarksBtn, setShowRemarksBtn] = useState(true);
@@ -82,7 +82,7 @@ export default function TablesOverview() {
         setShowMenu(true);
         setShowEditBtn(true);
         setRemarksOpen(false);
-        setRemarks("Initial");
+        setRemarks(undefined);
       }
 
       // If the table is occupied, show the table info
@@ -147,9 +147,10 @@ export default function TablesOverview() {
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}
               setRemarksOpen={setRemarksOpen}
-              setRemarks={setRemarks}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
+              remarks={remarks}
+              selectedOrder={selectedOrder}
             />
           </div>
           {/* Menu card component begins here */}
@@ -259,6 +260,7 @@ export default function TablesOverview() {
         setIsEditing={setIsEditing}
         setRemarksOpen={setRemarksOpen}
         setRemarks={setRemarks}
+        remarks={remarks}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
       />

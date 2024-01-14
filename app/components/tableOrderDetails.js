@@ -82,7 +82,7 @@ function TableOrderDetails({
     });
     setRemarksOpen(false);
     setIsEditing(false);
-    setRemarks("Initial");
+    setRemarks(undefined);
     setShowRemarksBtn(true);
   };
 
@@ -339,16 +339,15 @@ function TableOrderDetails({
       payment: "Pending",
       paymentMethod: "Cash",
     };
-    if (remarks !== "Initial") {
+    if (remarks !== undefined) {
       order.remarks = remarks;
     }
     // Set the selected order and update the orders and tables
     setSelectedOrder(order);
-    console.log(remarks);
+    // console.log(remarks);
     setShowRemarksBtn(true);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-    // setRemarks("No Remarks");
     setIsEditing(false);
     // console.log("Remarks from update Order is", remarks);
     // Show a success toast
@@ -465,7 +464,7 @@ function TableOrderDetails({
   }
   useEffect(() => {
     setRemarks(selectedOrder?.remarks);
-    console.log("Selected Order is", selectedOrder?.remarks);
+    // console.log("Selected Order is", selectedOrder?.remarks);
   }, [selectedOrder?.remarks, setRemarks]);
 
   useEffect(() => {
@@ -529,7 +528,7 @@ function TableOrderDetails({
                   setShowEditBtn(true);
                   setOrderCompleted(false);
                   setIsEditing(true);
-                  // if first time selectedOrder don't have remarks, during edit the value of remarks will be undefined.
+                  // if first time selectedOrder don't have remarks, during edit, the value of remarks is actually undefined.
                   setRemarks(selectedOrder?.remarks);
                   setShowRemarksBtn(true);
                 }}>
@@ -721,7 +720,7 @@ function TableOrderDetails({
               </div> */}
               <textarea
                 rows={rows}
-                value={remarks || ""}
+                value={remarks || ''}
                 onChange={(e) => setRemarks(e.target.value)}
                 className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
                   isEditing === true ? "bg-white " : "bg-gray-500 text-white"

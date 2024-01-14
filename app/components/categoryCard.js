@@ -25,8 +25,9 @@ function CategoryCard({
   setShowEditBtn,
   setMsgModalOpen,
   setRemarksOpen,
-  setRemarks,
   setIsEditing,
+  remarks,
+  selectedOrder,
 }) {
   // Create an object to count the number of items in each category
   let itemCounts = menu.reduce((counts, item) => {
@@ -47,11 +48,13 @@ function CategoryCard({
     // Sort the items in cartItems and tempCartItems by their id
     const sortedCartItems = [...cartItemsArray].sort((a, b) => a.id - b.id);
     const sortedTempCartItems = [...tempCartItemsArray].sort((a, b) => a.id - b.id);
-
+    const orderRemarks = selectedOrder?.remarks;
+    console.log(orderRemarks);
+    console.log(remarks);
     // Check if the sorted cartItems and tempCartItems are the same or if tempCartItems is empty
     if (
-      JSON.stringify(sortedCartItems) === JSON.stringify(sortedTempCartItems) ||
-      tempCartItemsArray.length === 0
+      (JSON.stringify(sortedCartItems) === JSON.stringify(sortedTempCartItems) ||
+      tempCartItemsArray.length === 0) && remarks === orderRemarks
     ) {
       // If they are the same or tempCartItems is empty, close the menu, hide the edit button, and set order as completed
       setShowMenu(false);
