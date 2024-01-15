@@ -24,10 +24,11 @@ function CategoryCard({
   setShowMenu,
   setShowEditBtn,
   setMsgModalOpen,
-  setRemarksOpen,
-  setIsEditing,
+  setShowRemarksText,
+  setIsEditingRemarks,
   remarks,
   selectedOrder,
+  setShowRemarksBtn,
 }) {
   // Create an object to count the number of items in each category
   let itemCounts = menu.reduce((counts, item) => {
@@ -38,6 +39,10 @@ function CategoryCard({
   }, {});
 
   const handleCloseMenu = () => {
+    // console.log("TempCartItems is",tempCartItems);
+    // console.log("CartItem is",cartItems);
+    // console.log("Remarks is", remarks);
+    // console.log("Selected Order Remarks is", selectedOrder?.remarks);
     // Check if cartItems and tempCartItems are arrays, if not, set them as empty arrays
     const cartItemsArray =
       cartItems && cartItems.items && Array.isArray(cartItems.items) ? cartItems.items : [];
@@ -49,21 +54,22 @@ function CategoryCard({
     const sortedCartItems = [...cartItemsArray].sort((a, b) => a.id - b.id);
     const sortedTempCartItems = [...tempCartItemsArray].sort((a, b) => a.id - b.id);
     const orderRemarks = selectedOrder?.remarks;
-    console.log(orderRemarks);
-    console.log(remarks);
     // Check if the sorted cartItems and tempCartItems are the same or if tempCartItems is empty
     if (
-      (JSON.stringify(sortedCartItems) === JSON.stringify(sortedTempCartItems) ||
-      tempCartItemsArray.length === 0) && remarks === orderRemarks
+      (tempCartItems?.orderNumber && tempCartItems.length === 0) ||
+      tempCartItems.length > 0 ||
+      JSON.stringify(sortedTempCartItems) !== JSON.stringify(sortedCartItems) ||
+      (remarks !== orderRemarks && tempCartItems?.orderNumber) || (remarks !==orderRemarks)
     ) {
-      // If they are the same or tempCartItems is empty, close the menu, hide the edit button, and set order as completed
+      // If any of the conditions are met, open the message modal
+      setMsgModalOpen(true);
+    } else {
+      // If none of the conditions are met, close the menu, hide the edit button, and set order as completed
       setShowMenu(false);
       setShowEditBtn(false);
       setOrderCompleted(true);
-      setIsEditing(false);
-    } else {
-      // If they are not the same and tempCartItems is not empty, open the message modal
-      setMsgModalOpen(true);
+      setIsEditingRemarks(false);
+      setShowRemarksBtn(false);
     }
   };
 

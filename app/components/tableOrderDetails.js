@@ -29,12 +29,14 @@ function TableOrderDetails({
   handleCheckOutClick,
   remarks,
   setRemarks,
-  isRemarksModalOpen,
-  setRemarksOpen,
-  isEditing,
-  setIsEditing,
+  showRemarksText,
+  setShowRemarksText,
+  isEditingRemarks,
+  setIsEditingRemarks,
   showRemarksBtn,
   setShowRemarksBtn,
+  isEmptyString,
+  setEmptyString,
 }) {
   // console.log("Remarks is now ", remarks);
   // State to control the visibility of the status modal
@@ -67,7 +69,7 @@ function TableOrderDetails({
       status: "Cancel",
     });
   };
-  
+
   const [rows, setRows] = useState(1);
 
   // Remove Remarks
@@ -80,8 +82,8 @@ function TableOrderDetails({
       }
       return null;
     });
-    setRemarksOpen(false);
-    setIsEditing(false);
+    setShowRemarksText(false);
+    setIsEditingRemarks(false);
     setRemarks(undefined);
     setShowRemarksBtn(true);
   };
@@ -92,11 +94,23 @@ function TableOrderDetails({
       // reason why it is empty string is convenience for user to type straight away wihtout removing the words
       remarks: "",
     });
-    setRemarksOpen(true);
-    setIsEditing(true);
+    setShowRemarksText(true);
+    setIsEditingRemarks(true);
     setShowRemarksBtn(false);
   };
-
+  const handleEditOrder = () => {
+    // console.log("Selected Order Remarks is now", selectedOrder?.remarks);
+    // if (selectedOrder?.remarks !== undefined) {
+    //   setShowRemarksBtn(true);
+    // }
+    setShowRemarksBtn(true);
+    setShowMenu(true);
+    setShowEditBtn(true);
+    setOrderCompleted(false);
+    setIsEditingRemarks(true);
+    // if first time selectedOrder don't have remarks, during edit, the value of remarks is actually undefined.
+    setRemarks(selectedOrder?.remarks);
+  };
   // Variables to hold the subtotal, service charge, and total
   let subtotal = 0;
   let serviceCharge = 0;
@@ -126,7 +140,7 @@ function TableOrderDetails({
   }
 
   // Function to handle the increase of an item's quantity
-  const handleIncrease = (id) => {
+  const handleIncreaseItem = (id) => {
     // Increase the item's quantity by 1
     setTempCartItems((prevItems) => {
       return {
@@ -146,7 +160,7 @@ function TableOrderDetails({
   };
 
   // Function to handle the decrease of an item's quantity
-  const handleDecrease = (id) => {
+  const handleDecreaseItem = (id) => {
     // Decrease the item's quantity by 1, but not less than 1
     setTempCartItems((prevItems) => {
       return {
@@ -158,7 +172,7 @@ function TableOrderDetails({
     });
 
     // Show an error toast
-    toast.error("Item is removed!", {
+    toast.error("Removed from Cart!", {
       duration: 1000,
       position: "top-left",
       reverseOrder: false,
@@ -166,17 +180,19 @@ function TableOrderDetails({
   };
 
   // Function to handle the removal of an item
-  const handleRemove = (id) => {
+  const handleRemoveItem = (id) => {
     // Remove the item from the cart
+    
     setTempCartItems((prevItems) => {
       return {
         ...prevItems,
         items: prevItems.items.filter((item) => item.id !== id),
       };
     });
+    // console.log(tempCartItems);
 
     // Show an error toast
-    toast.error("Item is removed!", {
+    toast.error("Removed from Cart!", {
       duration: 1000,
       position: "top-left",
       reverseOrder: false,
@@ -299,10 +315,6 @@ function TableOrderDetails({
     setCartItems(updatedItems(tempCartItems));
     setTempCartItems(updatedItems(tempCartItems));
 
-    // Mark the order as completed and hide the edit button
-    setOrderCompleted(true);
-    setShowEditBtn(false);
-
     // Get the current date and time
     const now = new Date();
     const timeOptions = {
@@ -339,16 +351,19 @@ function TableOrderDetails({
       payment: "Pending",
       paymentMethod: "Cash",
     };
-    if (remarks !== undefined) {
+    if (remarks !== undefined && remarks !=="") {
       order.remarks = remarks;
     }
+
+    // Mark the order as completed and hide the edit button
+    setOrderCompleted(true);
+    setShowEditBtn(false);
     // Set the selected order and update the orders and tables
     setSelectedOrder(order);
-    // console.log(remarks);
-    setShowRemarksBtn(true);
+    setShowRemarksBtn(false);
     setOrders((prevOrders) => updateOrders(prevOrders, order));
     setTables((prevTables) => updateTables(prevTables, tableNumber, order));
-    setIsEditing(false);
+    setIsEditingRemarks(false);
     // console.log("Remarks from update Order is", remarks);
     // Show a success toast
     toast.success("Order has been accepted", {
@@ -474,7 +489,9 @@ function TableOrderDetails({
     // console.log("Orders list is:", orders);
     // console.log("Tables list is", tables);
     // console.log(orderCounter);
-  }, [selectedOrder, tables, cartItems, tempCartItems, orders, orderCounter]);
+    // console.log(selectedOrder?.remarks);
+    // console.log("Remarks Button now is", showRemarksBtn);
+  }, [selectedOrder, tables, cartItems, tempCartItems, orders, orderCounter, showRemarksBtn, setRemarks]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative z-20">
@@ -496,7 +513,7 @@ function TableOrderDetails({
           {tempCartItems &&
             tempCartItems.items &&
             tempCartItems.items.length > 0 &&
-            showEditBtn && showRemarksBtn && (
+            showRemarksBtn && (
               <div
                 className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
                 onClick={() => handleAddRemarks()}>
@@ -522,16 +539,7 @@ function TableOrderDetails({
             !showEditBtn &&
             selectedOrder?.payment != "Paid" &&
             selectedOrder?.status === "Placed Order" && (
-              <div
-                onClick={() => {
-                  setShowMenu(true);
-                  setShowEditBtn(true);
-                  setOrderCompleted(false);
-                  setIsEditing(true);
-                  // if first time selectedOrder don't have remarks, during edit, the value of remarks is actually undefined.
-                  setRemarks(selectedOrder?.remarks);
-                  setShowRemarksBtn(true);
-                }}>
+              <div onClick={() => handleEditOrder()}>
                 <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                   <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
                   <svg
@@ -666,7 +674,7 @@ function TableOrderDetails({
                           viewBox="0 0 24 24"
                           fill="currentColor"
                           className="w-6 h-6 text-green-800"
-                          onClick={() => handleDecrease(item.id)}>
+                          onClick={() => handleDecreaseItem(item.id)}>
                           <path
                             fillRule="evenodd"
                             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
@@ -679,7 +687,7 @@ function TableOrderDetails({
                           viewBox="0 0 24 24"
                           fill="currentColor"
                           className="w-6 h-6 text-green-800"
-                          onClick={() => handleIncrease(item.id)}>
+                          onClick={() => handleIncreaseItem(item.id)}>
                           <path
                             fillRule="evenodd"
                             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
@@ -692,7 +700,7 @@ function TableOrderDetails({
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         className="w-6 h-6 text-red-700"
-                        onClick={() => handleRemove(item.id)}>
+                        onClick={() => handleRemoveItem(item.id)}>
                         <path
                           fillRule="evenodd"
                           d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
@@ -705,30 +713,31 @@ function TableOrderDetails({
               );
             })}
         </div>
-        {/* Sequence is important, this will check first before checking isRemarksModalOpen is true */}
+        {/* Sequence is important, this will check first before checking showRemarksText is true */}
         {/* The first condition is for the second action editing order whereby it has remarks value of undefined */}
-        {((isEditing && selectedOrder === undefined) || selectedOrder?.remarks !== undefined) &&
-           isRemarksModalOpen && (
+        {((isEditingRemarks && selectedOrder === undefined) ||
+          (!isEmptyString && selectedOrder?.remarks !== undefined)) &&
+          showRemarksText && (
             <div className="bg-gray-100 p-2 rounded-md">
               {/* <div className="flex justify-between items-center">
                 <div
                   className={`text-sm font-bold text-left text-gray-600 pl-2 ${
-                    isEditing === true ? "mt-0" : "my-1"
+                    isEditingRemarks === true ? "mt-0" : "my-1"
                   }`}>
                   Remarks
                 </div>
               </div> */}
               <textarea
                 rows={rows}
-                value={remarks || ''}
+                value={remarks || ""}
                 onChange={(e) => setRemarks(e.target.value)}
                 className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
-                  isEditing === true ? "bg-white " : "bg-gray-500 text-white"
+                  isEditingRemarks === true ? "bg-white " : "bg-gray-500 text-white"
                 }`}
                 placeholder="Type Remarks here..."
-                disabled={isEditing ? false : true}
+                disabled={isEditingRemarks ? false : true}
               />
-              {isEditing && (
+              {isEditingRemarks && (
                 <div className="flex justify-between px-1 mt-2">
                   <div className="flex items-center">
                     <svg
@@ -812,9 +821,9 @@ function TableOrderDetails({
         {orderStatusBtn}
         {paymentStatusBtn}
         {/* <RemarksModal
-          isRemarksModalOpen={isRemarksModalOpen}
+          showRemarksText={showRemarksText}
           handleRemarksModalClose={handleRemarksModalClose}
-          setRemarksOpen={setRemarksOpen}
+          setShowRemarksText={setShowRemarksText}
           setRemarks={setRemarks}
           remarks={remarks}
           selectedOrder={selectedOrder}

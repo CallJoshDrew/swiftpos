@@ -31,9 +31,10 @@ export default function TablesOverview() {
 
   // State variables related to remarks
   const [remarks, setRemarks] = useState(undefined);
-  const [isRemarksModalOpen, setRemarksOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [showRemarksText, setShowRemarksText] = useState(false);
+  const [isEditingRemarks, setIsEditingRemarks] = useState(false);
   const [showRemarksBtn, setShowRemarksBtn] = useState(true);
+  const [isEmptyString, setEmptyString] = useState(false);
 
   // State variables related to tables
   const [tables, setTables] = useState(
@@ -74,14 +75,14 @@ export default function TablesOverview() {
       // If the table is not occupied, set orderCompleted to false and show the menu and edit button
       if (tables[tableIndex].occupied) {
         setOrderCompleted(true);
-        if (tables[tableIndex].order?.remarks) {
-          setRemarksOpen(true);
-        }
+        // if (tables[tableIndex].order?.remarks) {
+        //   setShowRemarksText(true);
+        // }
       } else {
         setOrderCompleted(false);
         setShowMenu(true);
         setShowEditBtn(true);
-        setRemarksOpen(false);
+        setShowRemarksText(false);
         setRemarks(undefined);
       }
 
@@ -92,7 +93,7 @@ export default function TablesOverview() {
         }));
         setSelectedOrder(tables[tableIndex].order);
         if (tables[tableIndex].order.remarks) {
-          setRemarksOpen(true);
+          setShowRemarksText(true);
         }
         setCartItems({
           orderNumber: tables[tableIndex].order.orderNumber,
@@ -146,11 +147,12 @@ export default function TablesOverview() {
               setShowMenu={setShowMenu}
               setShowEditBtn={setShowEditBtn}
               setMsgModalOpen={setMsgModalOpen}
-              setRemarksOpen={setRemarksOpen}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
+              setShowRemarksText={setShowRemarksText}
+              isEditingRemarks={isEditingRemarks}
+              setIsEditingRemarks={setIsEditingRemarks}
               remarks={remarks}
               selectedOrder={selectedOrder}
+              setShowRemarksBtn={setShowRemarksBtn}
             />
           </div>
           {/* Menu card component begins here */}
@@ -232,12 +234,14 @@ export default function TablesOverview() {
         handleCheckOutClick={handleCheckOutClick}
         remarks={remarks}
         setRemarks={setRemarks}
-        isRemarksModalOpen={isRemarksModalOpen}
-        setRemarksOpen={setRemarksOpen}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
+        showRemarksText={showRemarksText}
+        setShowRemarksText={setShowRemarksText}
+        isEditingRemarks={isEditingRemarks}
+        setIsEditingRemarks={setIsEditingRemarks}
         showRemarksBtn={showRemarksBtn}
         setShowRemarksBtn={setShowRemarksBtn}
+        isEmptyString={isEmptyString}
+        setEmptyString={setEmptyString}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}
@@ -257,12 +261,15 @@ export default function TablesOverview() {
         setOrderCompleted={setOrderCompleted}
         setTempCartItems={setTempCartItems}
         cartItems={cartItems}
-        setIsEditing={setIsEditing}
-        setRemarksOpen={setRemarksOpen}
+        setIsEditingRemarks={setIsEditingRemarks}
+        setShowRemarksText={setShowRemarksText}
         setRemarks={setRemarks}
         remarks={remarks}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
+        isEmptyString={isEmptyString}
+        setEmptyString={setEmptyString}
+        setShowRemarksBtn={setShowRemarksBtn}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}

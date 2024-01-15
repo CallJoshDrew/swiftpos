@@ -8,15 +8,18 @@ function ConfirmModal({
   setOrderCompleted,
   setTempCartItems,
   cartItems,
-  setIsEditing,
-  setRemarksOpen,
+  setIsEditingRemarks,
+  setShowRemarksText,
   setRemarks,
   remarks,
   selectedOrder,
   setSelectedOrder,
+  isEmptyString,
+  setEmptyString,
+  setShowRemarksBtn,
 }) {
-  console.log(remarks);
-  console.log(selectedOrder?.remarks);
+  // console.log("Remarks is",remarks);
+  // console.log("Selector Remarks is",selectedOrder?.remarks);
   const handleMessageStatus = () => {
     setShowMenu(false);
     setShowEditBtn(false);
@@ -25,16 +28,23 @@ function ConfirmModal({
     setTempCartItems(cartItems);
     // console.log("Do i have you", selectedOrder);
     const orderRemarks = selectedOrder?.remarks;
-    console.log (orderRemarks);
+    // console.log (orderRemarks);
     setRemarks(orderRemarks);
+    // isEmptyString initial state is false.
+    if (orderRemarks === "") {
+      setEmptyString(true);
+    } else {
+      setEmptyString(false);
+    }
     // setSelectedOrder({
     //   ...selectedOrder,
     //   // reason why it is empty string is convenience for user to type straight away wihtout removing the words
     //   remarks: "",
     // });
-    setIsEditing(false);
+    setIsEditingRemarks(false);
     // console.log(cartItems);
-    setRemarksOpen(true);
+    setShowRemarksText(true);
+    setShowRemarksBtn(false);
     onCloseMsg();
   };
 
