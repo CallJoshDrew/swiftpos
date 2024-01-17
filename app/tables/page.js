@@ -80,7 +80,7 @@ export default function Tables({ menu }) {
   );
 
   useEffect(() => {
-    console.log("selectedOrder order number is now", selectedOrder.orderNumber);
+    console.log("selectedOrder status is now", selectedOrder.status);
   }, [selectedOrder]);
   
 
