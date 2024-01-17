@@ -2,31 +2,41 @@ import React from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, setSelectedOrder }) {
+function MenuItem({ item, setSelectedOrder, handleItemSelection }) {
   const handleAddtoCartBtn = () => {
-    setSelectedOrder((prevOrder) => {
-      // Check if the item is already in the order
-      const existingOrderItem = prevOrder.items.find((orderItem) => orderItem.item.id === item.id);
-      if (existingOrderItem) {
-        // If the item is already in the order, increase its quantity by 1
-        return {
-          ...prevOrder,
-          items: prevOrder.items.map((orderItem) =>
-            orderItem.item.id === item.id
-              ? { ...orderItem, quantity: orderItem.quantity + 1 }
-              : orderItem
-          ),
-        };
-      } else {
-        // If the item is not in the order, add it to the order with a quantity of 1
-        return { ...prevOrder, items: [...prevOrder.items, { item, quantity: 1 }] };
-      }
-    });
-    toast.success("Added to Cart!", {
-      duration: 1000,
-      position: "top-left",
-      reverseOrder: false,
-    });
+    // Check if the item has choices, meat, or addOn properties
+    if (item.selection === true) {
+        console.log("true");
+      // If it does, handle the selected item
+      handleItemSelection(item);
+    } else {
+      // If the item doesn't have choices, meat, or addOn properties, we'll handle it here
+      setSelectedOrder((prevOrder) => {
+        // Check if the item is already in the order
+        const existingOrderItem = prevOrder.items.find(
+          (orderItem) => orderItem.item.id === item.id
+        );
+        if (existingOrderItem) {
+          // If the item is already in the order, increase its quantity by 1
+          return {
+            ...prevOrder,
+            items: prevOrder.items.map((orderItem) =>
+              orderItem.item.id === item.id
+                ? { ...orderItem, quantity: orderItem.quantity + 1 }
+                : orderItem
+            ),
+          };
+        } else {
+          // If the item is not in the order, add it to the order with a quantity of 1
+          return { ...prevOrder, items: [...prevOrder.items, { item, quantity: 1 }] };
+        }
+      });
+      toast.success("Added to Cart!", {
+        duration: 1000,
+        position: "top-left",
+        reverseOrder: false,
+      });
+    }
   };
 
   return (

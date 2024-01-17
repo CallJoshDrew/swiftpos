@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -12,23 +12,9 @@ function TableOrderInfo({
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
+  orders,
+  setOrders,
 }) {
-//   const {
-//     orderNumber,
-//     tableName,
-//     orderTime,
-//     orderDate,
-//     status,
-//     items,
-//     subTotal,
-//     serviceCharge,
-//     totalPrice,
-//     quantity,
-//     payment,
-//     paymentMethod,
-//     remarks,
-//   } = selectedOrder;
-
   const handleIncreaseItem = (id) => {
     setSelectedOrder((prevOrder) => {
       return {
@@ -77,15 +63,8 @@ function TableOrderInfo({
       reverseOrder: false,
     });
   };
-  const calculateTotalQuantity = (items) => {
-    let totalQuantity = 0;
-    items.forEach((item) => {
-      totalQuantity += item.quantity;
-    });
-    return totalQuantity;
-  };
 
-  const handlePlaceOrderBtn = () => {
+  const getFormattedDateAndTime = () => {
     const now = new Date();
     const timeOptions = {
       hour: "2-digit",
@@ -102,25 +81,40 @@ function TableOrderInfo({
     };
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
+
+    return { timeString, dateString };
+  };
+
+  const calculateTotalQuantity = (items) => {
+    let totalQuantity = 0;
+    items.forEach((item) => {
+      totalQuantity += item.quantity;
+    });
+    return totalQuantity;
+  };
+
+  const handlePlaceOrderBtn = () => {
+    const { timeString, dateString } = getFormattedDateAndTime();
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
 
-    setSelectedOrder((prevOrder) => {
-      return {
-        ...prevOrder,
-        tableName: "",
-        orderTime: timeString,
-        orderDate: dateString,
-        status: "Placed Order",
-        items: selectedOrder?.items,
-        subTotal: 0,
-        serviceCharge: 0,
-        totalPrice: 0,
-        quantity: totalQuantity,
-        payment: 0,
-        paymentMethod: "",
-        remarks: "",
-      };
-    });
+    const newOrder = {
+      ...selectedOrder,
+      orderTime: timeString,
+      orderDate: dateString,
+      status: "Placed Order",
+      items: selectedOrder?.items,
+      subTotal: 0,
+      serviceCharge: 0,
+      totalPrice: 0,
+      quantity: totalQuantity,
+      payment: 0,
+      paymentMethod: "",
+      remarks: "",
+    };
+
+    setSelectedOrder(newOrder);
+    setOrders((prevOrders) => [...prevOrders, newOrder]);
+
     setShowMenu(false);
     setShowEditBtn(false);
     toast.success("Placed Order & Printing Now", {
@@ -129,10 +123,23 @@ function TableOrderInfo({
       reverseOrder: false,
     });
   };
+
   const handlePaymentBtn = () => {
-    setSelectedOrder((prevOrder) => {
+    setOrders((prevOrders) => {
+      return prevOrders.map((order) => {
+        if (order.orderNumber === selectedOrder.orderNumber) {
+          return {
+            ...order,
+            status: "Paid",
+          };
+        } else {
+          return order;
+        }
+      });
+    });
+    setSelectedOrder((prevSelectedOrder) => {
       return {
-        ...prevOrder,
+        ...prevSelectedOrder,
         status: "Paid",
       };
     });
@@ -187,7 +194,9 @@ function TableOrderInfo({
 
   useEffect(() => {
     console.log("selectedOrder now is", selectedOrder);
-  }, [selectedOrder]);
+    console.log("Tables Now is", tables);
+    console.log("Orders Now is", orders);
+  }, [selectedOrder, tables, orders]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
@@ -200,7 +209,9 @@ function TableOrderInfo({
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         <div className="flex px-2 items-center justify-between">
-          <div className="text-green-800 text-sm font-bold leading-none">{selectedOrder?.status}</div>
+          <div className="text-green-800 text-sm font-bold leading-none">
+            {selectedOrder?.status}
+          </div>
           <div className="text-green-800 text-sm">{selectedOrder?.orderTime}</div>
         </div>
         <div className="flex flex-col gap-4">
@@ -287,7 +298,9 @@ function TableOrderInfo({
           <hr className="h-px my-6 bg-black border-dashed" />
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-base font-bold">Total Sales</div>
-            <div className="text-gray-600 text-base font-bold">RM {selectedOrder?.totalPrice.toFixed(2)}</div>
+            <div className="text-gray-600 text-base font-bold">
+              RM {selectedOrder?.totalPrice.toFixed(2)}
+            </div>
           </div>
         </div>
         <button

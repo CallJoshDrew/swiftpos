@@ -12,6 +12,8 @@ export default function Tables({ menu }) {
   const [tables, setTables] = useState([]);
   const [tableNumber, setTableNumber] = useState(null);
 
+  const [orders, setOrders] = useState([]);
+
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
@@ -39,7 +41,6 @@ export default function Tables({ menu }) {
           name: table.name,
           occupied: false,
           orderNumber: "",
-          order: [],
         }));
         setTables(newTables);
       });
@@ -58,31 +59,50 @@ export default function Tables({ menu }) {
   const selectedTable = useCallback(
     (tableIndex) => {
       setTableNumber(tableIndex);
-      let orderNumber;
+      let orderNumber = tables[tableIndex].orderNumber;
       const generatedOrderID = (tableName) => {
         const paddedCounter = String(orderCounter).padStart(4, "0");
         orderNumber = `#${tableName}-${paddedCounter}`;
         setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
       };
       if (tables[tableIndex].occupied) {
-        console.log("Table is Occupied");
-        setShowEditBtn(true);
+        // Find the order with the same orderNumber as the occupied table
+        const existingOrder = orders.find(
+          (order) => order.orderNumber === tables[tableIndex].orderNumber
+        );
+        if (existingOrder) {
+          // If the order is found, set it as the selectedOrder
+          setSelectedOrder(existingOrder);
+        }
+        setShowEditBtn(false);
       } else {
         generatedOrderID(tables[tableIndex].name);
         setSelectedOrder((prevSelectedOrder) => ({
-          ...prevSelectedOrder,
           orderNumber,
+          tableName: tables[tableIndex].name,
+          orderTime: null,
+          orderDate: null,
+          status: "Status",
+          items: [],
+          subTotal: 0,
+          serviceCharge: 0,
+          totalPrice: 0,
+          quantity: 0,
+          payment: 0,
+          paymentMethod: "",
+          remarks: "",
         }));
+        setTables((prevTables) =>
+          prevTables.map((table, index) =>
+            index === tableIndex ? { ...table, orderNumber, occupied: true } : table
+          )
+        );
         setShowMenu(true);
+        setShowEditBtn(true);
       }
     },
-    [tables, orderCounter]
+    [tables, orderCounter, orders]
   );
-
-  useEffect(() => {
-    console.log("selectedOrder status is now", selectedOrder.status);
-  }, [selectedOrder]);
-  
 
   return (
     <>
@@ -96,6 +116,9 @@ export default function Tables({ menu }) {
               setSelectedCategory={setSelectedCategory}
               setOrderCounter={setOrderCounter}
               selectedOrder={selectedOrder}
+              setSelectedOrder={setSelectedOrder}
+              tables={tables}
+              setTables={setTables}
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -113,37 +136,45 @@ export default function Tables({ menu }) {
           <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
             {/* Map over the tables and render a button for each one */}
             {tables.map((table, index) => {
-              // Determine the button style based on the table's state
-              let buttonStyle = "bg-yellow-500 text-white";
-              if (index === tableNumber) {
-                buttonStyle = "bg-green-800 text-white";
-              } else if (table.occupied === false) {
-                buttonStyle = "bg-white text-black";
-              } else if (table.occupied === true && table.order.payment === "Paid") {
-                buttonStyle = "bg-gray-500 text-white";
-              }
-              return (
-                <button
-                  key={index}
-                  className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
-                  onClick={() => selectedTable(index)}>
-                  <div className="text-md ">Table {index + 1}</div>
-                  <div className="text-sm ">
+                console.log(orders);
+                console.log(table.orderNumber);
+              // Find the corresponding order
+              if (Array.isArray(orders)) {
+                let order = orders.find((order) => order.orderNumber === table.orderNumber);
+                console.log(order);
+
+                // Determine the button style based on the table's state
+                let buttonStyle = "bg-yellow-500 text-white";
+                if (index === tableNumber) {
+                  buttonStyle = "bg-green-800 text-white";
+                } else if (table.occupied === false) {
+                  buttonStyle = "bg-white text-black";
+                } else if (table.occupied === true && order && order.payment === "Paid") {
+                  buttonStyle = "bg-gray-500 text-white";
+                }
+                return (
+                  <button
+                    key={index}
+                    className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
+                    onClick={() => selectedTable(index)}>
+                    <div className="text-md ">Table {index + 1}</div>
                     <div className="text-sm ">
-                      {/* Display the table's status */}
-                      {table.occupied
-                        ? table.order.payment === "Paid"
-                          ? table.order.paymentMethod === "Cash"
-                            ? "Paid by Cash"
-                            : table.order.paymentMethod === "Boost"
-                            ? "Paid by Boost"
-                            : "Paid"
-                          : "Seated"
-                        : "Empty"}
+                      <div className="text-sm ">
+                        {/* Display the table's status */}
+                        {table.occupied
+                          ? order && order.payment === "Paid"
+                            ? order.paymentMethod === "Cash"
+                              ? "Paid by Cash"
+                              : order.paymentMethod === "Boost"
+                              ? "Paid by Boost"
+                              : "Paid"
+                            : "Seated"
+                          : "Empty"}
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
+                  </button>
+                );
+              }
             })}
           </div>
         </div>
@@ -158,6 +189,8 @@ export default function Tables({ menu }) {
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}
+          orders={orders}
+          setOrders={setOrders}
         />
       )}
     </>
