@@ -57,7 +57,7 @@ function CategoryCard({
     // Check if the sorted cartItems and tempCartItems are the same or if tempCartItems is empty
     if (
       (tempCartItems?.orderNumber && tempCartItems.length === 0) ||
-      tempCartItems.length > 0 ||
+      tempCartItems.length > 0 || (remarks ==="" && tempCartItems?.orderNumber) ||
       JSON.stringify(sortedTempCartItems) !== JSON.stringify(sortedCartItems) ||
       (remarks !== orderRemarks && tempCartItems?.orderNumber) || (remarks !==orderRemarks)
     ) {

@@ -1,7 +1,16 @@
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
-import TablesOverview from "./tablesOverview/page";
+import Tables from "./tables/page";
 
 export default function Home() {
+  const [menu, setMenu] = useState([]); // Stores the menu items
+  // Fetch the menu data when the component mounts
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((response) => response.json())
+      .then((data) => setMenu(data));
+  }, []);
   return (
     <>
       <Head>
@@ -24,7 +33,7 @@ export default function Home() {
           href="/images/favicon-16x16.png"
         />
       </Head>
-      <TablesOverview />
+      <Tables menu={menu}/>
     </>
   );
 }

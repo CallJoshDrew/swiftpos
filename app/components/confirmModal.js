@@ -21,6 +21,12 @@ function ConfirmModal({
   // console.log("Remarks is",remarks);
   // console.log("Selector Remarks is",selectedOrder?.remarks);
   const handleMessageStatus = () => {
+    //This means selectedOrder is an empty object {}
+    // Object.keys(selectedOrder)?.length === 0
+    if (selectedOrder?.remarks ==""){
+      setShowRemarksBtn(false);
+      console.log(selectedOrder?.remarks);
+    } 
     setShowMenu(false);
     setShowEditBtn(false);
     setOrderCompleted(true);
@@ -42,9 +48,7 @@ function ConfirmModal({
     //   remarks: "",
     // });
     setIsEditingRemarks(false);
-    // console.log(cartItems);
     setShowRemarksText(true);
-    setShowRemarksBtn(false);
     onCloseMsg();
   };
 

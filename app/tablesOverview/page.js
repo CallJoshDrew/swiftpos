@@ -22,7 +22,7 @@ export default function TablesOverview() {
   const [orderCounter, setOrderCounter] = useState(1);
   const [orders, setOrders] = useState([]); // Stores the orders
   const [currentDate, setCurrentDate] = useState(new Date().toDateString()); // Stores the current date
-  const [selectedOrder, setSelectedOrder] = useState([]); // Stores the currently selected order
+  const [selectedOrder, setSelectedOrder] = useState({}); // Stores the currently selected order
 
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
@@ -78,6 +78,7 @@ export default function TablesOverview() {
         // if (tables[tableIndex].order?.remarks) {
         //   setShowRemarksText(true);
         // }
+        setShowRemarksBtn(false);
       } else {
         setOrderCompleted(false);
         setShowMenu(true);
@@ -106,7 +107,7 @@ export default function TablesOverview() {
         setShowEditBtn(false);
       } else {
         // If the table is not occupied, clear the selected order and cart items
-        setSelectedOrder(null);
+        setSelectedOrder({});
         setCartItems({ orderNumber: null, items: [] });
         setTempCartItems({ orderNumber: null, items: [] });
       }

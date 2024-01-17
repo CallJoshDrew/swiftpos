@@ -80,7 +80,7 @@ function TableOrderDetails({
         delete newOrder.remarks;
         return newOrder;
       }
-      return null;
+      return {};
     });
     setShowRemarksText(false);
     setIsEditingRemarks(false);
@@ -483,15 +483,16 @@ function TableOrderDetails({
   }, [selectedOrder?.remarks, setRemarks]);
 
   useEffect(() => {
+    // console.log("Is Editing Remarks now", isEditingRemarks);
     // setRemarks(selectedOrder?.remarks);
     // console.log("tempCartItems: ", tempCartItems);
     // console.log("cartItems: ", cartItems);
     // console.log("Orders list is:", orders);
     // console.log("Tables list is", tables);
     // console.log(orderCounter);
-    // console.log(selectedOrder?.remarks);
-    // console.log("Remarks Button now is", showRemarksBtn);
-  }, [selectedOrder, tables, cartItems, tempCartItems, orders, orderCounter, showRemarksBtn, setRemarks]);
+    // console.log(selectedOrder);
+    console.log("Remarks Button now is", showRemarksBtn);
+  }, [selectedOrder, tables, cartItems, tempCartItems, orders, orderCounter, showRemarksBtn, setRemarks, isEditingRemarks]);
 
   return (
     <div className="py-10 w-2/6 flex-auto flex flex-col relative z-20">
@@ -714,8 +715,10 @@ function TableOrderDetails({
             })}
         </div>
         {/* Sequence is important, this will check first before checking showRemarksText is true */}
+        {/* It is checking whether selectedOrder is an empty object {} */}
         {/* The first condition is for the second action editing order whereby it has remarks value of undefined */}
-        {((isEditingRemarks && selectedOrder === undefined) ||
+        {/* {((isEditingRemarks && Object.keys(selectedOrder).length === 0) || */}
+        {((isEditingRemarks && selectedOrder?.remarks !== undefined) ||
           (!isEmptyString && selectedOrder?.remarks !== undefined)) &&
           showRemarksText && (
             <div className="bg-gray-100 p-2 rounded-md">
