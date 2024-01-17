@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
@@ -78,7 +78,7 @@ export default function Tables({ menu }) {
     },
     [tables, orderCounter]
   );
-  
+
   return (
     <>
       {showMenu ? (
@@ -89,12 +89,16 @@ export default function Tables({ menu }) {
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              setOrderCounter={setOrderCounter} 
+              setOrderCounter={setOrderCounter}
               selectedOrder={selectedOrder}
             />
           </div>
           <div className="mt-[130px] px-4">
-            <MenuCard menu={menu} selectedCategory={selectedCategory} setSelectedOrder={setSelectedOrder}/>
+            <MenuCard
+              menu={menu}
+              selectedCategory={selectedCategory}
+              setSelectedOrder={setSelectedOrder}
+            />
           </div>
         </div>
       ) : (
@@ -139,16 +143,18 @@ export default function Tables({ menu }) {
           </div>
         </div>
       )}
-      <TableOrderInfo
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
-        tables={tables}
-        setTables={setTables}
-        showMenu={showMenu}
-        setShowMenu={setShowMenu}
-        showEditBtn={showEditBtn}
-        setShowEditBtn={setShowEditBtn}
-      />
+      {selectedOrder && (
+        <TableOrderInfo
+          selectedOrder={selectedOrder}
+          setSelectedOrder={setSelectedOrder}
+          tables={tables}
+          setTables={setTables}
+          showMenu={showMenu}
+          setShowMenu={setShowMenu}
+          showEditBtn={showEditBtn}
+          setShowEditBtn={setShowEditBtn}
+        />
+      )}
     </>
   );
 }
