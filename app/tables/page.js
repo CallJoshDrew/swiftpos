@@ -16,8 +16,8 @@ export default function Tables({ menu }) {
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
     tableName: "",
-    orderTime: null,
-    orderDate: null,
+    orderTime: "",
+    orderDate: "",
     status: "Status",
     items: [],
     subTotal: 0,
@@ -78,6 +78,11 @@ export default function Tables({ menu }) {
     },
     [tables, orderCounter]
   );
+
+  useEffect(() => {
+    console.log("selectedOrder now is", selectedOrder);
+  }, [selectedOrder]);
+  
 
   return (
     <>

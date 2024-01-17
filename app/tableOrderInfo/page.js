@@ -185,9 +185,7 @@ function TableOrderInfo({
   }
   // Status => Placed Order => Make Payment => Check Out => Completed
 
-  useEffect(() => {
-    console.log("selectedOrder now is", selectedOrder);
-  }, [selectedOrder]);
+  
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
