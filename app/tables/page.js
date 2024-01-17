@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState, useEffect, useCallback } from "react";
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
