@@ -13,21 +13,21 @@ function TableOrderInfo({
   showEditBtn,
   setShowEditBtn,
 }) {
-  const {
-    orderNumber,
-    tableName,
-    orderTime,
-    orderDate,
-    status,
-    items,
-    subTotal,
-    serviceCharge,
-    totalPrice,
-    quantity,
-    payment,
-    paymentMethod,
-    remarks,
-  } = selectedOrder;
+//   const {
+//     orderNumber,
+//     tableName,
+//     orderTime,
+//     orderDate,
+//     status,
+//     items,
+//     subTotal,
+//     serviceCharge,
+//     totalPrice,
+//     quantity,
+//     payment,
+//     paymentMethod,
+//     remarks,
+//   } = selectedOrder;
 
   const handleIncreaseItem = (id) => {
     setSelectedOrder((prevOrder) => {
@@ -102,7 +102,7 @@ function TableOrderInfo({
     };
     const timeString = now.toLocaleTimeString("en-US", timeOptions);
     const dateString = now.toLocaleDateString("en-US", dateOptions);
-    const totalQuantity = calculateTotalQuantity(items);
+    const totalQuantity = calculateTotalQuantity(selectedOrder.items);
 
     setSelectedOrder((prevOrder) => {
       return {
@@ -111,7 +111,7 @@ function TableOrderInfo({
         orderTime: timeString,
         orderDate: dateString,
         status: "Placed Order",
-        items,
+        items: selectedOrder.items,
         subTotal: 0,
         serviceCharge: 0,
         totalPrice: 0,
@@ -158,23 +158,23 @@ function TableOrderInfo({
   let orderStatus;
   let orderStatusCSS;
   let handleMethod;
-  if (status == "Status" && items.length > 0) {
+  if (selectedOrder.status == "Status" && selectedOrder.items.length > 0) {
     orderStatus = "Place Order & Print";
     orderStatusCSS = "bg-green-800";
     handleMethod = handlePlaceOrderBtn;
-  } else if (status === "Status") {
+  } else if (selectedOrder.status === "Status") {
     orderStatus = "Empty Cart";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
-  } else if (status == "Placed Order") {
+  } else if (selectedOrder.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
     handleMethod = handlePaymentBtn;
-  } else if (status == "Paid") {
+  } else if (selectedOrder.status == "Paid") {
     orderStatus = "Check Out";
     orderStatusCSS = "bg-yellow-500";
     handleMethod = handleCheckOutBtn;
-  } else if (status == "Check Out") {
+  } else if (selectedOrder.status == "Check Out") {
     orderStatus = "Completed";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
@@ -185,27 +185,27 @@ function TableOrderInfo({
   }
   // Status => Placed Order => Make Payment => Check Out => Completed
 
-//   useEffect(() => {
-//     console.log("selectedOrder now is", selectedOrder);
-//   }, [selectedOrder]);
+  useEffect(() => {
+    console.log("selectedOrder now is", selectedOrder);
+  }, [selectedOrder]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
         <div className="rounded-lg px-2 flex my-2 justify-between items-center">
           <div className="flex">
             <div className="flex flex-col">
-              <div className="text-green-800 text-lg font-bold">{orderNumber ? "Status":"Error"}</div>
+              <div className="text-green-800 text-lg font-bold">{selectedOrder.orderNumber}</div>
             </div>
           </div>
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         <div className="flex px-2 items-center justify-between">
-          <div className="text-green-800 text-sm font-bold leading-none">{status}</div>
-          <div className="text-green-800 text-sm">{orderTime}</div>
+          <div className="text-green-800 text-sm font-bold leading-none">{selectedOrder.status}</div>
+          <div className="text-green-800 text-sm">{selectedOrder.orderTime}</div>
         </div>
         <div className="flex flex-col gap-4">
-          {Array.isArray(items) &&
-            items.map((itemObj) => {
+          {Array.isArray(selectedOrder.items) &&
+            selectedOrder.items.map((itemObj) => {
               const { item, quantity } = itemObj;
               return (
                 <div key={item.id} className="border rounded-md p-2 shadow-sm">
@@ -278,16 +278,16 @@ function TableOrderInfo({
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">{subTotal.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{selectedOrder.subTotal.toFixed(2)}</div>
           </div>
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Service Charge</div>
-            <div className="text-gray-600 text-sm">{serviceCharge.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{selectedOrder.serviceCharge.toFixed(2)}</div>
           </div>
           <hr className="h-px my-6 bg-black border-dashed" />
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-base font-bold">Total Sales</div>
-            <div className="text-gray-600 text-base font-bold">RM {totalPrice.toFixed(2)}</div>
+            <div className="text-gray-600 text-base font-bold">RM {selectedOrder.totalPrice.toFixed(2)}</div>
           </div>
         </div>
         <button
