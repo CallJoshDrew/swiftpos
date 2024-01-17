@@ -178,7 +178,7 @@ function TableOrderInfo({
     orderStatus = "Completed";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
-  } else if (status == "Cancelled") {
+  } else if (selectedOrder.status == "Cancelled") {
     orderStatus = "Cancelled";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
