@@ -6,6 +6,7 @@ import TableOrderInfo from "../tableOrderInfo/page";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showEditBtn, setShowEditBtn] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [tables, setTables] = useState([]);
@@ -15,7 +16,7 @@ export default function Tables({ menu }) {
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
     tableName: "",
-    OrderTime: null,
+    orderTime: null,
     orderDate: null,
     status: "Status",
     items: [],
@@ -65,6 +66,7 @@ export default function Tables({ menu }) {
       };
       if (tables[tableIndex].occupied) {
         console.log("Table is Occupied");
+        setShowEditBtn(true);
       } else {
         generatedOrderID(tables[tableIndex].name);
         setSelectedOrder((prevSelectedOrder) => ({
@@ -139,10 +141,13 @@ export default function Tables({ menu }) {
       )}
       <TableOrderInfo
         selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
         tables={tables}
         setTables={setTables}
         showMenu={showMenu}
         setShowMenu={setShowMenu}
+        showEditBtn={showEditBtn}
+        setShowEditBtn={setShowEditBtn}
       />
     </>
   );
