@@ -38,7 +38,7 @@ export default function Tables({ menu }) {
         const newTables = data.map((table) => ({
           name: table.name,
           occupied: false,
-          orderNumber: null,
+          orderNumber: "",
           order: [],
         }));
         setTables(newTables);
@@ -71,7 +71,7 @@ export default function Tables({ menu }) {
         generatedOrderID(tables[tableIndex].name);
         setSelectedOrder((prevSelectedOrder) => ({
           ...prevSelectedOrder,
-          orderNumber: orderNumber,
+          orderNumber,
         }));
         setShowMenu(true);
       }
