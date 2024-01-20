@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MenuItem from "./menuItem";
 import SelectionModal from "../modal/selectionModal";
 
-function MenuCard({ menu, selectedCategory, setSelectedOrder }) {
+function MenuCard({ menu, selectedOrder, selectedCategory, setSelectedOrder }) {
   const [isSelectionModalOpen, setSelectionModalOpen] = useState(false);
   const [selectionModal, setSelectionModal] = useState({
     item: "",
@@ -16,11 +16,12 @@ function MenuCard({ menu, selectedCategory, setSelectedOrder }) {
     setSelectionModalOpen(true);
     setSelectionModal({
       item,
-      choice: item.choices?.[0] || "",
-      meatLevel: item.meat?.[0] || "",
-      addOn: item.addOn?.[0] || "",
+      choice: item.choices?.[0] || "Not Available",
+      meatLevel: item.meat?.[0] || "Not Available",
+      addOn: item.addOn?.[0] || "Not Available",
     });
   };
+  
   if (selectedCategory !== "All") {
     menu = menu.filter((item) => item.category === selectedCategory);
   }
@@ -30,6 +31,7 @@ function MenuCard({ menu, selectedCategory, setSelectedOrder }) {
         <MenuItem
           key={item.id}
           item={item}
+          selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
           handleItemSelection={handleItemSelection}
         />
@@ -37,6 +39,7 @@ function MenuCard({ menu, selectedCategory, setSelectedOrder }) {
       <SelectionModal
         isSelectionModalOpen={isSelectionModalOpen}
         setSelectionModalOpen={setSelectionModalOpen}
+        selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         selectionModal={selectionModal}
         setSelectionModal={setSelectionModal}

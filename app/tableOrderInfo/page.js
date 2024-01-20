@@ -114,7 +114,6 @@ function TableOrderInfo({
 
     setSelectedOrder(newOrder);
     setOrders((prevOrders) => [...prevOrders, newOrder]);
-
     setShowMenu(false);
     setShowEditBtn(false);
     toast.success("Placed Order & Printing Now", {
@@ -137,7 +136,7 @@ function TableOrderInfo({
         }
       });
     });
-    setSelectedOrder((prevSelectedOrder) => {
+      setSelectedOrder((prevSelectedOrder) => {
       return {
         ...prevSelectedOrder,
         status: "Paid",
@@ -150,12 +149,37 @@ function TableOrderInfo({
     });
   };
   const handleCheckOutBtn = () => {
+    setOrders((prevOrders) => {
+        return prevOrders.map((order) => {
+          if (order.orderNumber === selectedOrder.orderNumber) {
+            return {
+              ...order,
+              status: "Completed",
+            };
+          } else {
+            return order;
+          }
+        });
+      });
     setSelectedOrder((prevOrder) => {
       return {
         ...prevOrder,
         status: "Completed",
       };
     });
+    setTables((prevTables) => {
+        return prevTables.map((table) => {
+          if (table.orderNumber === selectedOrder.orderNumber) {
+            return {
+              ...table,
+              orderNumber: "", 
+              occupied: false, 
+            };
+          } else {
+            return table;
+          }
+        });
+      });
     toast.success("Check Out", {
       duration: 1000,
       position: "top-left",
@@ -192,10 +216,15 @@ function TableOrderInfo({
   }
   // Status => Placed Order => Make Payment => Check Out => Completed
 
+  // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
+  // items is an array of objects, and each object has an item property which itself is an object with an id property.
+  // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
+  // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    console.log("selectedOrder now is", selectedOrder);
-    console.log("Tables Now is", tables);
-    console.log("Orders Now is", orders);
+    console.log("SelectedOrder Now is", selectedOrder);
+    // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
+    // console.log("Tables Now is", tables);
+    // console.log("Orders Now is", orders);
   }, [selectedOrder, tables, orders]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">

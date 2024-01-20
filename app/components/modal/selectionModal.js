@@ -6,21 +6,53 @@ import toast from "react-hot-toast";
 function SelectionModal({
   isSelectionModalOpen,
   setSelectionModalOpen,
+  selectedOrder,
   setSelectedOrder,
   selectionModal,
   setSelectionModal,
 }) {
+  const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleSelectionBtn = () => {
     // Generate a unique ID based on the current time and a random number
-    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    
 
     setSelectedOrder((prevOrder) => {
       // Check if the item is already in the order
       const existingOrderItem = prevOrder.items.find(
-        (orderItem) => orderItem.item.id === selectionModal.item.id
+        (orderItem) =>
+          orderItem.item.id === selectionModal.item.id &&
+          orderItem.selectedChoice === selectionModal.choice &&
+          orderItem.selectedMeatLevel === selectionModal.meatLevel &&
+          orderItem.selectedAddOn === selectionModal.addOn
+      );selectedOrder
+      const matchingItem = selectedOrder.items.find(
+        (orderItem) =>
+          orderItem.selectedChoice === selectionModal.choice &&
+          orderItem.selectedMeatLevel === selectionModal.meatLevel &&
+          orderItem.selectedAddOn === selectionModal.addOn
       );
-      if (existingOrderItem) {
-        // If the item is already in the order, increase its quantity by 1
+        console.log(matchingItem);
+       if (matchingItem === existingOrderItem){
+        console.log("true");
+       }
+
+      // Check if the selectedChoice, selectedMeatLevel, and selectedAddOn are at their default values
+    //   const isDefaultSelection =
+    //     selectionModal.choice === selectionModal?.item?.choices?.[0] &&
+    //     selectionModal.meatLevel ===
+    //       (Array.isArray(selectionModal?.item?.meat)
+    //         ? selectionModal.item.meat[0]
+    //         : "Not Available") &&
+    //     selectionModal.addOn ===
+    //       (Array.isArray(selectionModal?.item?.addOn)
+    //         ? selectionModal.item.addOn[0]
+    //         : "Not Available");
+      //   console.log(selectionModal.choice);
+      //   console.log(selectionModal.meatLevel);
+      //   console.log(selectionModal.addOn);
+      //   console.log(isDefaultSelection);
+      if ( existingOrderItem ) {
+        // If the item is already in the order or has default selections, increase its quantity by 1
         return {
           ...prevOrder,
           items: prevOrder.items.map((orderItem) =>
@@ -37,8 +69,8 @@ function SelectionModal({
             ...prevOrder.items,
             {
               item: selectionModal.item,
+                // id: `${selectionModal.item.id}-${prevOrder.items.length}-${uniqueId}`,
               quantity: 1,
-              id: `${selectionModal.item.id}-${prevOrder.items.length}-${uniqueId}`,
               selectedChoice: selectionModal.choice,
               selectedMeatLevel: selectionModal.meatLevel,
               selectedAddOn: selectionModal.addOn,
@@ -47,6 +79,7 @@ function SelectionModal({
         };
       }
     });
+
     setSelectionModalOpen(false);
     toast.success("Added to cart!", {
       duration: 1000,
@@ -72,7 +105,7 @@ function SelectionModal({
         <div className="bg-white p-8 rounded-lg shadow-lg w-[400px]">
           <div className="flex flex-col gap-4">
             {selectionModal.item && (
-              <div key={selectionModal.item.id} className="border rounded-md p-2 shadow-sm my-2">
+              <div key={`${selectionModal.item.id}-Selection-${uniqueId}`} className="border rounded-md p-2 shadow-sm my-2">
                 <div className="flex">
                   <Image
                     src={selectionModal.item.image}

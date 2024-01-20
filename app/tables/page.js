@@ -36,14 +36,7 @@ export default function Tables({ menu }) {
   useEffect(() => {
     fetch("/api/tableNames")
       .then((response) => response.json())
-      .then((data) => {
-        const newTables = data.map((table) => ({
-          name: table.name,
-          occupied: false,
-          orderNumber: "",
-        }));
-        setTables(newTables);
-      });
+      .then((data) => setTables(data));
   }, []);
 
   // Update the order counter when the date changes
@@ -56,6 +49,51 @@ export default function Tables({ menu }) {
     }
   }, [currentDate]);
 
+  const findOrder = (orderNumber) => {
+    if (Array.isArray(orders)) {
+      return orders.find((order) => order.orderNumber === orderNumber);
+    }
+  };
+
+  const determineButtonStyle = (table, order, index) => {
+    let buttonStyle = "bg-white text-black";
+    if (index === tableNumber) {
+      buttonStyle = "bg-green-800 text-white";
+    } else if (table.occupied === true && order && order.status === "Completed") {
+      buttonStyle = "bg-white text-black";
+    } else if (table.occupied === true && order && order.status === "Check Out") {
+      buttonStyle = "bg-gray-500 text-white";
+    } else if (table.occupied === true && order && order.status === "Paid") {
+      buttonStyle = "bg-gray-500 text-white";
+    } else if (table.occupied === true) {
+      buttonStyle = "bg-yellow-500 text-white";
+    }
+    return buttonStyle;
+  };
+
+  const displayTableStatus = (table, order) => {
+    let tableStatus = "Empty";
+
+    if (table.occupied) {
+      tableStatus = "Seated";
+    //   console.log(order.status);
+      if (order && order.status === "Paid") {
+        switch (order.paymentMethod) {
+          case "Cash":
+            tableStatus = "Paid by Cash";
+            break;
+          case "Boost":
+            tableStatus = "Paid by Boost";
+            break;
+          default:
+            tableStatus = "Paid";
+            break;
+        }
+      }
+    }
+    return tableStatus;
+  };
+
   const selectedTable = useCallback(
     (tableIndex) => {
       setTableNumber(tableIndex);
@@ -63,6 +101,7 @@ export default function Tables({ menu }) {
       const generatedOrderID = (tableName) => {
         const paddedCounter = String(orderCounter).padStart(4, "0");
         orderNumber = `#${tableName}-${paddedCounter}`;
+        // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
         setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
       };
       if (tables[tableIndex].occupied) {
@@ -92,11 +131,15 @@ export default function Tables({ menu }) {
           paymentMethod: "",
           remarks: "",
         }));
+        // console.log("Calling orderNumber before setTables", orderNumber);
         setTables((prevTables) =>
           prevTables.map((table, index) =>
-            index === tableIndex ? { ...table, orderNumber, occupied: true } : table
+            index === tableIndex
+              ? { ...table, orderNumber, occupied: true, name: tables[tableIndex].name }
+              : table
           )
         );
+        // console.log("Calling Tables after setTables", tables);
         setShowMenu(true);
         setShowEditBtn(true);
       }
@@ -125,6 +168,7 @@ export default function Tables({ menu }) {
             <MenuCard
               menu={menu}
               selectedCategory={selectedCategory}
+              selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
             />
           </div>
@@ -134,47 +178,24 @@ export default function Tables({ menu }) {
         <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
           <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">Select Table</div>
           <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
-            {/* Map over the tables and render a button for each one */}
             {tables.map((table, index) => {
-                console.log(orders);
-                console.log(table.orderNumber);
-              // Find the corresponding order
-              if (Array.isArray(orders)) {
-                let order = orders.find((order) => order.orderNumber === table.orderNumber);
-                console.log(order);
+              let order = findOrder(table.orderNumber);
+              let buttonStyle = determineButtonStyle(table, order, index);
+              let tableStatus = displayTableStatus(table, order);
 
-                // Determine the button style based on the table's state
-                let buttonStyle = "bg-yellow-500 text-white";
-                if (index === tableNumber) {
-                  buttonStyle = "bg-green-800 text-white";
-                } else if (table.occupied === false) {
-                  buttonStyle = "bg-white text-black";
-                } else if (table.occupied === true && order && order.payment === "Paid") {
-                  buttonStyle = "bg-gray-500 text-white";
-                }
-                return (
-                  <button
-                    key={index}
-                    className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
-                    onClick={() => selectedTable(index)}>
-                    <div className="text-md ">Table {index + 1}</div>
+              return (
+                <button
+                  key={index}
+                  className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
+                  onClick={() => selectedTable(index)}>
+                  <div className="text-md ">Table {index + 1}</div>
+                  <div className="text-sm ">
                     <div className="text-sm ">
-                      <div className="text-sm ">
-                        {/* Display the table's status */}
-                        {table.occupied
-                          ? order && order.payment === "Paid"
-                            ? order.paymentMethod === "Cash"
-                              ? "Paid by Cash"
-                              : order.paymentMethod === "Boost"
-                              ? "Paid by Boost"
-                              : "Paid"
-                            : "Seated"
-                          : "Empty"}
-                      </div>
+                      {tableStatus}
                     </div>
-                  </button>
-                );
-              }
+                  </div>
+                </button>
+              );
             })}
           </div>
         </div>
