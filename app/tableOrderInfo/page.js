@@ -16,6 +16,56 @@ function TableOrderInfo({
   setOrders,
 }) {
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+  const handleChoiceChange = (itemId, choiceName) => {
+    // Update the item's selected choice
+    setSelectedOrder((prevOrder) => {
+      return {
+        ...prevOrder,
+        items: prevOrder.items.map((itemObj) =>
+          itemObj.item.id === itemId
+            ? {
+                ...itemObj,
+                selectedChoice: itemObj.item.choices.find((choice) => choice.name === choiceName),
+              }
+            : itemObj
+        ),
+      };
+    });
+  };
+
+  // Function to handle the change of an item's meat level
+  const handleMeatLevel = (itemId, level) => {
+    // Update the item's selected meat level
+    setSelectedOrder((prevOrder) => {
+      return {
+        ...prevOrder,
+        items: prevOrder.items.map((itemObj) =>
+          itemObj.item.id === itemId
+            ? {
+                ...itemObj,
+                selectedMeatLevel: itemObj.item.meat.find((meat) => meat.level === level),
+              }
+            : itemObj
+        ),
+      };
+    });
+  };
+
+  // Function to handle the addition of an add-on to an item
+  const handleAddOn = (itemId, type) => {
+    // Update the item's selected add-on
+    setSelectedOrder((prevOrder) => {
+      return {
+        ...prevOrder,
+        items: prevOrder.items.map((itemObj) =>
+          itemObj.item.id === itemId
+            ? { ...itemObj, selectedAddOn: itemObj.item.addOn.find((addOn) => addOn.type === type) }
+            : itemObj
+        ),
+      };
+    });
+  };
+
   const handleIncreaseItem = (id) => {
     setSelectedOrder((prevOrder) => {
       return {
@@ -64,6 +114,36 @@ function TableOrderInfo({
       reverseOrder: false,
     });
   };
+  let subTotal = 0;
+  let serviceCharge = 0;
+  let totalPrice = 0;
+
+  // Calculate the subtotal, service charge, and total if there are items in the cart
+  if (selectedOrder && selectedOrder.items && selectedOrder.items.length > 0) {
+    // Check whether selectedChoice, selectedMeatLevel, and selectedAddOn exist and have a price property before trying to parse it as a float. If they don’t exist or don’t have a price property, I’m defaulting to 0.
+    subTotal = selectedOrder.items.reduce((total, itemObj) => {
+      const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn } = itemObj;
+      return (
+        total +
+        parseFloat(item.price) * quantity +
+        (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) * quantity : 0) +
+        (selectedMeatLevel && selectedMeatLevel.price
+          ? parseFloat(selectedMeatLevel.price) * quantity
+          : 0) +
+        (selectedAddOn && selectedAddOn.price ? parseFloat(selectedAddOn.price) * quantity : 0)
+      );
+    }, 0);
+
+    subTotal = parseFloat(subTotal.toFixed(2)); // Round to 2 decimal places
+
+    // Calculate the service charge
+    serviceCharge = subTotal * 0;
+    serviceCharge = parseFloat(serviceCharge.toFixed(2)); // Round to 2 decimal places
+
+    // Calculate the total
+    totalPrice = subTotal + serviceCharge;
+    totalPrice = parseFloat(totalPrice.toFixed(2)); // Round to 2 decimal places
+  }
 
   const getFormattedDateAndTime = () => {
     const now = new Date();
@@ -104,9 +184,9 @@ function TableOrderInfo({
       orderDate: dateString,
       status: "Placed Order",
       items: selectedOrder?.items,
-      subTotal: 0,
-      serviceCharge: 0,
-      totalPrice: 0,
+      subTotal,
+      serviceCharge,
+      totalPrice,
       quantity: totalQuantity,
       payment: 0,
       paymentMethod: "",
@@ -248,7 +328,14 @@ function TableOrderInfo({
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
             selectedOrder?.items.map((itemObj) => {
-              const { item, quantity } = itemObj;
+              const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn } = itemObj; // Destructure from itemObj
+              const itemTotalAddOn =
+                (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) : 0) +
+                (selectedMeatLevel && selectedMeatLevel.price
+                  ? parseFloat(selectedMeatLevel.price)
+                  : 0) +
+                (selectedAddOn && selectedAddOn.price ? parseFloat(selectedAddOn.price) : 0);
+
               return (
                 <div key={`${item.id}-${uniqueId}`} className="border rounded-md p-2 shadow-sm">
                   <div className="flex">
@@ -270,6 +357,51 @@ function TableOrderInfo({
                       </div>
                     </div>
                   </div>
+                  {item.choices && (
+                    <select
+                      id="choices"
+                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      onChange={(e) => handleChoiceChange(item.id, e.target.value)}
+                      value={selectedChoice.name} // Use selectedChoice.name here
+                    >
+                      {item.choices.map((choice, index) => (
+                        <option key={index} value={choice.name}>
+                          {choice.name} + RM {choice.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {item.meat && (
+                    <select
+                      id="meat"
+                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      onChange={(e) => handleMeatLevel(item.id, e.target.value)}
+                      value={selectedMeatLevel.level}>
+                      {item.meat.map((meat, index) => (
+                        <option key={index} value={meat.level}>
+                          {meat.level} + RM {meat.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {item.addOn && (
+                    <select
+                      id="meat"
+                      className="block appearance-none w-full py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      onChange={(e) => handleAddOn(item.id, e.target.value)}
+                      value={selectedAddOn.type}>
+                      {item.addOn.map((addOn, index) => (
+                        <option key={index} value={addOn.type}>
+                          {addOn.type} + RM {addOn.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {selectedChoice && (
+                    <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
+                      Add On x {quantity}: RM {(parseFloat(itemTotalAddOn) * quantity).toFixed(2)}
+                    </div>
+                  )}
                   {showEditBtn && (
                     <div className="flex justify-between px-2 py-2 bg-gray-200 rounded-md mt-3 w-full">
                       <div className="flex items-center gap-x-2">
@@ -320,18 +452,16 @@ function TableOrderInfo({
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>
-            <div className="text-gray-600 text-sm">{selectedOrder?.subTotal.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{subTotal.toFixed(2)}</div>
           </div>
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Service Charge</div>
-            <div className="text-gray-600 text-sm">{selectedOrder?.serviceCharge.toFixed(2)}</div>
+            <div className="text-gray-600 text-sm">{serviceCharge.toFixed(2)}</div>
           </div>
           <hr className="h-px my-6 bg-black border-dashed" />
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-base font-bold">Total Sales</div>
-            <div className="text-gray-600 text-base font-bold">
-              RM {selectedOrder?.totalPrice.toFixed(2)}
-            </div>
+            <div className="text-gray-600 text-base font-bold">RM {totalPrice.toFixed(2)}</div>
           </div>
         </div>
         <button
