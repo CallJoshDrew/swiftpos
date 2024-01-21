@@ -286,6 +286,10 @@ function TableOrderInfo({
     orderStatus = "Empty Cart";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
+  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
+    orderStatus = "Update Order";
+    orderStatusCSS = "bg-green-800";
+    handleMethod = handlePaymentBtn;
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
@@ -311,11 +315,13 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    console.log("SelectedOrder Now is", selectedOrder);
+    // console.log("SelectedOrder Now is", selectedOrder);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
-  }, [selectedOrder, tables, orders]);
+    console.log("showEdit Button Initial State is False But Now is", showEditBtn);
+    console.log("showEdit Controls Initial State is True But Now is", showEditControls);
+  }, [selectedOrder, tables, orders, showEditBtn, showEditControls]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
@@ -433,10 +439,10 @@ function TableOrderInfo({
                           viewBox="0 0 24 24"
                           fill="currentColor"
                           className="w-6 h-6 text-green-800"
-                          onClick={() => handleDecreaseItem(item.id)}>
+                          onClick={() => handleIncreaseItem(item.id)}>
                           <path
                             fillRule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                             clipRule="evenodd"
                           />
                         </svg>
@@ -445,11 +451,11 @@ function TableOrderInfo({
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          className="w-6 h-6 text-green-800"
-                          onClick={() => handleIncreaseItem(item.id)}>
+                          className={quantity > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-200"}
+                          onClick={quantity > 1 ? () => handleDecreaseItem(item.id) : null}>
                           <path
                             fillRule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
                             clipRule="evenodd"
                           />
                         </svg>

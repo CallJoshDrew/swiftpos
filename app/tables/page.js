@@ -77,7 +77,7 @@ export default function Tables({ menu }) {
 
     if (table.occupied) {
       tableStatus = "Seated";
-    //   console.log(order.status);
+      //   console.log(order.status);
       if (order && order.status === "Paid") {
         switch (order.paymentMethod) {
           case "Cash":
@@ -94,6 +94,7 @@ export default function Tables({ menu }) {
     }
     return tableStatus;
   };
+
 
   const selectedTable = useCallback(
     (tableIndex) => {
@@ -113,7 +114,8 @@ export default function Tables({ menu }) {
         if (existingOrder) {
           // If the order is found, set it as the selectedOrder
           setSelectedOrder(existingOrder);
-          setShowEditBtn(true);        }
+          setShowEditBtn(true);
+        }
       } else {
         generatedOrderID(tables[tableIndex].name);
         setSelectedOrder((prevSelectedOrder) => ({
@@ -131,7 +133,6 @@ export default function Tables({ menu }) {
           paymentMethod: "",
           remarks: "",
         }));
-        // console.log("Calling orderNumber before setTables", orderNumber);
         setTables((prevTables) =>
           prevTables.map((table, index) =>
             index === tableIndex
@@ -139,9 +140,10 @@ export default function Tables({ menu }) {
               : table
           )
         );
-        // console.log("Calling Tables after setTables", tables);
+        // This is when no items added
         setShowMenu(true);
         setShowEditBtn(false);
+        setShowEditControls(true);
       }
     },
     [tables, orderCounter, orders]
@@ -194,9 +196,7 @@ export default function Tables({ menu }) {
                   onClick={() => selectedTable(index)}>
                   <div className="text-md ">Table {index + 1}</div>
                   <div className="text-sm ">
-                    <div className="text-sm ">
-                      {tableStatus}
-                    </div>
+                    <div className="text-sm ">{tableStatus}</div>
                   </div>
                 </button>
               );

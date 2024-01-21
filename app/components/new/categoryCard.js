@@ -36,12 +36,12 @@ function CategoryCard({
   }, {});
   const handleCloseMenu = () => {
     setShowMenu(false);
-    setShowEditControls(false);
+    
     if (Array.isArray(selectedOrder?.items) && selectedOrder?.items.length > 0) {
+      
       setShowEditBtn(true);
-    } else {
-      setShowEditBtn(false);
-    }
+      setShowEditControls(false);
+    } 
   
     // This is when user haven't place an order yet even though items were added.
     if (status === "Status") {
@@ -64,7 +64,9 @@ function CategoryCard({
         tableName: "",
         items: [],
       }));
-    }
+      setShowEditBtn(false);
+      setShowEditControls(false);
+    } 
   };
 
   return (
