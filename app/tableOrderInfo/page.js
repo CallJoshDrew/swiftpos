@@ -15,6 +15,7 @@ function TableOrderInfo({
   orders,
   setOrders,
 }) {
+  const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleIncreaseItem = (id) => {
     setSelectedOrder((prevOrder) => {
       return {
@@ -136,7 +137,7 @@ function TableOrderInfo({
         }
       });
     });
-      setSelectedOrder((prevSelectedOrder) => {
+    setSelectedOrder((prevSelectedOrder) => {
       return {
         ...prevSelectedOrder,
         status: "Paid",
@@ -150,17 +151,17 @@ function TableOrderInfo({
   };
   const handleCheckOutBtn = () => {
     setOrders((prevOrders) => {
-        return prevOrders.map((order) => {
-          if (order.orderNumber === selectedOrder.orderNumber) {
-            return {
-              ...order,
-              status: "Completed",
-            };
-          } else {
-            return order;
-          }
-        });
+      return prevOrders.map((order) => {
+        if (order.orderNumber === selectedOrder.orderNumber) {
+          return {
+            ...order,
+            status: "Completed",
+          };
+        } else {
+          return order;
+        }
       });
+    });
     setSelectedOrder((prevOrder) => {
       return {
         ...prevOrder,
@@ -168,18 +169,18 @@ function TableOrderInfo({
       };
     });
     setTables((prevTables) => {
-        return prevTables.map((table) => {
-          if (table.orderNumber === selectedOrder.orderNumber) {
-            return {
-              ...table,
-              orderNumber: "", 
-              occupied: false, 
-            };
-          } else {
-            return table;
-          }
-        });
+      return prevTables.map((table) => {
+        if (table.orderNumber === selectedOrder.orderNumber) {
+          return {
+            ...table,
+            orderNumber: "",
+            occupied: false,
+          };
+        } else {
+          return table;
+        }
       });
+    });
     toast.success("Check Out", {
       duration: 1000,
       position: "top-left",
@@ -217,6 +218,7 @@ function TableOrderInfo({
   // Status => Placed Order => Make Payment => Check Out => Completed
 
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
+  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:""Not Available"}]
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
@@ -248,7 +250,7 @@ function TableOrderInfo({
             selectedOrder?.items.map((itemObj) => {
               const { item, quantity } = itemObj;
               return (
-                <div key={item.id} className="border rounded-md p-2 shadow-sm">
+                <div key={`${item.id}-${uniqueId}`} className="border rounded-md p-2 shadow-sm">
                   <div className="flex">
                     <Image
                       src={item.image}
