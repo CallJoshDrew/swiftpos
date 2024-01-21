@@ -2,8 +2,9 @@ import React from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection }) {
+function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn }) {
   const handleAddtoCartBtn = () => {
+   
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(
       (orderItem) => orderItem.item.id === item.id

@@ -14,7 +14,19 @@ function CategoryButton({ category, itemCount, selectedCategory, setSelectedCate
   );
 }
 
-function CategoryCard({ menu, setShowMenu, selectedCategory, setSelectedCategory, setOrderCounter, selectedOrder, setSelectedOrder, tables, setTables }) {
+function CategoryCard({
+  menu,
+  setShowMenu,
+  selectedCategory,
+  setSelectedCategory,
+  setOrderCounter,
+  selectedOrder,
+  setSelectedOrder,
+  tables,
+  setTables,
+  setShowEditBtn,
+  setShowEditControls,
+}) {
   const { status } = selectedOrder;
   // If the category already exists in the counts object, increment its count by 1
   // If the category doesn't exist in the counts object, initialize it with a count of 1
@@ -24,26 +36,37 @@ function CategoryCard({ menu, setShowMenu, selectedCategory, setSelectedCategory
   }, {});
   const handleCloseMenu = () => {
     setShowMenu(false);
+    setShowEditControls(false);
+    if (Array.isArray(selectedOrder?.items) && selectedOrder?.items.length > 0) {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
+    }
+  
     // This is when user haven't place an order yet even though items were added.
-    if(status === "Status") {
+    if (status === "Status") {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       // Find the index of the table with the current orderNumber
-      const tableIndex = tables.findIndex(table => table.orderNumber === selectedOrder.orderNumber);
+      const tableIndex = tables.findIndex(
+        (table) => table.orderNumber === selectedOrder.orderNumber
+      );
       if (tableIndex !== -1) {
         // If the table is found, update its orderNumber and occupied status
-        setTables((prevTables) => prevTables.map((table, index) => 
-          index === tableIndex ? { ...table, orderNumber: "", occupied: false } : table
-        ));
+        setTables((prevTables) =>
+          prevTables.map((table, index) =>
+            index === tableIndex ? { ...table, orderNumber: "", occupied: false } : table
+          )
+        );
       }
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",
         tableName: "",
-        items:[],
+        items: [],
       }));
     }
   };
-  
+
   return (
     <>
       <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">

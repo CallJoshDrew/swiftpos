@@ -12,6 +12,8 @@ function TableOrderInfo({
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
+  showEditControls,
+  setShowEditControls,
   orders,
   setOrders,
 }) {
@@ -114,6 +116,11 @@ function TableOrderInfo({
       reverseOrder: false,
     });
   };
+  const handleEditOrder = () => {
+    setShowEditBtn(false);
+    setShowEditControls(true);
+    setShowMenu(true);
+  };
   let subTotal = 0;
   let serviceCharge = 0;
   let totalPrice = 0;
@@ -196,7 +203,8 @@ function TableOrderInfo({
     setSelectedOrder(newOrder);
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setShowMenu(false);
-    setShowEditBtn(false);
+    setShowEditControls(false);
+    setShowEditBtn(true);
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
       position: "top-left",
@@ -311,10 +319,25 @@ function TableOrderInfo({
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
-        <div className="rounded-lg px-2 flex my-2 justify-between items-center">
-          <div className="flex">
-            <div className="flex flex-col">
-              <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
+        <div className="rounded-lg flex my-2 justify-between items-center">
+          <div className="flex justify-between items-center w-full">
+            <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
+            <div className="flex">
+              {Array.isArray(selectedOrder?.items) && showEditBtn && (
+                <div onClick={() => handleEditOrder()}>
+                  <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                    <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5 text-white cursor-pointer">
+                      <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                      <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -402,7 +425,7 @@ function TableOrderInfo({
                       Add On x {quantity}: RM {(parseFloat(itemTotalAddOn) * quantity).toFixed(2)}
                     </div>
                   )}
-                  {showEditBtn && (
+                  {showEditControls && (
                     <div className="flex justify-between px-2 py-2 bg-gray-200 rounded-md mt-3 w-full">
                       <div className="flex items-center gap-x-2">
                         <svg

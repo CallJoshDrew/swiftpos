@@ -6,7 +6,8 @@ import TableOrderInfo from "../tableOrderInfo/page";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
-  const [showEditBtn, setShowEditBtn] = useState(true);
+  const [showEditBtn, setShowEditBtn] = useState(false);
+  const [showEditControls, setShowEditControls] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [tables, setTables] = useState([]);
@@ -112,8 +113,7 @@ export default function Tables({ menu }) {
         if (existingOrder) {
           // If the order is found, set it as the selectedOrder
           setSelectedOrder(existingOrder);
-        }
-        setShowEditBtn(false);
+          setShowEditBtn(true);        }
       } else {
         generatedOrderID(tables[tableIndex].name);
         setSelectedOrder((prevSelectedOrder) => ({
@@ -141,7 +141,7 @@ export default function Tables({ menu }) {
         );
         // console.log("Calling Tables after setTables", tables);
         setShowMenu(true);
-        setShowEditBtn(true);
+        setShowEditBtn(false);
       }
     },
     [tables, orderCounter, orders]
@@ -162,6 +162,8 @@ export default function Tables({ menu }) {
               setSelectedOrder={setSelectedOrder}
               tables={tables}
               setTables={setTables}
+              setShowEditBtn={setShowEditBtn}
+              setShowEditControls={setShowEditControls}
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -170,6 +172,8 @@ export default function Tables({ menu }) {
               selectedCategory={selectedCategory}
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
+              setShowEditBtn={setShowEditBtn}
+              setShowEditControls={setShowEditControls}
             />
           </div>
         </div>
@@ -210,6 +214,8 @@ export default function Tables({ menu }) {
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}
+          showEditControls={showEditControls}
+          setShowEditControls={setShowEditControls}
           orders={orders}
           setOrders={setOrders}
         />
