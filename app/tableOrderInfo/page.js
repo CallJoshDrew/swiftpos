@@ -204,7 +204,14 @@ function TableOrderInfo({
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setShowMenu(false);
     setShowEditControls(false);
-    setShowEditBtn(true);
+    // Only want to show the Edit Btn when client already placed order but haven't pay yet.
+    // check newOrder.status instead of selectedOrder.status for the latest status
+    if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
+    }
+
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
       position: "top-left",
@@ -231,6 +238,7 @@ function TableOrderInfo({
         status: "Paid",
       };
     });
+    setShowEditBtn(false);
     toast.success("Payment Done", {
       duration: 1000,
       position: "top-left",
@@ -287,9 +295,9 @@ function TableOrderInfo({
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
   } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
-    orderStatus = "Update Order";
+    orderStatus = "Update Order & Print";
     orderStatusCSS = "bg-green-800";
-    handleMethod = handlePaymentBtn;
+    handleMethod = handlePlaceOrderBtn;
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
@@ -315,12 +323,11 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    // console.log("SelectedOrder Now is", selectedOrder);
+    console.log("SelectedOrder Now is", selectedOrder.status);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
-    console.log("showEdit Button Initial State is False But Now is", showEditBtn);
-    console.log("showEdit Controls Initial State is True But Now is", showEditControls);
+    console.log("showEdit Button Initial State is False But Now is", showEditControls);
   }, [selectedOrder, tables, orders, showEditBtn, showEditControls]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
@@ -329,21 +336,23 @@ function TableOrderInfo({
           <div className="flex justify-between items-center w-full">
             <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
             <div className="flex">
-              {Array.isArray(selectedOrder?.items) && showEditBtn && (
-                <div onClick={() => handleEditOrder()}>
-                  <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
-                    <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5 text-white cursor-pointer">
-                      <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                      <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                    </svg>
+              {Array.isArray(selectedOrder?.items) &&
+                showEditBtn &&
+                selectedOrder?.status !== "Paid" && (
+                  <div onClick={() => handleEditOrder()}>
+                    <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
+                      <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-5 h-5 text-white cursor-pointer">
+                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         </div>
@@ -392,7 +401,7 @@ function TableOrderInfo({
                       className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                       onChange={(e) => handleChoiceChange(item.id, e.target.value)}
                       value={selectedChoice.name} // Use selectedChoice.name here
-                    >
+                      disabled={showEditControls ? false : true}>
                       {item.choices.map((choice, index) => (
                         <option key={index} value={choice.name}>
                           {choice.name} + RM {choice.price.toFixed(2)}
@@ -405,7 +414,8 @@ function TableOrderInfo({
                       id="meat"
                       className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                       onChange={(e) => handleMeatLevel(item.id, e.target.value)}
-                      value={selectedMeatLevel.level}>
+                      value={selectedMeatLevel.level}
+                      disabled={showEditControls ? false : true}>
                       {item.meat.map((meat, index) => (
                         <option key={index} value={meat.level}>
                           {meat.level} + RM {meat.price.toFixed(2)}
@@ -418,7 +428,8 @@ function TableOrderInfo({
                       id="meat"
                       className="block appearance-none w-full py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                       onChange={(e) => handleAddOn(item.id, e.target.value)}
-                      value={selectedAddOn.type}>
+                      value={selectedAddOn.type}
+                      disabled={showEditControls ? false : true}>
                       {item.addOn.map((addOn, index) => (
                         <option key={index} value={addOn.type}>
                           {addOn.type} + RM {addOn.price.toFixed(2)}
@@ -451,7 +462,9 @@ function TableOrderInfo({
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          className={quantity > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-200"}
+                          className={
+                            quantity > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-200"
+                          }
                           onClick={quantity > 1 ? () => handleDecreaseItem(item.id) : null}>
                           <path
                             fillRule="evenodd"
@@ -506,3 +519,8 @@ function TableOrderInfo({
 }
 
 export default React.memo(TableOrderInfo);
+
+// showEditBtn
+// Status === "Placed Order" && payment !=="Paid"
+// setShowEditBtn(true);
+// esle setShowEditBtn(false);
