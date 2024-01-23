@@ -14,6 +14,7 @@ export default function Tables({ menu }) {
   const [tableNumber, setTableNumber] = useState(null);
 
   const [orders, setOrders] = useState([]);
+  const [tempCartItems, setTempCartItems] = useState([]);
 
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [selectedOrder, setSelectedOrder] = useState({
@@ -114,6 +115,7 @@ export default function Tables({ menu }) {
         if (existingOrder) {
           // If the order is found, set it as the selectedOrder
           setSelectedOrder(existingOrder);
+          setTempCartItems(existingOrder.items);
           setShowEditBtn(true);
         }
       } else {
@@ -133,6 +135,7 @@ export default function Tables({ menu }) {
           paymentMethod: "",
           remarks: "",
         }));
+        setTempCartItems([]);
         setTables((prevTables) =>
           prevTables.map((table, index) =>
             index === tableIndex
@@ -166,6 +169,8 @@ export default function Tables({ menu }) {
               setTables={setTables}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -176,6 +181,8 @@ export default function Tables({ menu }) {
               setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
+              tempCartItems={tempCartItems}
+              setTempCartItems={setTempCartItems}
             />
           </div>
         </div>
@@ -218,6 +225,8 @@ export default function Tables({ menu }) {
           setShowEditControls={setShowEditControls}
           orders={orders}
           setOrders={setOrders}
+          tempCartItems={tempCartItems}
+          setTempCartItems={setTempCartItems}
         />
       )}
     </>

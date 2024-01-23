@@ -1,15 +1,14 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn }) {
-  const handleAddtoCartBtn = () => {
-   
+function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn, tempCartItems, setTempCartItems }) {
+    const handleAddtoCartBtn = () => {
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(
       (orderItem) => orderItem.item.id === item.id
     );
-
     if (item.selection === true) {
       // If item.selection is true, handle the selected item
       handleItemSelection(item);
@@ -37,7 +36,7 @@ function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, 
       });
     }
   };
-
+  
   return (
     <div
       key={item.id}
@@ -58,5 +57,4 @@ function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, 
     </div>
   );
 }
-
 export default React.memo(MenuItem);

@@ -16,6 +16,8 @@ function TableOrderInfo({
   setShowEditControls,
   orders,
   setOrders,
+  tempCartItems,
+  setTempCartItems,
 }) {
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleChoiceChange = (itemId, choiceName) => {
@@ -201,6 +203,7 @@ function TableOrderInfo({
     };
 
     setSelectedOrder(newOrder);
+    setTempCartItems(newOrder.items);
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setShowMenu(false);
     setShowEditControls(false);
@@ -318,17 +321,19 @@ function TableOrderInfo({
   // Status => Placed Order => Make Payment => Check Out => Completed
 
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
-  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:""Not Available"}]
+  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    console.log("SelectedOrder Now is", selectedOrder.status);
+    // console.log("SelectedOrder Now is", selectedOrder.status);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
-    console.log("showEdit Button Initial State is False But Now is", showEditControls);
-  }, [selectedOrder, tables, orders, showEditBtn, showEditControls]);
+    // console.log("showEdit Button Initial State is False But Now is", showEditControls);
+    console.log("SelectedOrder Items Now is", selectedOrder.items);
+    console.log("TempCartItems Now is", tempCartItems);
+  }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">

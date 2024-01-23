@@ -26,8 +26,35 @@ function CategoryCard({
   setTables,
   setShowEditBtn,
   setShowEditControls,
+  tempCartItems,
+  setTempCartItems,
 }) {
   const { status } = selectedOrder;
+  // Sort the items in tempCartItems and selectedOrder.items by their id
+  const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
+  const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
+  function compareQuantities(items1, items2) {
+    // If the arrays are not the same length, they are not the same
+    if (items1.length !== items2.length) {
+      return false;
+    }
+    for (let i = 0; i < items1.length; i++) {
+      // Find the corresponding item in items2
+      const correspondingItem = items2.find(item2 => item2.item.id === items1[i].item.id);
+      // If there's no corresponding item or the quantities are not the same, return false
+      if (!correspondingItem || items1[i].quantity !== correspondingItem.quantity) {
+        return false;
+      }
+    }
+    // If we've made it this far, the quantities are the same for all items
+    return true;
+  }
+  // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
+  // If it is not true: item id not found, or quantity not the same, then
+  if (!compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+    console.log("Not the same quantity");
+  }
+
   // If the category already exists in the counts object, increment its count by 1
   // If the category doesn't exist in the counts object, initialize it with a count of 1
   let itemCounts = menu.reduce((counts, item) => {
@@ -36,13 +63,12 @@ function CategoryCard({
   }, {});
   const handleCloseMenu = () => {
     setShowMenu(false);
-    
+
     if (Array.isArray(selectedOrder?.items) && selectedOrder?.items.length > 0) {
-      
       setShowEditBtn(true);
       setShowEditControls(false);
-    } 
-  
+    }
+
     // This is when user haven't place an order yet even though items were added.
     if (status === "Status") {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
@@ -66,7 +92,7 @@ function CategoryCard({
       }));
       setShowEditBtn(false);
       setShowEditControls(false);
-    } 
+    }
   };
 
   return (
