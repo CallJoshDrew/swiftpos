@@ -28,8 +28,9 @@ function CategoryCard({
   setShowEditControls,
   tempCartItems,
   setTempCartItems,
+  setIsConfirmCloseModal,
 }) {
-  const { status } = selectedOrder;
+  const { status, orderNumber } = selectedOrder;
   // Sort the items in tempCartItems and selectedOrder.items by their id
   const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
   const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
@@ -40,7 +41,7 @@ function CategoryCard({
     }
     for (let i = 0; i < items1.length; i++) {
       // Find the corresponding item in items2
-      const correspondingItem = items2.find(item2 => item2.item.id === items1[i].item.id);
+      const correspondingItem = items2.find((item2) => item2.item.id === items1[i].item.id);
       // If there's no corresponding item or the quantities are not the same, return false
       if (!correspondingItem || items1[i].quantity !== correspondingItem.quantity) {
         return false;
@@ -48,11 +49,6 @@ function CategoryCard({
     }
     // If we've made it this far, the quantities are the same for all items
     return true;
-  }
-  // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
-  // If it is not true: item id not found, or quantity not the same, then
-  if (!compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
-    console.log("Not the same quantity");
   }
 
   // If the category already exists in the counts object, increment its count by 1
@@ -62,36 +58,47 @@ function CategoryCard({
     return counts;
   }, {});
   const handleCloseMenu = () => {
-    setShowMenu(false);
-
-    if (Array.isArray(selectedOrder?.items) && selectedOrder?.items.length > 0) {
+    // close if it is the same items and status is "Placed Order"
+    if (
+      status === "Placed Order" &&
+      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
+    ) {
       setShowEditBtn(true);
       setShowEditControls(false);
-    }
-
-    // This is when user haven't place an order yet even though items were added.
-    if (status === "Status") {
+      setShowMenu(false);
+      // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
+      // If it is not true: item id not found, or quantity not the same, then
+    } else if (
+      status === "Placed Order" &&
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
+    ) {
+      setIsConfirmCloseModal(true);
+    } else if (status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-      // Find the index of the table with the current orderNumber
-      const tableIndex = tables.findIndex(
-        (table) => table.orderNumber === selectedOrder.orderNumber
-      );
-      if (tableIndex !== -1) {
-        // If the table is found, update its orderNumber and occupied status
-        setTables((prevTables) =>
-          prevTables.map((table, index) =>
-            index === tableIndex ? { ...table, orderNumber: "", occupied: false } : table
-          )
-        );
-      }
+      setTables((prevTables) => {
+        return prevTables.map((table) => {
+          if (table.orderNumber === orderNumber) {
+            return {
+              ...table,
+              orderNumber: "",
+              occupied: false,
+            };
+          } else {
+            return table;
+          }
+        });
+      });
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",
         tableName: "",
         items: [],
       }));
+      setShowMenu(false);
       setShowEditBtn(false);
-      setShowEditControls(false);
+      setShowEditControls(true);
+    } else if (status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+      setIsConfirmCloseModal(true);
     }
   };
 
@@ -136,3 +143,17 @@ function CategoryCard({
 }
 
 export default React.memo(CategoryCard);
+
+// Find the index of the table with the current orderNumber
+// If it finds a match, it returns the index of that item. If it doesn’t find a match, it returns -1.
+// const tableIndex = tables.findIndex(
+//   (table) => table.orderNumber === selectedOrder.orderNumber
+// );
+// if (tableIndex !== -1) {
+// If the table is found, update its orderNumber and occupied status
+//   setTables((prevTables) =>
+//     prevTables.map((table, index) =>
+//       index === tableIndex ? { ...table, orderNumber: "", occupied: false } : table
+//     )
+//   );
+// }

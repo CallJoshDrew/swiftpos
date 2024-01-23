@@ -326,12 +326,12 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    // console.log("SelectedOrder Now is", selectedOrder.status);
+    console.log("SelectedOrder Now is", selectedOrder);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditControls);
-    console.log("SelectedOrder Items Now is", selectedOrder.items);
+    // console.log("SelectedOrder Items Now is", selectedOrder.items);
     console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems]);
   return (

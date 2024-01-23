@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
 import TableOrderInfo from "../tableOrderInfo/page";
+import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -34,6 +35,7 @@ export default function Tables({ menu }) {
   });
 
   const [orderCounter, setOrderCounter] = useState(1);
+  const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false); 
 
   useEffect(() => {
     fetch("/api/tableNames")
@@ -171,6 +173,8 @@ export default function Tables({ menu }) {
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
+              setIsConfirmCloseModal={setIsConfirmCloseModal}
+              
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -229,6 +233,18 @@ export default function Tables({ menu }) {
           setTempCartItems={setTempCartItems}
         />
       )}
+      <ConfirmCloseModal
+        isConfirmCloseModal={isConfirmCloseModal}
+        setIsConfirmCloseModal={setIsConfirmCloseModal}
+        setShowMenu={setShowMenu}
+        setShowEditBtn={setShowEditBtn}
+        setShowEditControls={setShowEditControls}
+        tempCartItems={tempCartItems}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        setTables={setTables}
+        setOrderCounter={setOrderCounter}
+      />
     </>
   );
 }

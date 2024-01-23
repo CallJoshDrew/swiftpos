@@ -1,58 +1,55 @@
 import React from "react";
 
 function ConfirmCloseModal({
-  isOpenMsg,
-  onCloseMsg,
+  isConfirmCloseModal,
+  setIsConfirmCloseModal,
   setShowMenu,
   setShowEditBtn,
-  setOrderCompleted,
-  setTempCartItems,
-  cartItems,
-  setIsEditingRemarks,
-  setShowRemarksText,
-  setRemarks,
-  remarks,
+  setShowEditControls,
+  tempCartItems,
   selectedOrder,
   setSelectedOrder,
-  isEmptyString,
-  setEmptyString,
-  setShowRemarksBtn,
+  setTables,
+  setOrderCounter,
 }) {
-  // console.log("Remarks is",remarks);
-  // console.log("Selector Remarks is",selectedOrder?.remarks);
-  const handleMessageStatus = () => {
-    //This means selectedOrder is an empty object {}
-    // Object.keys(selectedOrder)?.length === 0
-    if (selectedOrder?.remarks ==""){
-      setShowRemarksBtn(false);
-      console.log(selectedOrder?.remarks);
-    } 
-    setShowMenu(false);
-    setShowEditBtn(false);
-    setOrderCompleted(true);
-    // Update tempCartItems with cartItems when "Yes" is clicked
-    setTempCartItems(cartItems);
-    // console.log("Do i have you", selectedOrder);
-    const orderRemarks = selectedOrder?.remarks;
-    // console.log (orderRemarks);
-    setRemarks(orderRemarks);
-    // isEmptyString initial state is false.
-    if (orderRemarks === "") {
-      setEmptyString(true);
-    } else {
-      setEmptyString(false);
+  const { status, orderNumber } = selectedOrder;
+
+  const handleConfirmClose = () => {
+    if (status === "Status") {
+      setTables((prevTables) => {
+        return prevTables.map((table) => {
+          if (table.orderNumber === orderNumber) {
+            const { orderNumber, occupied, ...rest } = table;
+            return rest;
+          } else {
+            return table;
+          }
+        });
+      });
+      setSelectedOrder((prevSelectedOrder) => {
+        return {
+          ...prevSelectedOrder,
+          tableName: "",
+          orderNumber: "Order Number",
+          items: [],
+        };
+      });
+      setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+    } else if (status === "Placed Order") {
+      setShowEditBtn(true);
+      setSelectedOrder((prevOrder) => {
+        return {
+          ...prevOrder,
+          items: tempCartItems,
+        };
+      });
     }
-    // setSelectedOrder({
-    //   ...selectedOrder,
-    //   // reason why it is empty string is convenience for user to type straight away wihtout removing the words
-    //   remarks: "",
-    // });
-    setIsEditingRemarks(false);
-    setShowRemarksText(true);
-    onCloseMsg();
+    setShowMenu(false);
+    setShowEditControls(false);
+    setIsConfirmCloseModal(false);
   };
 
-  if (!isOpenMsg) {
+  if (!isConfirmCloseModal) {
     return null;
   }
 
@@ -61,16 +58,19 @@ function ConfirmCloseModal({
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-[300px]">
-          <div className="text-2xl text-center font-bold text-green-800 mb-4">Are you sure?</div>
+          <div className="text-2xl text-center font-bold text-green-800 mb-1">Close Menu?</div>
+          <div className="text-md text-center font-bold text-green-800 mb-4">
+            You have not update the order.
+          </div>
           <div className="text-center">
             <button
               className="mr-4 bg-green-800 text-sm text-white font-bold py-2 px-4 rounded"
-              onClick={handleMessageStatus}>
+              onClick={handleConfirmClose}>
               Yes
             </button>
             <button
               className="bg-gray-700 text-sm text-white font-bold py-2 px-4 rounded"
-              onClick={onCloseMsg}>
+              onClick={() => setIsConfirmCloseModal(false)}>
               No
             </button>
           </div>
