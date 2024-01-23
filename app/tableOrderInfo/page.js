@@ -236,17 +236,16 @@ function TableOrderInfo({
     // If we've made it this far, the quantities are the same for all items
     return true;
   }
-  let isSameItems = true;
-  const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
+  let isSameItems = false;
+
+  if (tempCartItems && selectedOrder && selectedOrder.items) {
+    const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
     const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
-    if (compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
-        isSameItems = true;
-    } else {
-        isSameItems = false;
-    }
-  
+
+    isSameItems = compareQuantities(sortedTempCartItems, sortedSelectedOrderItems);
+  }
+
   const handleUpdateOrderBtn = () => {
-    
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
 
     const newOrder = {
@@ -366,8 +365,8 @@ function TableOrderInfo({
     handleMethod = "Disabled";
   } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
     orderStatus = "Update Order & Print";
-    isSameItems ? orderStatusCSS = "bg-gray-500": orderStatusCSS = "bg-green-800";
-    isSameItems ? handleMethod = "Disabled": handleMethod = handleUpdateOrderBtn;
+    isSameItems ? (orderStatusCSS = "bg-gray-500") : (orderStatusCSS = "bg-green-800");
+    isSameItems ? (handleMethod = "Disabled") : (handleMethod = handleUpdateOrderBtn);
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
