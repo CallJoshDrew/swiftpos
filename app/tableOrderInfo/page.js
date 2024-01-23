@@ -214,8 +214,75 @@ function TableOrderInfo({
     } else {
       setShowEditBtn(false);
     }
-
     toast.success("Placed Order & Printing Now", {
+      duration: 1000,
+      position: "top-left",
+      reverseOrder: false,
+    });
+  };
+
+  function compareQuantities(items1, items2) {
+    if (items1.length !== items2.length) {
+      return false;
+    }
+    for (let i = 0; i < items1.length; i++) {
+      // Find the corresponding item in items2
+      const correspondingItem = items2.find((item2) => item2.item.id === items1[i].item.id);
+      // If there's no corresponding item or the quantities are not the same, return false
+      if (!correspondingItem || items1[i].quantity !== correspondingItem.quantity) {
+        return false;
+      }
+    }
+    // If we've made it this far, the quantities are the same for all items
+    return true;
+  }
+  let isSameItems = true;
+  const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
+    const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
+    if (compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+        isSameItems = true;
+    } else {
+        isSameItems = false;
+    }
+  
+  const handleUpdateOrderBtn = () => {
+    
+    const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
+
+    const newOrder = {
+      ...selectedOrder,
+      items: selectedOrder?.items,
+      subTotal,
+      serviceCharge,
+      totalPrice,
+      quantity: totalQuantity,
+    };
+    setSelectedOrder(newOrder);
+    setTempCartItems(newOrder.items);
+    setOrders((prevOrders) => {
+      return prevOrders.map((order) => {
+        if (order.orderNumber === selectedOrder.orderNumber) {
+          return {
+            ...order,
+            items: selectedOrder?.items,
+            subTotal,
+            serviceCharge,
+            totalPrice,
+            quantity: totalQuantity,
+          };
+        } else {
+          return order;
+        }
+      });
+    });
+    setShowMenu(false);
+    setShowEditControls(false);
+    if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
+    }
+    toast.success("Successfully Updated Order", {
       duration: 1000,
       position: "top-left",
       reverseOrder: false,
@@ -299,8 +366,8 @@ function TableOrderInfo({
     handleMethod = "Disabled";
   } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
     orderStatus = "Update Order & Print";
-    orderStatusCSS = "bg-green-800";
-    handleMethod = handlePlaceOrderBtn;
+    isSameItems ? orderStatusCSS = "bg-gray-500": orderStatusCSS = "bg-green-800";
+    isSameItems ? handleMethod = "Disabled": handleMethod = handleUpdateOrderBtn;
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
@@ -329,7 +396,7 @@ function TableOrderInfo({
     console.log("SelectedOrder Now is", selectedOrder);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
-    // console.log("Orders Now is", orders);
+    console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditControls);
     // console.log("SelectedOrder Items Now is", selectedOrder.items);
     console.log("TempCartItems Now is", tempCartItems);

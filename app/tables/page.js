@@ -35,7 +35,7 @@ export default function Tables({ menu }) {
   });
 
   const [orderCounter, setOrderCounter] = useState(1);
-  const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false); 
+  const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
 
   useEffect(() => {
     fetch("/api/tableNames")
@@ -98,61 +98,58 @@ export default function Tables({ menu }) {
     return tableStatus;
   };
 
-
-  const selectedTable = useCallback(
-    (tableIndex) => {
-      setTableNumber(tableIndex);
-      let orderNumber = tables[tableIndex].orderNumber;
-      const generatedOrderID = (tableName) => {
-        const paddedCounter = String(orderCounter).padStart(4, "0");
-        orderNumber = `#${tableName}-${paddedCounter}`;
-        // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
-        setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
-      };
-      if (tables[tableIndex].occupied) {
-        // Find the order with the same orderNumber as the occupied table
-        const existingOrder = orders.find(
-          (order) => order.orderNumber === tables[tableIndex].orderNumber
-        );
-        if (existingOrder) {
-          // If the order is found, set it as the selectedOrder
-          setSelectedOrder(existingOrder);
-          setTempCartItems(existingOrder.items);
-          setShowEditBtn(true);
-        }
-      } else {
-        generatedOrderID(tables[tableIndex].name);
-        setSelectedOrder((prevSelectedOrder) => ({
-          orderNumber,
-          tableName: tables[tableIndex].name,
-          orderTime: null,
-          orderDate: null,
-          status: "Status",
-          items: [],
-          subTotal: 0,
-          serviceCharge: 0,
-          totalPrice: 0,
-          quantity: 0,
-          payment: 0,
-          paymentMethod: "",
-          remarks: "",
-        }));
-        setTempCartItems([]);
-        setTables((prevTables) =>
-          prevTables.map((table, index) =>
-            index === tableIndex
-              ? { ...table, orderNumber, occupied: true, name: tables[tableIndex].name }
-              : table
-          )
-        );
-        // This is when no items added
-        setShowMenu(true);
-        setShowEditBtn(false);
-        setShowEditControls(true);
+  const selectedTable = (tableIndex) => {
+    setTableNumber(tableIndex);
+    let orderNumber = tables[tableIndex].orderNumber;
+    const generatedOrderID = (tableName) => {
+      const paddedCounter = String(orderCounter).padStart(4, "0");
+      orderNumber = `#${tableName}-${paddedCounter}`;
+      // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
+      setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
+    };
+    if (tables[tableIndex].occupied) {
+      // Find the order with the same orderNumber as the occupied table
+      const existingOrder = orders.find(
+        (order) => order.orderNumber === tables[tableIndex].orderNumber
+      );
+      console.log(existingOrder);
+      if (existingOrder) {
+        // If the order is found, set it as the selectedOrder
+        setSelectedOrder(existingOrder);
+        setTempCartItems(existingOrder.items);
+        setShowEditBtn(true);
       }
-    },
-    [tables, orderCounter, orders]
-  );
+    } else {
+      generatedOrderID(tables[tableIndex].name);
+      setSelectedOrder((prevSelectedOrder) => ({
+        orderNumber,
+        tableName: tables[tableIndex].name,
+        orderTime: null,
+        orderDate: null,
+        status: "Status",
+        items: [],
+        subTotal: 0,
+        serviceCharge: 0,
+        totalPrice: 0,
+        quantity: 0,
+        payment: 0,
+        paymentMethod: "",
+        remarks: "",
+      }));
+      setTempCartItems([]);
+      setTables((prevTables) =>
+        prevTables.map((table, index) =>
+          index === tableIndex
+            ? { ...table, orderNumber, occupied: true, name: tables[tableIndex].name }
+            : table
+        )
+      );
+      // This is when no items added
+      setShowMenu(true);
+      setShowEditBtn(false);
+      setShowEditControls(true);
+    }
+  };
 
   return (
     <>
@@ -174,7 +171,6 @@ export default function Tables({ menu }) {
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setIsConfirmCloseModal={setIsConfirmCloseModal}
-              
             />
           </div>
           <div className="mt-[130px] px-4">

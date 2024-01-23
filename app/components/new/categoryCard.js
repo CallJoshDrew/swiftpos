@@ -63,9 +63,9 @@ function CategoryCard({
       status === "Placed Order" &&
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
     ) {
+      setShowMenu(false);
       setShowEditBtn(true);
       setShowEditControls(false);
-      setShowMenu(false);
       // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
       // If it is not true: item id not found, or quantity not the same, then
     } else if (
@@ -96,7 +96,7 @@ function CategoryCard({
       }));
       setShowMenu(false);
       setShowEditBtn(false);
-      setShowEditControls(true);
+      setShowEditControls(false);
     } else if (status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setIsConfirmCloseModal(true);
     }
