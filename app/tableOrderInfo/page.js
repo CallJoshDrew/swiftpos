@@ -18,6 +18,8 @@ function TableOrderInfo({
   setOrders,
   tempCartItems,
   setTempCartItems,
+  setPayModalOpen,
+  setCheckOutModalOpen,
 }) {
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleChoiceChange = (itemId, choiceName) => {
@@ -247,7 +249,6 @@ function TableOrderInfo({
 
   const handleUpdateOrderBtn = () => {
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
-
     const newOrder = {
       ...selectedOrder,
       items: selectedOrder?.items,
@@ -289,68 +290,10 @@ function TableOrderInfo({
   };
 
   const handlePaymentBtn = () => {
-    setOrders((prevOrders) => {
-      return prevOrders.map((order) => {
-        if (order.orderNumber === selectedOrder.orderNumber) {
-          return {
-            ...order,
-            status: "Paid",
-          };
-        } else {
-          return order;
-        }
-      });
-    });
-    setSelectedOrder((prevSelectedOrder) => {
-      return {
-        ...prevSelectedOrder,
-        status: "Paid",
-      };
-    });
-    setShowEditBtn(false);
-    toast.success("Payment Done", {
-      duration: 1000,
-      position: "top-left",
-      reverseOrder: false,
-    });
+    setPayModalOpen(true);
   };
   const handleCheckOutBtn = () => {
-    setOrders((prevOrders) => {
-      return prevOrders.map((order) => {
-        if (order.orderNumber === selectedOrder.orderNumber) {
-          return {
-            ...order,
-            status: "Completed",
-          };
-        } else {
-          return order;
-        }
-      });
-    });
-    setSelectedOrder((prevOrder) => {
-      return {
-        ...prevOrder,
-        status: "Completed",
-      };
-    });
-    setTables((prevTables) => {
-      return prevTables.map((table) => {
-        if (table.orderNumber === selectedOrder.orderNumber) {
-          return {
-            ...table,
-            orderNumber: "",
-            occupied: false,
-          };
-        } else {
-          return table;
-        }
-      });
-    });
-    toast.success("Check Out", {
-      duration: 1000,
-      position: "top-left",
-      reverseOrder: false,
-    });
+    setCheckOutModalOpen(true); 
   };
   let orderStatus;
   let orderStatusCSS;
@@ -392,13 +335,14 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    console.log("SelectedOrder Now is", selectedOrder);
+    console.log("SelectedOrder Status Now is", selectedOrder.status);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
-    console.log("Orders Now is", orders);
-    // console.log("showEdit Button Initial State is False But Now is", showEditControls);
+    // console.log("Orders Now is", orders);
+    // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
+    // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     // console.log("SelectedOrder Items Now is", selectedOrder.items);
-    console.log("TempCartItems Now is", tempCartItems);
+    // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">

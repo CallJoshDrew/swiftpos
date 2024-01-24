@@ -4,6 +4,8 @@ import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
 import TableOrderInfo from "../tableOrderInfo/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
+import PaymentModal from "../components/modal/paymentModal";
+import CheckOutModal from "../components/modal/checkOutModal";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -21,6 +23,7 @@ export default function Tables({ menu }) {
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
     tableName: "",
+    orderType: "Dine-In",
     orderTime: null,
     orderDate: null,
     status: "Status",
@@ -35,7 +38,11 @@ export default function Tables({ menu }) {
   });
 
   const [orderCounter, setOrderCounter] = useState(1);
+
+  // State variables related to modals
+  const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
+  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
 
   useEffect(() => {
     fetch("/api/tableNames")
@@ -112,18 +119,14 @@ export default function Tables({ menu }) {
       const existingOrder = orders.find(
         (order) => order.orderNumber === tables[tableIndex].orderNumber
       );
-      console.log(existingOrder);
-      if (existingOrder) {
-        // If the order is found, set it as the selectedOrder
-        setSelectedOrder(existingOrder);
-        setTempCartItems(existingOrder.items);
-        setShowEditBtn(true);
-      }
+      setSelectedOrder(existingOrder);
+      setTempCartItems(existingOrder.items);
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
         orderNumber,
         tableName: tables[tableIndex].name,
+        orderType: "Dine-In",
         orderTime: null,
         orderDate: null,
         status: "Status",
@@ -146,10 +149,21 @@ export default function Tables({ menu }) {
       );
       // This is when no items added
       setShowMenu(true);
-      setShowEditBtn(false);
+    //   setShowEditBtn(false);
       setShowEditControls(true);
     }
   };
+  useEffect(() => {
+    if (selectedOrder && selectedOrder.status === "Status") {
+      setShowEditBtn(false);
+    } else if (selectedOrder && selectedOrder.status === "Paid") {
+      setShowEditBtn(false);
+    } else if (selectedOrder && selectedOrder.status === "Completed") {
+      setShowEditBtn(false);
+    } else {
+      setShowEditBtn(true);
+    }
+  }, [selectedOrder]);
 
   return (
     <>
@@ -227,6 +241,8 @@ export default function Tables({ menu }) {
           setOrders={setOrders}
           tempCartItems={tempCartItems}
           setTempCartItems={setTempCartItems}
+          setPayModalOpen={setPayModalOpen}
+          setCheckOutModalOpen={setCheckOutModalOpen}
         />
       )}
       <ConfirmCloseModal
@@ -240,6 +256,25 @@ export default function Tables({ menu }) {
         setSelectedOrder={setSelectedOrder}
         setTables={setTables}
         setOrderCounter={setOrderCounter}
+      />
+      <PaymentModal
+        isPayModalOpen={isPayModalOpen}
+        setPayModalOpen={setPayModalOpen}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        orders={orders}
+        setOrders={setOrders}
+        setShowEditBtn={setShowEditBtn}
+        setTables={setTables}
+      />
+      <CheckOutModal
+        isCheckOutModalOpen={isCheckOutModalOpen}
+        setCheckOutModalOpen={setCheckOutModalOpen}
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        setTempCartItems={setTempCartItems}
+        setOrders={setOrders}
+        setTables={setTables}
       />
     </>
   );
