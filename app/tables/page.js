@@ -121,6 +121,8 @@ export default function Tables({ menu }) {
       );
       setSelectedOrder(existingOrder);
       setTempCartItems(existingOrder.items);
+      // have to set to true evertime and then use useEffect to set it false.
+      setShowEditBtn(true);
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
@@ -149,21 +151,24 @@ export default function Tables({ menu }) {
       );
       // This is when no items added
       setShowMenu(true);
-    //   setShowEditBtn(false);
+      setShowEditBtn(false);
+      console.log("set to false from table when status is status");
       setShowEditControls(true);
     }
   };
+
   useEffect(() => {
-    if (selectedOrder && selectedOrder.status === "Status") {
-      setShowEditBtn(false);
-    } else if (selectedOrder && selectedOrder.status === "Paid") {
-      setShowEditBtn(false);
-    } else if (selectedOrder && selectedOrder.status === "Completed") {
-      setShowEditBtn(false);
-    } else {
-      setShowEditBtn(true);
-    }
-  }, [selectedOrder]);
+    if (
+        selectedOrder &&
+        (selectedOrder.status === "Paid" ||
+          selectedOrder.status === "Completed" ||
+          selectedOrder.status === "Cancelled")
+      ) {
+        setShowEditBtn(false);
+        console.log("Set to false from useEffect");
+      }
+  }, [selectedOrder])
+  
 
   return (
     <>

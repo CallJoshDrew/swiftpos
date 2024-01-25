@@ -37,6 +37,7 @@ function ConfirmCloseModal({
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
     } else if (status === "Placed Order") {
       setShowEditBtn(true);
+      console.log("Set to true from ConfirmCloseModal");
       setSelectedOrder((prevOrder) => {
         return {
           ...prevOrder,

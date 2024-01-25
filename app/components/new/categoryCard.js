@@ -65,6 +65,7 @@ function CategoryCard({
     ) {
       setShowMenu(false);
       setShowEditBtn(true);
+      console.log("Set to true from closeMenu");
       setShowEditControls(false);
       // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
       // If it is not true: item id not found, or quantity not the same, then
@@ -96,6 +97,7 @@ function CategoryCard({
       }));
       setShowMenu(false);
       setShowEditBtn(false);
+      console.log("set to false from category");
       setShowEditControls(false);
     } else if (status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setIsConfirmCloseModal(true);

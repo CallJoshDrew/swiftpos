@@ -89,6 +89,7 @@ function PaymentModal({
 
     setPayModalOpen(false);
     setShowEditBtn(false);
+    console.log("set to false from payment");
     // Reset the payment method back to "Cash"
     setPaymentMethod("Cash");
     toast.success("Payment was successful!", {

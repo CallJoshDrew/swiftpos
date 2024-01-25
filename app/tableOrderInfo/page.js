@@ -122,6 +122,7 @@ function TableOrderInfo({
   };
   const handleEditOrder = () => {
     setShowEditBtn(false);
+    console.log("set to false from handleEditOrder")
     setShowEditControls(true);
     setShowMenu(true);
   };
@@ -213,8 +214,10 @@ function TableOrderInfo({
     // check newOrder.status instead of selectedOrder.status for the latest status
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
+      console.log("set to true from handlePlaceOrderBtn");
     } else {
       setShowEditBtn(false);
+      console.log("set to false from handlePlaceOrderBtn");
     }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
@@ -279,8 +282,10 @@ function TableOrderInfo({
     setShowEditControls(false);
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
+      console.log("set to true from update button");
     } else {
       setShowEditBtn(false);
+      console.log("set to false from update button");
     }
     toast.success("Successfully Updated Order", {
       duration: 1000,
@@ -293,7 +298,7 @@ function TableOrderInfo({
     setPayModalOpen(true);
   };
   const handleCheckOutBtn = () => {
-    setCheckOutModalOpen(true); 
+    setCheckOutModalOpen(true);
   };
   let orderStatus;
   let orderStatusCSS;
@@ -335,7 +340,7 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    console.log("SelectedOrder Status Now is", selectedOrder.status);
+    // console.log("SelectedOrder Status Now is", selectedOrder.status);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
@@ -353,7 +358,9 @@ function TableOrderInfo({
             <div className="flex">
               {Array.isArray(selectedOrder?.items) &&
                 showEditBtn &&
-                selectedOrder?.status !== "Paid" && (
+                selectedOrder?.status !== "Paid" &&
+                selectedOrder?.status !== "Completed" &&
+                selectedOrder?.status !== "Cancelled" && (
                   <div onClick={() => handleEditOrder()}>
                     <div className="bg-green-800 flex items-center pt-1 pb-2 px-3 rounded-md">
                       <div className="text-white cursor-pointer pt-1 pr-1 text-sm">Edit</div>
