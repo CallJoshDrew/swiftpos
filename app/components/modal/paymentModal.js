@@ -94,7 +94,7 @@ function PaymentModal({
     setPaymentMethod("Cash");
     toast.success("Payment was successful!", {
       duration: 2000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };

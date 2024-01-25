@@ -20,7 +20,14 @@ function TableOrderInfo({
   setTempCartItems,
   setPayModalOpen,
   setCheckOutModalOpen,
+  remarks, 
+  setRemarks,
+  remarkRows, 
+  setRemarkRows,
+  isEditingRemarks,
+  setIsEditingRemarks,
 }) {
+    
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleChoiceChange = (itemId, choiceName) => {
     // Update the item's selected choice
@@ -83,7 +90,7 @@ function TableOrderInfo({
     });
     toast.success("Added to Cart!", {
       duration: 1000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
@@ -102,7 +109,7 @@ function TableOrderInfo({
     });
     toast.error("Removed from Cart!", {
       duration: 1000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
@@ -116,13 +123,41 @@ function TableOrderInfo({
     });
     toast.error("Removed from Cart!", {
       duration: 1000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
+  const handleAddRemarks = () => {
+    setSelectedOrder({
+      ...selectedOrder,
+      // reason why it is empty string is convenience for user to type straight away wihtout removing the words
+      remarks: "",
+    });
+    toast.success("Added to Remarks", {
+        duration: 1000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+    console.log("Added Remarks")
+  };
+  const handleRemoveRemarks = () => {
+    // setSelectedOrder((prevOrder) => {
+    //   if (prevOrder) {
+    //     const newOrder = { ...prevOrder };
+    //     delete newOrder.remarks;
+    //     return newOrder;
+    //   }
+    //   return {};
+    // });
+    toast.error("Removed Remarks", {
+        duration: 1000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+  };
   const handleEditOrder = () => {
     setShowEditBtn(false);
-    console.log("set to false from handleEditOrder")
+    console.log("set to false from handleEditOrder");
     setShowEditControls(true);
     setShowMenu(true);
   };
@@ -202,7 +237,7 @@ function TableOrderInfo({
       quantity: totalQuantity,
       payment: 0,
       paymentMethod: "",
-      remarks: "",
+      remarks,
     };
 
     setSelectedOrder(newOrder);
@@ -221,7 +256,7 @@ function TableOrderInfo({
     }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
@@ -259,6 +294,7 @@ function TableOrderInfo({
       serviceCharge,
       totalPrice,
       quantity: totalQuantity,
+      remarks,
     };
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
@@ -272,6 +308,7 @@ function TableOrderInfo({
             serviceCharge,
             totalPrice,
             quantity: totalQuantity,
+            remarks,
           };
         } else {
           return order;
@@ -289,7 +326,7 @@ function TableOrderInfo({
     }
     toast.success("Successfully Updated Order", {
       duration: 1000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
@@ -340,7 +377,8 @@ function TableOrderInfo({
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
-    // console.log("SelectedOrder Status Now is", selectedOrder.status);
+    console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
+    console.log("Remarks Now is", remarks);
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     // console.log("Tables Now is", tables);
     // console.log("Orders Now is", orders);
@@ -348,7 +386,7 @@ function TableOrderInfo({
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     // console.log("SelectedOrder Items Now is", selectedOrder.items);
     // console.log("TempCartItems Now is", tempCartItems);
-  }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems]);
+  }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (
     <div className="pt-4 pb-6 w-2/6 flex-auto flex flex-col relative z-20">
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
@@ -356,6 +394,24 @@ function TableOrderInfo({
           <div className="flex justify-between items-center w-full">
             <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
             <div className="flex">
+              <div
+                className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
+                onClick={() => handleAddRemarks()}>
+                <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 text-white cursor-pointer">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                  />
+                </svg>
+              </div>
               {Array.isArray(selectedOrder?.items) &&
                 showEditBtn &&
                 selectedOrder?.status !== "Paid" &&
@@ -512,6 +568,61 @@ function TableOrderInfo({
                 </div>
               );
             })}
+        </div>
+        <div className="bg-gray-100 p-2 rounded-md">
+          <textarea
+            rows={remarkRows}
+            value={remarks || ""}
+            onChange={(e) => setRemarks(e.target.value)}
+            className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
+              isEditingRemarks === true ? "bg-white " : "bg-gray-500 text-white"
+            }`}
+            placeholder="Type Remarks here..."
+            disabled={isEditingRemarks ? false : true}
+          />
+          <div className="flex justify-between px-1 mt-2">
+            <div className="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6 text-green-800"
+                onClick={() => setRemarkRows(remarkRows + 1)}>
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="text-sm text-gray-600 px-1">Row</div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className={
+                    remarkRows > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-100"
+                  }
+                  onClick={() => setRemarkRows(remarkRows > 1 ? remarkRows - 1 : null)}>
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-6 h-6 text-red-700"
+              onClick={() => handleRemoveRemarks()}>
+              <path
+                fillRule="evenodd"
+                d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
         </div>
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">

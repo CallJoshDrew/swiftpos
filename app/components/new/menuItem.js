@@ -31,7 +31,7 @@ function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, 
       });
       toast.success("Added to Cart!", {
         duration: 1000,
-        position: "top-left",
+        position: "top-center",
         reverseOrder: false,
       });
     }

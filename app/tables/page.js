@@ -19,6 +19,10 @@ export default function Tables({ menu }) {
   const [orders, setOrders] = useState([]);
   const [tempCartItems, setTempCartItems] = useState([]);
 
+  const [remarks, setRemarks] = useState(undefined);
+  const [remarkRows, setRemarkRows] = useState(1);
+  const [isEditingRemarks, setIsEditingRemarks] = useState(true);
+
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
@@ -123,6 +127,7 @@ export default function Tables({ menu }) {
       setTempCartItems(existingOrder.items);
       // have to set to true evertime and then use useEffect to set it false.
       setShowEditBtn(true);
+    //   setRemarks(selectedOrder.remarks);
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
@@ -154,6 +159,7 @@ export default function Tables({ menu }) {
       setShowEditBtn(false);
       console.log("set to false from table when status is status");
       setShowEditControls(true);
+      
     }
   };
 
@@ -166,6 +172,16 @@ export default function Tables({ menu }) {
       ) {
         setShowEditBtn(false);
         console.log("Set to false from useEffect");
+      }
+  }, [selectedOrder])
+  useEffect(() => {
+    if (
+        selectedOrder &&
+        (selectedOrder.remarks !== "")
+      ) {
+        setRemarks(selectedOrder.remarks);
+      } else {
+        setRemarks("");
       }
   }, [selectedOrder])
   
@@ -248,6 +264,12 @@ export default function Tables({ menu }) {
           setTempCartItems={setTempCartItems}
           setPayModalOpen={setPayModalOpen}
           setCheckOutModalOpen={setCheckOutModalOpen}
+          remarks={remarks}
+          setRemarks={setRemarks}
+          remarkRows={remarkRows}
+          setRemarkRows={setRemarkRows}
+          isEditingRemarks={isEditingRemarks}
+          setIsEditingRemarks={setIsEditingRemarks}
         />
       )}
       <ConfirmCloseModal

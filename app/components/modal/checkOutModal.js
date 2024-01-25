@@ -75,7 +75,7 @@ function CheckOutModal({
     });
     toast.success("Successfully Check Out!", {
       duration: 2000,
-      position: "top-left",
+      position: "top-center",
       reverseOrder: false,
     });
   };
