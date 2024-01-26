@@ -20,6 +20,7 @@ export default function Tables({ menu }) {
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
+  const [tempRemarks, setTempRemarks] = useState(undefined);
   const [remarkRows, setRemarkRows] = useState(1);
   const [isEditingRemarks, setIsEditingRemarks] = useState(true);
 
@@ -127,7 +128,7 @@ export default function Tables({ menu }) {
       setTempCartItems(existingOrder.items);
       // have to set to true evertime and then use useEffect to set it false.
       setShowEditBtn(true);
-    //   setRemarks(selectedOrder.remarks);
+    //   setRemarks((prevRemarks) => selectedOrder.remarks);
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
@@ -159,6 +160,7 @@ export default function Tables({ menu }) {
       setShowEditBtn(false);
       console.log("set to false from table when status is status");
       setShowEditControls(true);
+    //   setRemarks('');
       
     }
   };
@@ -174,16 +176,7 @@ export default function Tables({ menu }) {
         console.log("Set to false from useEffect");
       }
   }, [selectedOrder])
-  useEffect(() => {
-    if (
-        selectedOrder &&
-        (selectedOrder.remarks !== "")
-      ) {
-        setRemarks(selectedOrder.remarks);
-      } else {
-        setRemarks("");
-      }
-  }, [selectedOrder])
+
   
 
   return (
@@ -266,6 +259,8 @@ export default function Tables({ menu }) {
           setCheckOutModalOpen={setCheckOutModalOpen}
           remarks={remarks}
           setRemarks={setRemarks}
+          tempRemarks={tempRemarks}
+          setTempRemarks={setTempRemarks}
           remarkRows={remarkRows}
           setRemarkRows={setRemarkRows}
           isEditingRemarks={isEditingRemarks}
