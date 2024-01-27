@@ -11,6 +11,8 @@ function ConfirmCloseModal({
   setSelectedOrder,
   setTables,
   setOrderCounter,
+  setShowRemarksBtn,
+  setShowRemarksArea,
 }) {
   const { status, orderNumber } = selectedOrder;
 
@@ -35,6 +37,8 @@ function ConfirmCloseModal({
         };
       });
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+      setShowRemarksBtn(false);
+      setShowRemarksArea(false);
     } else if (status === "Placed Order") {
       setShowEditBtn(true);
       console.log("Set to true from ConfirmCloseModal");

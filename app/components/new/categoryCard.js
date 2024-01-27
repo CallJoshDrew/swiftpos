@@ -1,6 +1,6 @@
 import React from "react";
 
-function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory }) {
+function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
   const isSelected = selectedCategory === category;
   return (
     <button
@@ -29,6 +29,8 @@ function CategoryCard({
   tempCartItems,
   setTempCartItems,
   setIsConfirmCloseModal,
+  setShowRemarksBtn,
+  setShowRemarksArea,
 }) {
   const { status, orderNumber } = selectedOrder;
   // Sort the items in tempCartItems and selectedOrder.items by their id
@@ -67,6 +69,7 @@ function CategoryCard({
       setShowEditBtn(true);
       console.log("Set to true from closeMenu");
       setShowEditControls(false);
+      setShowRemarksBtn(false);
       // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
       // If it is not true: item id not found, or quantity not the same, then
     } else if (
@@ -99,6 +102,8 @@ function CategoryCard({
       setShowEditBtn(false);
       console.log("set to false from category");
       setShowEditControls(false);
+      setShowRemarksBtn(false);
+      setShowRemarksArea(false);
     } else if (status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setIsConfirmCloseModal(true);
     }

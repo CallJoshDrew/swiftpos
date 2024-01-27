@@ -24,10 +24,12 @@ function TableOrderInfo({
   setRemarks,
   remarkRows,
   setRemarkRows,
-  isEditingRemarks,
-  setIsEditingRemarks,
   tempRemarks,
   setTempRemarks,
+  showRemarksBtn,
+  setShowRemarksBtn,
+  showRemarksArea,
+  setShowRemarksArea,
 }) {
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleChoiceChange = (itemId, choiceName) => {
@@ -134,6 +136,8 @@ function TableOrderInfo({
       // reason why it is empty string is convenience for user to type straight away wihtout removing the words
       remarks: "",
     });
+    setShowRemarksArea(true);
+    setShowRemarksBtn(false);
     toast.success("Added to Remarks", {
       duration: 1000,
       position: "top-center",
@@ -142,15 +146,17 @@ function TableOrderInfo({
     console.log("Added Remarks");
   };
   const handleRemoveRemarks = () => {
-    // setSelectedOrder((prevOrder) => {
-    //   if (prevOrder) {
-    //     const newOrder = { ...prevOrder };
-    //     delete newOrder.remarks;
-    //     return newOrder;
-    //   }
-    //   return {};
-    // });
-    toast.error("Removed Remarks", {
+    setSelectedOrder((prevOrder) => {
+      if (prevOrder) {
+        const newOrder = { ...prevOrder };
+        delete newOrder.remarks;
+        return newOrder;
+      }
+      return {};
+    });
+    setShowRemarksArea(false);
+    setShowRemarksBtn(true);
+    toast.error("Remarks is removed", {
       duration: 1000,
       position: "top-center",
       reverseOrder: false,
@@ -161,6 +167,7 @@ function TableOrderInfo({
     console.log("set to false from handleEditOrder");
     setShowEditControls(true);
     setShowMenu(true);
+    setShowRemarksBtn(true);
   };
   let subTotal = 0;
   let serviceCharge = 0;
@@ -246,6 +253,7 @@ function TableOrderInfo({
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setShowMenu(false);
     setShowEditControls(false);
+    setShowRemarksBtn(false);
     // Only want to show the Edit Btn when client already placed order but haven't pay yet.
     // check newOrder.status instead of selectedOrder.status for the latest status
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
@@ -318,6 +326,7 @@ function TableOrderInfo({
     });
     setShowMenu(false);
     setShowEditControls(false);
+    setShowRemarksBtn(false);
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
       console.log("set to true from update button");
@@ -349,10 +358,14 @@ function TableOrderInfo({
     orderStatus = "Empty Cart";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
-  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn ) {
+  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
     orderStatus = "Update Order & Print";
-    (isSameItems && remarks === tempRemarks) ? (orderStatusCSS = "bg-gray-500") : (orderStatusCSS = "bg-green-800");
-    (isSameItems && remarks === tempRemarks) ? (handleMethod = "Disabled") : (handleMethod = handleUpdateOrderBtn);
+    isSameItems && remarks === tempRemarks
+      ? (orderStatusCSS = "bg-gray-500")
+      : (orderStatusCSS = "bg-green-800");
+    isSameItems && remarks === tempRemarks
+      ? (handleMethod = "Disabled")
+      : (handleMethod = handleUpdateOrderBtn);
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
@@ -373,7 +386,8 @@ function TableOrderInfo({
   // Status => Placed Order => Make Payment => Check Out => Completed
   useEffect(() => {
     console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
-    console.log("tempRemarks Now is",tempRemarks)
+    console.log("Remarks Now is", remarks);
+    console.log("tempRemarks Now is", tempRemarks);
     if (selectedOrder && selectedOrder.remarks !== tempRemarks) {
       setRemarks((prevRemarks) => selectedOrder.remarks);
       setTempRemarks((prevRemarks) => selectedOrder.remarks);
@@ -400,24 +414,26 @@ function TableOrderInfo({
           <div className="flex justify-between items-center w-full">
             <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
             <div className="flex">
-              <div
-                className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
-                onClick={() => handleAddRemarks()}>
-                <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5 text-white cursor-pointer">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                  />
-                </svg>
-              </div>
+              {showRemarksBtn && (
+                <div
+                  className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
+                  onClick={() => handleAddRemarks()}>
+                  <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5 text-white cursor-pointer">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                    />
+                  </svg>
+                </div>
+              )}
               {Array.isArray(selectedOrder?.items) &&
                 showEditBtn &&
                 selectedOrder?.status !== "Paid" &&
@@ -575,61 +591,63 @@ function TableOrderInfo({
               );
             })}
         </div>
-        <div className={`bg-gray-100 rounded-md ${showEditControls === true ? "p-2" : "p-0"}`}>
-          <textarea
-            rows={remarkRows}
-            value={remarks || ""}
-            onChange={(e) => setRemarks(e.target.value)}
-            className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
-              showEditControls === true ? "bg-white " : "bg-gray-100 text-gray-600"
-            }`}
-            placeholder="Type Remarks here..."
-            disabled={showEditControls ? false : true}
-          />
-          {showEditControls && (
-            <div className="flex justify-between px-1 mt-2">
-              <div className="flex items-center">
+        {showRemarksArea && (
+          <div className={`bg-gray-100 rounded-md ${showEditControls === true ? "p-2" : "p-0"}`}>
+            <textarea
+              rows={remarkRows}
+              value={remarks || ""}
+              onChange={(e) => setRemarks(e.target.value)}
+              className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
+                showEditControls === true ? "bg-white " : "bg-gray-100 text-gray-600"
+              }`}
+              placeholder="Type Remarks here..."
+              disabled={showEditControls ? false : true}
+            />
+            {showEditControls && (
+              <div className="flex justify-between px-1 mt-2">
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6 text-green-800"
+                    onClick={() => setRemarkRows(remarkRows + 1)}>
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div className="text-sm text-gray-600 px-1">Row</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className={remarkRows > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-100"}
+                    onClick={() => setRemarkRows(remarkRows > 1 ? remarkRows - 1 : null)}>
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-6 h-6 text-green-800"
-                  onClick={() => setRemarkRows(remarkRows + 1)}>
+                  className="w-6 h-6 text-red-700"
+                  onClick={() => handleRemoveRemarks()}>
                   <path
                     fillRule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <div className="text-sm text-gray-600 px-1">Row</div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className={remarkRows > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-100"}
-                  onClick={() => setRemarkRows(remarkRows > 1 ? remarkRows - 1 : null)}>
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                    d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
                     clipRule="evenodd"
                   />
                 </svg>
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6 text-red-700"
-                onClick={() => handleRemoveRemarks()}>
-                <path
-                  fillRule="evenodd"
-                  d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         <div className="bg-gray-100 py-4 px-5 mb-10 rounded-md">
           <div className="flex justify-between items-center">
             <div className="text-gray-600 text-sm">Subtotal</div>

@@ -22,7 +22,8 @@ export default function Tables({ menu }) {
   const [remarks, setRemarks] = useState(undefined);
   const [tempRemarks, setTempRemarks] = useState(undefined);
   const [remarkRows, setRemarkRows] = useState(1);
-  const [isEditingRemarks, setIsEditingRemarks] = useState(true);
+  const [showRemarksBtn, setShowRemarksBtn] = useState(false);
+  const [showRemarksArea, setShowRemarksArea] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [selectedOrder, setSelectedOrder] = useState({
@@ -160,8 +161,6 @@ export default function Tables({ menu }) {
       setShowEditBtn(false);
       console.log("set to false from table when status is status");
       setShowEditControls(true);
-    //   setRemarks('');
-      
     }
   };
 
@@ -199,6 +198,8 @@ export default function Tables({ menu }) {
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setIsConfirmCloseModal={setIsConfirmCloseModal}
+              setShowRemarksBtn={setShowRemarksBtn}
+              setShowRemarksArea={setShowRemarksArea}
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -211,6 +212,7 @@ export default function Tables({ menu }) {
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
+              setShowRemarksBtn={setShowRemarksBtn}
             />
           </div>
         </div>
@@ -263,8 +265,10 @@ export default function Tables({ menu }) {
           setTempRemarks={setTempRemarks}
           remarkRows={remarkRows}
           setRemarkRows={setRemarkRows}
-          isEditingRemarks={isEditingRemarks}
-          setIsEditingRemarks={setIsEditingRemarks}
+          showRemarksBtn={showRemarksBtn}
+          setShowRemarksBtn={setShowRemarksBtn}
+          showRemarksArea={showRemarksArea} 
+          setShowRemarksArea={setShowRemarksArea}
         />
       )}
       <ConfirmCloseModal
@@ -278,6 +282,8 @@ export default function Tables({ menu }) {
         setSelectedOrder={setSelectedOrder}
         setTables={setTables}
         setOrderCounter={setOrderCounter}
+        setShowRemarksBtn={setShowRemarksBtn}
+        setShowRemarksArea={setShowRemarksArea}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}

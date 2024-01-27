@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn, tempCartItems, setTempCartItems }) {
+function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn, tempCartItems, setTempCartItems, setShowRemarksBtn }) {
     const handleAddtoCartBtn = () => {
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(
@@ -29,6 +29,7 @@ function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, 
       setSelectedOrder((prevOrder) => {
         return { ...prevOrder, items: [...prevOrder.items, { item, quantity: 1 }] };
       });
+      setShowRemarksBtn(true)
       toast.success("Added to Cart!", {
         duration: 1000,
         position: "top-center",
