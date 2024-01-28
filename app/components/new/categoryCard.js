@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 
 function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
   const isSelected = selectedCategory === category;
@@ -74,9 +75,12 @@ function CategoryCard({
       console.log("Set to true from closeMenu");
       setShowEditControls(false);
       setShowRemarksBtn(false);
-      setShowRemarksArea(false);
-      // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
-      // If it is not true: item id not found, or quantity not the same, then
+      if (remarks === "" && tempRemarks === "") {
+        setSelectedOrder((prevSelectedOrder) => ({
+          ...prevSelectedOrder,
+          remarks:"No Remarks"
+        }));
+      }
     } else if (
       status === "Placed Order" &&
       !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
@@ -118,6 +122,13 @@ function CategoryCard({
       setIsConfirmCloseModal(true);
     }
   };
+
+  // useEffect(() => {
+  //   if (remarks === "" && tempRemarks === "") {
+  //     setShowRemarksArea(false);
+  //     setShowRemarksBtn(true);
+  //   }
+  // }, [remarks, setShowRemarksArea, setShowRemarksBtn, tempRemarks]);
 
   return (
     <>

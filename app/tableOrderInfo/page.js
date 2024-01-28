@@ -406,7 +406,7 @@ function TableOrderInfo({
       setRemarks((prevRemarks) => selectedOrder.remarks);
       setTempRemarks((prevRemarks) => selectedOrder.remarks);
     }
-  }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, ]);
+  }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, setShowRemarksArea]);
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
   //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
