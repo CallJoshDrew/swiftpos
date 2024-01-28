@@ -74,6 +74,7 @@ function CategoryCard({
       console.log("Set to true from closeMenu");
       setShowEditControls(false);
       setShowRemarksBtn(false);
+      setShowRemarksArea(false);
       // Use the function to compare sortedTempCartItems and sortedSelectedOrderItems
       // If it is not true: item id not found, or quantity not the same, then
     } else if (
