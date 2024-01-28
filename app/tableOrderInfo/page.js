@@ -154,9 +154,9 @@ function TableOrderInfo({
     //   return {};
     // });
     setSelectedOrder({
-        ...selectedOrder,
-        remarks: "No Remarks",
-      });
+      ...selectedOrder,
+      remarks: "No Remarks",
+    });
     setShowRemarksArea(false);
     setShowRemarksBtn(true);
     toast.error("Remarks is removed", {
@@ -260,10 +260,10 @@ function TableOrderInfo({
     // check newOrder.status instead of selectedOrder.status for the latest status
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
-    //   console.log("set to true from handlePlaceOrderBtn");
+      //   console.log("set to true from handlePlaceOrderBtn");
     } else {
       setShowEditBtn(false);
-    //   console.log("set to false from handlePlaceOrderBtn");
+      //   console.log("set to false from handlePlaceOrderBtn");
     }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
@@ -331,10 +331,10 @@ function TableOrderInfo({
     setShowRemarksBtn(false);
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
-    //   console.log("set to true from update button");
+      //   console.log("set to true from update button");
     } else {
       setShowEditBtn(false);
-    //   console.log("set to false from update button");
+      //   console.log("set to false from update button");
     }
     toast.success("Successfully Updated Order", {
       duration: 1000,
@@ -388,20 +388,20 @@ function TableOrderInfo({
 
   useEffect(() => {
     // console.log("Remarks Btn initial is false NOW is", showRemarksBtn)
-    if (selectedOrder?.remarks ==="No Remarks"){
-        setShowRemarksBtn(true);
-        setShowRemarksArea(false);
+    if (selectedOrder?.remarks === "No Remarks") {
+      setShowRemarksBtn(true);
+      setShowRemarksArea(false);
     } else {
-        setShowRemarksArea(true);
+      setShowRemarksArea(true);
     }
-  }, [selectedOrder?.remarks, setShowRemarksArea, setShowRemarksBtn, showRemarksBtn])
-  
+  }, [selectedOrder?.remarks, setShowRemarksArea, setShowRemarksBtn, showRemarksBtn]);
+
   // Status => Placed Order => Make Payment => Check Out => Completed
   useEffect(() => {
     console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
     console.log("Remarks Now is", remarks);
     console.log("tempRemarks Now is", tempRemarks);
-    
+
     if (selectedOrder && selectedOrder.remarks !== tempRemarks) {
       setRemarks((prevRemarks) => selectedOrder.remarks);
       setTempRemarks((prevRemarks) => selectedOrder.remarks);
@@ -418,7 +418,7 @@ function TableOrderInfo({
     // console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
-    // console.log("SelectedOrder Items Now is", selectedOrder.items);
+    console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (
@@ -428,26 +428,32 @@ function TableOrderInfo({
           <div className="flex justify-between items-center w-full">
             <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
             <div className="flex">
-              {!showEditBtn && showRemarksBtn && (selectedOrder?.items.length > 0) && (
-                <div
-                  className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
-                  onClick={() => handleAddRemarks()}>
-                  <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5 text-white cursor-pointer">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                    />
-                  </svg>
-                </div>
-              )}
+              {Array.isArray(selectedOrder?.items) &&
+                !showEditBtn &&
+                showRemarksBtn &&
+                selectedOrder?.items.length > 0 &&
+                selectedOrder?.status !== "Paid" &&
+                selectedOrder?.status !== "Completed" &&
+                selectedOrder?.status !== "Cancelled" && (
+                  <div
+                    className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
+                    onClick={() => handleAddRemarks()}>
+                    <div className="text-white cursor-pointer pr-1 text-sm">Add Remarks</div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5 text-white cursor-pointer">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                      />
+                    </svg>
+                  </div>
+                )}
               {Array.isArray(selectedOrder?.items) &&
                 showEditBtn &&
                 selectedOrder?.status !== "Paid" &&
