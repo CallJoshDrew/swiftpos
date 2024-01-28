@@ -1,5 +1,4 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
   const isSelected = selectedCategory === category;
@@ -122,13 +121,6 @@ function CategoryCard({
       setIsConfirmCloseModal(true);
     }
   };
-
-  // useEffect(() => {
-  //   if (remarks === "" && tempRemarks === "") {
-  //     setShowRemarksArea(false);
-  //     setShowRemarksBtn(true);
-  //   }
-  // }, [remarks, setShowRemarksArea, setShowRemarksBtn, tempRemarks]);
 
   return (
     <>

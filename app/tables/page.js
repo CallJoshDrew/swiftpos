@@ -286,7 +286,9 @@ export default function Tables({ menu }) {
         setOrderCounter={setOrderCounter}
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
+        remarks={remarks}
         setRemarks={setRemarks}
+        tempRemarks={tempRemarks}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}

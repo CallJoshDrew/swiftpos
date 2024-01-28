@@ -13,7 +13,9 @@ function ConfirmCloseModal({
   setOrderCounter,
   setShowRemarksBtn,
   setShowRemarksArea,
+  remarks,
   setRemarks,
+  tempRemarks,
 }) {
   const { status, orderNumber } = selectedOrder;
 
@@ -35,8 +37,8 @@ function ConfirmCloseModal({
           tableName: "",
           orderNumber: "Order Number",
           items: [],
-        };
-      });
+          remarks: "No Remarks",
+      }});
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
@@ -47,6 +49,7 @@ function ConfirmCloseModal({
         return {
           ...prevOrder,
           items: tempCartItems,
+          remarks: remarks === "" ? "No Remarks" : tempRemarks,
         };
       });
     }
