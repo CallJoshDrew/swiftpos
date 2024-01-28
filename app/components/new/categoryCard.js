@@ -31,6 +31,8 @@ function CategoryCard({
   setIsConfirmCloseModal,
   setShowRemarksBtn,
   setShowRemarksArea,
+  remarks,
+  tempRemarks,
 }) {
   const { status, orderNumber } = selectedOrder;
   // Sort the items in tempCartItems and selectedOrder.items by their id
@@ -62,9 +64,11 @@ function CategoryCard({
   const handleCloseMenu = () => {
     // close if it is the same items and status is "Placed Order"
     if (
+      status === "Placed Order" && (remarks !== tempRemarks)) {
+        setIsConfirmCloseModal(true);
+    } else if (
       status === "Placed Order" &&
-      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
-    ) {
+      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
       setShowMenu(false);
       setShowEditBtn(true);
       console.log("Set to true from closeMenu");
@@ -74,9 +78,14 @@ function CategoryCard({
       // If it is not true: item id not found, or quantity not the same, then
     } else if (
       status === "Placed Order" &&
-      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
-    ) {
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
       setIsConfirmCloseModal(true);
+      console.log("items are not the same, but remarks the same");
+    } else if (
+      status === "Placed Order" &&
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks !== tempRemarks)) {
+      setIsConfirmCloseModal(true);
+      console.log("items and remarks are not the same");
     } else if (status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       setTables((prevTables) => {

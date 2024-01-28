@@ -143,17 +143,20 @@ function TableOrderInfo({
       position: "top-center",
       reverseOrder: false,
     });
-    console.log("Added Remarks");
   };
   const handleRemoveRemarks = () => {
-    setSelectedOrder((prevOrder) => {
-      if (prevOrder) {
-        const newOrder = { ...prevOrder };
-        delete newOrder.remarks;
-        return newOrder;
-      }
-      return {};
-    });
+    // setSelectedOrder((prevOrder) => {
+    //   if (prevOrder) {
+    //     const newOrder = { ...prevOrder };
+    //     delete newOrder.remarks;
+    //     return newOrder;
+    //   }
+    //   return {};
+    // });
+    setSelectedOrder({
+        ...selectedOrder,
+        remarks: "No Remarks",
+      });
     setShowRemarksArea(false);
     setShowRemarksBtn(true);
     toast.error("Remarks is removed", {
@@ -164,10 +167,9 @@ function TableOrderInfo({
   };
   const handleEditOrder = () => {
     setShowEditBtn(false);
-    console.log("set to false from handleEditOrder");
+    // console.log("set to false from handleEditOrder");
     setShowEditControls(true);
     setShowMenu(true);
-    setShowRemarksBtn(true);
   };
   let subTotal = 0;
   let serviceCharge = 0;
@@ -245,7 +247,7 @@ function TableOrderInfo({
       quantity: totalQuantity,
       payment: 0,
       paymentMethod: "",
-      remarks,
+      remarks: remarks === "" ? "No Remarks" : remarks,
     };
 
     setSelectedOrder(newOrder);
@@ -258,10 +260,10 @@ function TableOrderInfo({
     // check newOrder.status instead of selectedOrder.status for the latest status
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
-      console.log("set to true from handlePlaceOrderBtn");
+    //   console.log("set to true from handlePlaceOrderBtn");
     } else {
       setShowEditBtn(false);
-      console.log("set to false from handlePlaceOrderBtn");
+    //   console.log("set to false from handlePlaceOrderBtn");
     }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
@@ -317,7 +319,7 @@ function TableOrderInfo({
             serviceCharge,
             totalPrice,
             quantity: totalQuantity,
-            remarks,
+            remarks: remarks === "" ? "No Remarks" : remarks,
           };
         } else {
           return order;
@@ -329,10 +331,10 @@ function TableOrderInfo({
     setShowRemarksBtn(false);
     if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
       setShowEditBtn(true);
-      console.log("set to true from update button");
+    //   console.log("set to true from update button");
     } else {
       setShowEditBtn(false);
-      console.log("set to false from update button");
+    //   console.log("set to false from update button");
     }
     toast.success("Successfully Updated Order", {
       duration: 1000,
@@ -383,16 +385,28 @@ function TableOrderInfo({
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
   }
+
+  useEffect(() => {
+    // console.log("Remarks Btn initial is false NOW is", showRemarksBtn)
+    if (selectedOrder?.remarks ==="No Remarks"){
+        setShowRemarksBtn(true);
+        setShowRemarksArea(false);
+    } else {
+        setShowRemarksArea(true);
+    }
+  }, [selectedOrder?.remarks, setShowRemarksArea, setShowRemarksBtn, showRemarksBtn])
+  
   // Status => Placed Order => Make Payment => Check Out => Completed
   useEffect(() => {
     console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
     console.log("Remarks Now is", remarks);
     console.log("tempRemarks Now is", tempRemarks);
+    
     if (selectedOrder && selectedOrder.remarks !== tempRemarks) {
       setRemarks((prevRemarks) => selectedOrder.remarks);
       setTempRemarks((prevRemarks) => selectedOrder.remarks);
     }
-  }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks]);
+  }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, ]);
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
   //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
@@ -414,7 +428,7 @@ function TableOrderInfo({
           <div className="flex justify-between items-center w-full">
             <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
             <div className="flex">
-              {showRemarksBtn && (
+              {!showEditBtn && showRemarksBtn && (selectedOrder?.items.length > 0) && (
                 <div
                   className="bg-green-800 flex items-center pt-2 pb-2 px-3 rounded-md"
                   onClick={() => handleAddRemarks()}>

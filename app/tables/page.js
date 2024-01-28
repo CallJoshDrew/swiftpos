@@ -40,7 +40,7 @@ export default function Tables({ menu }) {
     quantity: 0,
     payment: 0,
     paymentMethod: "",
-    remarks: "",
+    remarks: "No Remarks",
   });
 
   const [orderCounter, setOrderCounter] = useState(1);
@@ -146,7 +146,7 @@ export default function Tables({ menu }) {
         quantity: 0,
         payment: 0,
         paymentMethod: "",
-        remarks: "",
+        remarks: "No Remarks",
       }));
       setTempCartItems([]);
       setTables((prevTables) =>
@@ -159,7 +159,7 @@ export default function Tables({ menu }) {
       // This is when no items added
       setShowMenu(true);
       setShowEditBtn(false);
-      console.log("set to false from table when status is status");
+    //   console.log("set to false from table when status is status");
       setShowEditControls(true);
     }
   };
@@ -172,7 +172,7 @@ export default function Tables({ menu }) {
           selectedOrder.status === "Cancelled")
       ) {
         setShowEditBtn(false);
-        console.log("Set to false from useEffect");
+        // console.log("Set to false from useEffect");
       }
   }, [selectedOrder])
 
@@ -200,6 +200,8 @@ export default function Tables({ menu }) {
               setIsConfirmCloseModal={setIsConfirmCloseModal}
               setShowRemarksBtn={setShowRemarksBtn}
               setShowRemarksArea={setShowRemarksArea}
+              remarks={remarks}
+              tempRemarks={tempRemarks}
             />
           </div>
           <div className="mt-[130px] px-4">
@@ -284,6 +286,7 @@ export default function Tables({ menu }) {
         setOrderCounter={setOrderCounter}
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
+        setRemarks={setRemarks}
       />
       <PaymentModal
         isPayModalOpen={isPayModalOpen}

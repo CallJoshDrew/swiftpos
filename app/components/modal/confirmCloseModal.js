@@ -13,6 +13,7 @@ function ConfirmCloseModal({
   setOrderCounter,
   setShowRemarksBtn,
   setShowRemarksArea,
+  setRemarks,
 }) {
   const { status, orderNumber } = selectedOrder;
 
@@ -52,6 +53,7 @@ function ConfirmCloseModal({
     setShowMenu(false);
     setShowEditControls(false);
     setIsConfirmCloseModal(false);
+    setRemarks(selectedOrder?.remarks);
   };
 
   if (!isConfirmCloseModal) {
