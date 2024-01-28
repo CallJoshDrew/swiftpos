@@ -127,7 +127,7 @@ function CategoryCard({
       <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">
         <div className="pb-1 ml-2 text-lg text-green-800 font-bold">Our Menu</div>
         <button
-          className="text-xs py-2 px-4 bg-red-700 text-white rounded-md z-10"
+          className="text-xs py-2 px-4 bg-red-600 text-white rounded-md z-10"
           onClick={() => handleCloseMenu()}>
           x Close Menu
         </button>

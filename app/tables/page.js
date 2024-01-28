@@ -6,6 +6,7 @@ import TableOrderInfo from "../tableOrderInfo/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CheckOutModal from "../components/modal/checkOutModal";
+import CancelModal from "../components/modal/cancelModal";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -48,7 +49,8 @@ export default function Tables({ menu }) {
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
-  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false); // Controls whether the checkout modal is open
+  const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
+  const [isCancelModalOpen, setCancelModalOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/tableNames")
@@ -129,7 +131,7 @@ export default function Tables({ menu }) {
       setTempCartItems(existingOrder.items);
       // have to set to true evertime and then use useEffect to set it false.
       setShowEditBtn(true);
-    //   setRemarks((prevRemarks) => selectedOrder.remarks);
+      //   setRemarks((prevRemarks) => selectedOrder.remarks);
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
@@ -159,24 +161,46 @@ export default function Tables({ menu }) {
       // This is when no items added
       setShowMenu(true);
       setShowEditBtn(false);
-    //   console.log("set to false from table when status is status");
+      //   console.log("set to false from table when status is status");
       setShowEditControls(true);
     }
   };
 
+  const handleCancelStatus = (orderNumber) => {
+    setCancelModalOpen(false);
+    setOrders(
+      orders.map((order) =>
+        order.orderNumber === orderNumber ? { ...order, status: "Cancel" } : order
+      )
+    );
+    setTables((prevTables) => {
+      return prevTables.map((table) => {
+        if (table.orderNumber === orderNumber) {
+          const { orderNumber, occupied, ...rest } = table;
+          return rest;
+        } else {
+          return table;
+        }
+      });
+    });
+    setSelectedOrder((prevSelectedOrder) => {
+      return {
+        ...prevSelectedOrder,
+        status: "Cancelled",
+      };
+    });
+  };
   useEffect(() => {
     if (
-        selectedOrder &&
-        (selectedOrder.status === "Paid" ||
-          selectedOrder.status === "Completed" ||
-          selectedOrder.status === "Cancelled")
-      ) {
-        setShowEditBtn(false);
-        // console.log("Set to false from useEffect");
-      }
-  }, [selectedOrder])
-
-  
+      selectedOrder &&
+      (selectedOrder.status === "Paid" ||
+        selectedOrder.status === "Completed" ||
+        selectedOrder.status === "Cancelled")
+    ) {
+      setShowEditBtn(false);
+      // console.log("Set to false from useEffect");
+    }
+  }, [selectedOrder]);
 
   return (
     <>
@@ -269,8 +293,9 @@ export default function Tables({ menu }) {
           setRemarkRows={setRemarkRows}
           showRemarksBtn={showRemarksBtn}
           setShowRemarksBtn={setShowRemarksBtn}
-          showRemarksArea={showRemarksArea} 
+          showRemarksArea={showRemarksArea}
           setShowRemarksArea={setShowRemarksArea}
+          setCancelModalOpen={setCancelModalOpen}
         />
       )}
       <ConfirmCloseModal
@@ -308,6 +333,12 @@ export default function Tables({ menu }) {
         setTempCartItems={setTempCartItems}
         setOrders={setOrders}
         setTables={setTables}
+      />
+      <CancelModal
+        isCancelModalOpen={isCancelModalOpen}
+        setCancelModalOpen={setCancelModalOpen}
+        handleCancelStatus={handleCancelStatus}
+        selectedOrder={selectedOrder}
       />
     </>
   );

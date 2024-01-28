@@ -30,7 +30,11 @@ function TableOrderInfo({
   setShowRemarksBtn,
   showRemarksArea,
   setShowRemarksArea,
+  setCancelModalOpen,
 }) {
+  const handleCancelOrder = () => {
+    setCancelModalOpen(true);
+  };
   const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const handleChoiceChange = (itemId, choiceName) => {
     // Update the item's selected choice
@@ -418,7 +422,7 @@ function TableOrderInfo({
     // console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
-    console.log("SelectedOrder Now is", selectedOrder);
+    // console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (
@@ -426,7 +430,28 @@ function TableOrderInfo({
       <div className="fixed h-screen w-2/6 overflow-y-scroll pb-20 px-6 space-y-4">
         <div className="rounded-lg flex my-2 justify-between items-center">
           <div className="flex justify-between items-center w-full">
-            <div className="text-green-800 text-lg font-bold">{selectedOrder?.orderNumber}</div>
+            <div
+              className={`flex items-center text-lg font-bold ${
+                selectedOrder?.status === "Cancelled" ? "text-gray-500" : "text-green-800"
+              }`}>
+              {selectedOrder?.orderNumber}
+              {selectedOrder?.status === "Placed Order" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-green-800 pl-1"
+                  onClick={() => handleCancelOrder()}>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              )}
+            </div>
             <div className="flex">
               {Array.isArray(selectedOrder?.items) &&
                 !showEditBtn &&
@@ -478,10 +503,18 @@ function TableOrderInfo({
         </div>
         <hr className="h-px bg-gray-200 border-0" />
         <div className="flex px-2 items-center justify-between">
-          <div className="text-green-800 text-sm font-bold leading-none">
+          <div
+            className={`text-sm font-bold leading-none ${
+              selectedOrder?.status === "Cancelled" ? "text-gray-500" : "text-green-800"
+            }`}>
             {selectedOrder?.status}
           </div>
-          <div className="text-green-800 text-sm">{selectedOrder?.orderTime}</div>
+          <div
+            className={`text-sm ${
+              selectedOrder?.status === "Cancelled" ? "text-gray-500" : "text-green-800"
+            }`}>
+            {selectedOrder?.orderTime}, {selectedOrder?.orderDate}
+          </div>
         </div>
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
@@ -502,14 +535,25 @@ function TableOrderInfo({
                       alt={item.name}
                       width="100"
                       height="100"
-                      className="sm:h-18 w-20 object-cover rounded-lg"
+                      className={`sm:h-18 w-20 object-cover rounded-lg ${
+                        selectedOrder?.status === "Cancelled" ? "filter grayscale" : ""
+                      }`}
                     />
+
                     <div className="flex w-full items-center py-1 pl-2 pr-1">
                       <div className="flex w-full justify-between px-1 space-x-2">
-                        <div className="text-black text-base ">
+                        <div
+                          className={`text-base ${
+                            selectedOrder?.status === "Cancelled" ? "text-gray-500" : "text-black"
+                          }`}>
                           {item.name} x {quantity}
                         </div>
-                        <div className="text-green-800 font-bold text-base ">
+                        <div
+                          className={`text-base font-bold ${
+                            selectedOrder?.status === "Cancelled"
+                              ? "text-gray-500"
+                              : "text-green-800"
+                          }`}>
                           {(parseFloat(item.price) * quantity).toFixed(2)}
                         </div>
                       </div>
@@ -618,7 +662,7 @@ function TableOrderInfo({
               value={remarks || ""}
               onChange={(e) => setRemarks(e.target.value)}
               className={` block w-full text-sm text-black rounded-md border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 ${
-                showEditControls === true ? "bg-white " : "bg-gray-100 text-gray-600"
+                showEditControls === true ? "bg-white " : "bg-gray-100 text-gray-700"
               }`}
               placeholder="Type Remarks here..."
               disabled={showEditControls ? false : true}
@@ -626,31 +670,37 @@ function TableOrderInfo({
             {showEditControls && (
               <div className="flex justify-between px-1 mt-2">
                 <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6 text-green-800"
-                    onClick={() => setRemarkRows(remarkRows + 1)}>
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-6 h-6 text-green-800"
+                      onClick={() => setRemarkRows(remarkRows + 1)}>
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
                   <div className="text-sm text-gray-600 px-1">Row</div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className={remarkRows > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-100"}
-                    onClick={() => setRemarkRows(remarkRows > 1 ? remarkRows - 1 : null)}>
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className={
+                        remarkRows > 1 ? "w-6 h-6 text-green-800" : "w-6 h-6 text-gray-100"
+                      }
+                      onClick={() => setRemarkRows(remarkRows > 1 ? remarkRows - 1 : null)}>
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
                 </div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

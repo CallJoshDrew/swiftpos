@@ -45,6 +45,11 @@ function ConfirmCloseModal({
     } else if (status === "Placed Order") {
       setShowEditBtn(true);
       console.log("Set to true from ConfirmCloseModal");
+      // if (remarks ==="") {
+      //   setRemarks("No Remarks");
+      // } else {
+      //   setRemarks(tempRemarks);
+      // }
       setSelectedOrder((prevOrder) => {
         return {
           ...prevOrder,
