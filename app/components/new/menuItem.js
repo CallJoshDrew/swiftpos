@@ -3,8 +3,17 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, setShowEditBtn, tempCartItems, setTempCartItems, setShowRemarksBtn }) {
-    const handleAddtoCartBtn = () => {
+function MenuItem({
+  item,
+  selectedOrder,
+  setSelectedOrder,
+  handleItemSelection,
+  setShowEditBtn,
+  tempCartItems,
+  setTempCartItems,
+  setShowRemarksBtn,
+}) {
+  const handleAddtoCartBtn = () => {
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(
       (orderItem) => orderItem.item.id === item.id
@@ -15,29 +24,37 @@ function MenuItem({ item, selectedOrder, setSelectedOrder, handleItemSelection, 
     } else if (existingOrderItem) {
       // If item.selection is false and existingOrderItem is true, increase its quantity by 1
       setSelectedOrder((prevOrder) => {
+        // Find the item and increase its quantity
+        const updatedItems = prevOrder.items.map((orderItem) =>
+          orderItem.item.id === item.id
+            ? { ...orderItem, quantity: orderItem.quantity + 1 }
+            : orderItem
+        );
+        // Find the updated item
+        const updatedItem = updatedItems.find((orderItem) => orderItem.item.id === item.id);
+        // Filter out the updated item from the array
+        const remainingItems = updatedItems.filter((orderItem) => orderItem.item.id !== item.id);
+        // Add the updated item at the beginning of the array
         return {
           ...prevOrder,
-          items: prevOrder.items.map((orderItem) =>
-            orderItem.item.id === item.id
-              ? { ...orderItem, quantity: orderItem.quantity + 1 }
-              : orderItem
-          ),
+          items: [updatedItem, ...remainingItems],
         };
       });
+      setShowRemarksBtn(true);
     } else {
       // If item.selection is false and existingOrderItem is false, add it to the order with a quantity of 1
       setSelectedOrder((prevOrder) => {
-        return { ...prevOrder, items: [...prevOrder.items, { item, quantity: 1 }] };
+        return { ...prevOrder, items: [{ item, quantity: 1 }, ...prevOrder.items] };
       });
-      setShowRemarksBtn(true)
-      toast.success("Added to Cart!", {
-        duration: 1000,
-        position: "top-center",
-        reverseOrder: false,
-      });
+      setShowRemarksBtn(true);
     }
+    toast.success("Added to Cart!", {
+      duration: 1000,
+      position: "top-center",
+      reverseOrder: false,
+    });
   };
-  
+
   return (
     <div
       key={item.id}

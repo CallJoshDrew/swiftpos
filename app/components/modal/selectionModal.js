@@ -19,23 +19,27 @@ function SelectionModal({
       const existingOrderItem = prevOrder.items.find(
         (orderItem) => orderItem.item.id === selectionModal.item.id
       );
-
       if (existingOrderItem) {
         // If the item is already in the order, increase its quantity by 1
+        const updatedItems = prevOrder.items.map((orderItem) =>
+          orderItem.item.id === selectionModal.item.id
+            ? { ...orderItem, quantity: orderItem.quantity + 1 }
+            : orderItem
+        );
+        // Find the updated item
+        const updatedItem = updatedItems.find((orderItem) => orderItem.item.id === selectionModal.item.id);
+        // Filter out the updated item from the array
+        const remainingItems = updatedItems.filter((orderItem) => orderItem.item.id !== selectionModal.item.id);
+        // Add the updated item at the beginning of the array
         return {
           ...prevOrder,
-          items: prevOrder.items.map((orderItem) =>
-            orderItem.item.id === selectionModal.item.id
-              ? { ...orderItem, quantity: orderItem.quantity + 1 }
-              : orderItem
-          ),
+          items: [updatedItem, ...remainingItems],
         };
       } else {
         // If the item is not in the order, add it to the order with a quantity of 1
         return {
           ...prevOrder,
           items: [
-            ...prevOrder.items,
             {
               item: {
                 ...selectionModal.item,
@@ -46,11 +50,11 @@ function SelectionModal({
               selectedMeatLevel: selectionModal.meatLevel,
               selectedAddOn: selectionModal.addOn,
             },
+            ...prevOrder.items,
           ],
         };
       }
     });
-
     setSelectionModalOpen(false);
     toast.success("Added to cart!", {
       duration: 1000,

@@ -39,7 +39,6 @@ export default function Tables({ menu }) {
     serviceCharge: 0,
     totalPrice: 0,
     quantity: 0,
-    payment: 0,
     paymentMethod: "",
     remarks: "No Remarks",
   });
@@ -114,6 +113,7 @@ export default function Tables({ menu }) {
   };
 
   const selectedTable = (tableIndex) => {
+    setSelectedCategory("All");
     setTableNumber(tableIndex);
     let orderNumber = tables[tableIndex].orderNumber;
     const generatedOrderID = (tableName) => {
@@ -146,7 +146,6 @@ export default function Tables({ menu }) {
         serviceCharge: 0,
         totalPrice: 0,
         quantity: 0,
-        payment: 0,
         paymentMethod: "",
         remarks: "No Remarks",
       }));

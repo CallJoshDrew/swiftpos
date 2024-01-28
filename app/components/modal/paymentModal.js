@@ -15,7 +15,6 @@ function PaymentModal({
   // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
-  const [amountChange, setAmountChange] = useState(0);
   const [inputValue, setInputValue] = useState(0);
 
   // Use an effect hook to update the amount received and input value when the selected order changes
@@ -160,7 +159,6 @@ function PaymentModal({
                 );
                 handlePaymentStatus(newAmountReceived, newAmountChange);
                 setAmountReceived(newAmountReceived);
-                setAmountChange(newAmountChange);
               }}>
               Yes
             </button>
@@ -170,7 +168,6 @@ function PaymentModal({
                 handleModalClose();
                 setAmountReceived(amountReceived);
                 setInputValue(amountReceived);
-                setAmountChange(0);
               }}>
               No
             </button>
