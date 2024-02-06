@@ -421,7 +421,7 @@ function TableOrderInfo({
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
-    // console.log("Tables Now is", tables);
+    console.log("Tables Now is", tables);
     console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);

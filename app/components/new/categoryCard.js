@@ -92,19 +92,21 @@ function CategoryCard({
       console.log("items and remarks are not the same");
     } else if (status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-      setTables((prevTables) => {
-        return prevTables.map((table) => {
-          if (table.orderNumber === orderNumber) {
-            return {
-              ...table,
-              orderNumber: "",
-              occupied: false,
-            };
-          } else {
-            return table;
-          }
+      if (setTables) {
+        setTables((prevTables) => {
+          return prevTables.map((table) => {
+            if (table.orderNumber === orderNumber) {
+              return {
+                ...table,
+                orderNumber: "",
+                occupied: false,
+              };
+            } else {
+              return table;
+            }
+          });
         });
-      });
+      }
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",

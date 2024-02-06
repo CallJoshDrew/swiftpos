@@ -1,23 +1,27 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import CategoryCard from "../components/new/categoryCard";
-import MenuCard from "../components/new/menuCard.js";
+import MenuCard from "../components/new/menuCard";
 import TableOrderInfo from "../tableOrderInfo/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
-import CheckOutModal from "../components/modal/checkOutModal";
 import CancelModal from "../components/modal/cancelModal";
 
-export default function Tables({ menu }) {
+export default function TakeAwayOverview() {
+  const [menu, setMenu] = useState([]);
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((response) => response.json())
+      .then((data) => setMenu(data));
+  }, []);
+
   const [showMenu, setShowMenu] = useState(false);
+  const [orders, setOrders] = useState([]);
+
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [showEditControls, setShowEditControls] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const [tables, setTables] = useState([]);
-  const [tableNumber, setTableNumber] = useState(null);
-
-  const [orders, setOrders] = useState([]);
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
@@ -29,8 +33,7 @@ export default function Tables({ menu }) {
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
   const [selectedOrder, setSelectedOrder] = useState({
     orderNumber: "Order Number",
-    tableName: "",
-    orderType: "Dine-In",
+    orderType: "TakeAway",
     orderTime: null,
     orderDate: null,
     status: "Status",
@@ -42,23 +45,12 @@ export default function Tables({ menu }) {
     paymentMethod: "",
     remarks: "No Remarks",
   });
-
   const [orderCounter, setOrderCounter] = useState(1);
-
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/tableNames")
-      .then((response) => response.json())
-      .then((data) => setTables(data));
-  }, []);
-
-  // Update the order counter when the date changes
-  // It only runs when the parent or this component render, unless setCurrentDate is used in another component.
   useEffect(() => {
     const today = new Date().toDateString();
     if (today !== currentDate) {
@@ -67,108 +59,43 @@ export default function Tables({ menu }) {
     }
   }, [currentDate]);
 
-  const findOrder = (orderNumber) => {
-    if (Array.isArray(orders)) {
-      return orders.find((order) => order.orderNumber === orderNumber);
-    }
-  };
-
-  const determineButtonStyle = (table, order, index) => {
-    let buttonStyle = "bg-white text-black";
-    if (index === tableNumber) {
-      buttonStyle = "bg-green-800 text-white";
-    } else if (table.occupied === true && order && order.status === "Completed") {
-      buttonStyle = "bg-white text-black";
-    } else if (table.occupied === true && order && order.status === "Check Out") {
-      buttonStyle = "bg-gray-500 text-white";
-    } else if (table.occupied === true && order && order.status === "Paid") {
-      buttonStyle = "bg-gray-500 text-white";
-    } else if (table.occupied === true) {
-      buttonStyle = "bg-yellow-500 text-white";
-    }
-    return buttonStyle;
-  };
-
-  const displayTableStatus = (table, order) => {
-    let tableStatus = "Empty";
-
-    if (table.occupied) {
-      tableStatus = "Seated";
-      //   console.log(order.status);
-      if (order && order.status === "Paid") {
-        switch (order.paymentMethod) {
-          case "Cash":
-            tableStatus = "Paid by Cash";
-            break;
-          case "Boost":
-            tableStatus = "Paid by Boost";
-            break;
-          default:
-            tableStatus = "Paid";
-            break;
-        }
-      }
-    }
-    return tableStatus;
-  };
-
-  const selectedTable = (tableIndex) => {
-    setSelectedCategory("All");
-    setTableNumber(tableIndex);
-    let orderNumber = tables[tableIndex].orderNumber;
-    const generatedOrderID = (tableName) => {
+  const handleAddNewOrderBtn = () => {
+    setShowMenu(true);
+    setTempCartItems([]);
+    setShowMenu(true);
+    setShowEditBtn(false);
+    setShowEditControls(true);
+    let orderNumber;
+    const generatedOrderID = () => {
       const paddedCounter = String(orderCounter).padStart(4, "0");
-      let tableNameWithoutSpace = tableName.replace(/\s/g, '');
-      orderNumber = `#${tableNameWithoutSpace}-${paddedCounter}`;
-      // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
+      orderNumber = `TakeAway-${paddedCounter}`;
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
     };
-    if (tables[tableIndex].occupied) {
-      // Find the order with the same orderNumber as the occupied table
-      const existingOrder = orders.find(
-        (order) => order.orderNumber === tables[tableIndex].orderNumber
-      );
-      setSelectedOrder(existingOrder);
-      setTempCartItems(existingOrder.items);
-      // have to set to true evertime and then use useEffect to set it false.
-      setShowEditBtn(true);
-      //   setRemarks((prevRemarks) => selectedOrder.remarks);
-    } else {
-      generatedOrderID(tables[tableIndex].name);
-      setSelectedOrder((prevSelectedOrder) => ({
-        orderNumber,
-        tableName: tables[tableIndex].name,
-        orderType: "Dine-In",
-        orderTime: null,
-        orderDate: null,
-        status: "Status",
-        items: [],
-        subTotal: 0,
-        serviceCharge: 0,
-        totalPrice: 0,
-        quantity: 0,
-        paymentMethod: "",
-        remarks: "No Remarks",
-      }));
-      setTempCartItems([]);
-      setTables((prevTables) =>
-        prevTables.map((table, index) =>
-          index === tableIndex
-            ? {
-                ...table,
-                orderNumber,
-                occupied: true,
-                name: tables[tableIndex].name,
-              }
-            : table
-        )
-      );
-      // This is when no items added
-      setShowMenu(true);
-      setShowEditBtn(false);
-      //   console.log("set to false from table when status is status");
-      setShowEditControls(true);
-    }
+    generatedOrderID();
+    setSelectedOrder((prevSelectedOrder) => ({
+      orderNumber,
+      orderType: "TakeAway",
+      orderTime: null,
+      orderDate: null,
+      status: "Status",
+      items: [],
+      subTotal: 0,
+      serviceCharge: 0,
+      totalPrice: 0,
+      quantity: 0,
+      paymentMethod: "",
+      remarks: "No Remarks",
+    }));
+  };
+  const handleSelectedOrderBtn = (orderNumber) => {
+    const order = orders.find((order) => order.orderNumber === orderNumber);
+    const itemsWithOrderID = order.items.map((item) => ({
+      ...item,
+    }));
+    // console.log(itemsWithOrderID);
+    setSelectedOrder(order);
+    setTempCartItems(itemsWithOrderID);
+    setShowEditBtn(true);
   };
   const getFormattedTime = () => {
     const now = new Date();
@@ -192,16 +119,6 @@ export default function Tables({ menu }) {
           : order
       )
     );
-    setTables((prevTables) => {
-      return prevTables.map((table) => {
-        if (table.orderNumber === orderNumber) {
-          const { orderNumber, occupied, ...rest } = table;
-          return rest;
-        } else {
-          return table;
-        }
-      });
-    });
     setSelectedOrder((prevSelectedOrder) => {
       return {
         ...prevSelectedOrder,
@@ -210,18 +127,6 @@ export default function Tables({ menu }) {
       };
     });
   };
-  useEffect(() => {
-    if (
-      selectedOrder &&
-      (selectedOrder.status === "Paid" ||
-        selectedOrder.status === "Completed" ||
-        selectedOrder.status === "Cancelled")
-    ) {
-      setShowEditBtn(false);
-      // console.log("Set to false from useEffect");
-    }
-  }, [selectedOrder]);
-
   return (
     <>
       {showMenu ? (
@@ -235,8 +140,8 @@ export default function Tables({ menu }) {
               setOrderCounter={setOrderCounter}
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
-              tables={tables}
-              setTables={setTables}
+              // tables={tables}
+              // setTables={setTables}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
@@ -263,27 +168,66 @@ export default function Tables({ menu }) {
           </div>
         </div>
       ) : (
-        // If the menu is not shown, render the table selection interface
-        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-10">
-          <div className="pb-1 ml-2 text-lg text-gray-800 font-medium">Select Table</div>
-          <div className="grid grid-cols-3 gap-9 grid-rows-6 ">
-            {tables.map((table, index) => {
-              let order = findOrder(table.orderNumber);
-              let buttonStyle = determineButtonStyle(table, order, index);
-              let tableStatus = displayTableStatus(table, order);
+        <div className="bg-gray-100 w-3/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
+          <div className="flex justify-between w-full">
+            <div className="pb-1 ml-2 text-lg text-green-800 font-bold">Today Order</div>
+            <button
+              className="text-xs py-2 px-4 bg-green-800 text-white rounded-md"
+              onClick={() => handleAddNewOrderBtn()}>
+              + New Order
+            </button>
+          </div>
+          <div className="rounded-lg overflow-hidden border shadow-sm">
+            <table className="table-auto w-full">
+              <thead>
+                <tr className="bg-green-800 text-white text-center">
+                  <th className="px-4 py-4 border-b font-light">No.</th>
+                  <th className="px-4 py-4 border-b font-light">Order Time</th>
+                  <th className="px-4 py-4 border-b font-light">Qty</th>
+                  <th className="px-4 py-4 border-b font-light">Price (RM)</th>
+                  <th className="px-4 py-4 border-b font-light">Status</th>
+                  {/* <th className="px-4 py-4 border-b font-light">Details</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {[...orders].reverse().map((order, index) => (
+                  <tr
+                    key={index}
+                    className={`${
+                      order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
+                    } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
+                    onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
+                    <td className="border px-4 py-2">{orders.length - index}</td>
+                    <td className="border px-4 py-2">{order.orderTime}</td>
+                    <td
+                      className={`border px-4 py-2 ${
+                        order.status === "Cancelled" ? "line-through" : ""
+                      }`}>
+                      {order.quantity}
+                    </td>
+                    <td
+                      className={`border px-4 py-2 ${
+                        order.status === "Cancelled" ? "line-through" : ""
+                      }`}>
+                      {order.totalPrice.toFixed(2)}
+                    </td>
 
-              return (
-                <button
-                  key={index}
-                  className={`${buttonStyle} rounded-lg items-center flex justify-center flex-col py-3 shadow-md`}
-                  onClick={() => selectedTable(index)}>
-                  <div className="text-md ">{table.name}</div>
-                  <div className="text-sm ">
-                    <div className="text-sm ">{tableStatus}</div>
-                  </div>
-                </button>
-              );
-            })}
+                    <td
+                      className={`border px-4 py-2 rounded-md text-sm ${
+                        order.status === "Completed" || order.status === "Paid"
+                          ? "text-green-800"
+                          : order.status === "Cancelled"
+                          ? "text-red-700"
+                          : order.status === "Placed Order"
+                          ? "text-yellow-500"
+                          : ""
+                      }`}>
+                      {order.status}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -291,8 +235,6 @@ export default function Tables({ menu }) {
         <TableOrderInfo
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
-          tables={tables}
-          setTables={setTables}
           showMenu={showMenu}
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
@@ -327,7 +269,7 @@ export default function Tables({ menu }) {
         tempCartItems={tempCartItems}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
-        setTables={setTables}
+        // setTables={setTables}
         setOrderCounter={setOrderCounter}
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
@@ -343,16 +285,7 @@ export default function Tables({ menu }) {
         orders={orders}
         setOrders={setOrders}
         setShowEditBtn={setShowEditBtn}
-        setTables={setTables}
-      />
-      <CheckOutModal
-        isCheckOutModalOpen={isCheckOutModalOpen}
-        setCheckOutModalOpen={setCheckOutModalOpen}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
-        setTempCartItems={setTempCartItems}
-        setOrders={setOrders}
-        setTables={setTables}
+        // setTables={setTables}
       />
       <CancelModal
         isCancelModalOpen={isCancelModalOpen}
