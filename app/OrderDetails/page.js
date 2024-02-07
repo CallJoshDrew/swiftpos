@@ -1,9 +1,11 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useAtom } from 'jotai';
+import { ordersAtom } from "../components/atoms/ordersAtom";
 
-function TableOrderInfo({
+function OrderDetails({
   selectedOrder,
   setSelectedOrder,
   tables,
@@ -14,8 +16,6 @@ function TableOrderInfo({
   setShowEditBtn,
   showEditControls,
   setShowEditControls,
-  orders,
-  setOrders,
   tempCartItems,
   setTempCartItems,
   setPayModalOpen,
@@ -32,6 +32,7 @@ function TableOrderInfo({
   setShowRemarksArea,
   setCancelModalOpen,
 }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
   const handleCancelOrder = () => {
     setCancelModalOpen(true);
   };
@@ -768,7 +769,7 @@ function TableOrderInfo({
   );
 }
 
-export default React.memo(TableOrderInfo);
+export default React.memo(OrderDetails);
 
 // showEditBtn
 // Status === "Placed Order" && payment !=="Paid"

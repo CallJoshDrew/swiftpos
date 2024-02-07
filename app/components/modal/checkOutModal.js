@@ -1,5 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
+import { useAtom } from 'jotai';
+import { ordersAtom } from "../atoms/ordersAtom";
 
 function CheckOutModal({
   isCheckOutModalOpen,
@@ -7,9 +9,9 @@ function CheckOutModal({
   selectedOrder,
   setSelectedOrder,
   setTempCartItems,
-  setOrders,
   setTables = () => {}, // default value for setTables
 }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
   // Define a function to close the checkout modal
   const handleModalClose = () => {
     setCheckOutModalOpen(false);
@@ -74,7 +76,7 @@ function CheckOutModal({
       });
     });
     toast.success("Successfully Check Out!", {
-      duration: 2000,
+      duration: 1000,
       position: "top-center",
       reverseOrder: false,
     });

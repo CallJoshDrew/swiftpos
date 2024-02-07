@@ -1,8 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { ordersAtom } from "../components/atoms/ordersAtom";
+
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard";
-import TableOrderInfo from "../tableOrderInfo/page";
+import OrderDetails from "../OrderDetails/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CancelModal from "../components/modal/cancelModal";
@@ -16,7 +19,7 @@ export default function TakeAwayOverview() {
   }, []);
 
   const [showMenu, setShowMenu] = useState(false);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useAtom(ordersAtom);
 
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [showEditControls, setShowEditControls] = useState(true);
@@ -47,7 +50,7 @@ export default function TakeAwayOverview() {
   });
   const [orderCounter, setOrderCounter] = useState(1);
   // State variables related to modals
-  const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
+  const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
@@ -69,7 +72,7 @@ export default function TakeAwayOverview() {
     let orderNumber;
     const generatedOrderID = () => {
       const paddedCounter = String(orderCounter).padStart(4, "0");
-      orderNumber = `TakeAway-${paddedCounter}`;
+      orderNumber = `#TakeAwy-${paddedCounter}`;
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
     };
     generatedOrderID();
@@ -93,11 +96,17 @@ export default function TakeAwayOverview() {
     const itemsWithOrderID = order.items.map((item) => ({
       ...item,
     }));
-    // console.log(itemsWithOrderID);
     setSelectedOrder(order);
     setTempCartItems(itemsWithOrderID);
-    setShowEditBtn(true);
+    if (order.status === "Paid" || order.status === "Completed" || order.status === "Cancelled") {
+      setShowEditBtn(false);
+      setShowEditControls(false);
+    } else {
+      setShowEditBtn(true);
+      setShowEditControls(false);
+    }
   };
+  
   const getFormattedTime = () => {
     const now = new Date();
     const timeOptions = {
@@ -190,49 +199,52 @@ export default function TakeAwayOverview() {
                 </tr>
               </thead>
               <tbody>
-                {[...orders].reverse().map((order, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
-                    } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
-                    onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
-                    <td className="border px-4 py-2">{orders.length - index}</td>
-                    <td className="border px-4 py-2">{order.orderTime}</td>
-                    <td
-                      className={`border px-4 py-2 ${
-                        order.status === "Cancelled" ? "line-through" : ""
-                      }`}>
-                      {order.quantity}
-                    </td>
-                    <td
-                      className={`border px-4 py-2 ${
-                        order.status === "Cancelled" ? "line-through" : ""
-                      }`}>
-                      {order.totalPrice.toFixed(2)}
-                    </td>
+                {[...orders]
+                  .filter((order) => order.orderType === "TakeAway")
+                  .reverse()
+                  .map((order, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
+                      } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
+                      onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
+                      <td className="border px-4 py-2">{orders.length - index}</td>
+                      <td className="border px-4 py-2">{order.orderTime}</td>
+                      <td
+                        className={`border px-4 py-2 ${
+                          order.status === "Cancelled" ? "line-through" : ""
+                        }`}>
+                        {order.quantity}
+                      </td>
+                      <td
+                        className={`border px-4 py-2 ${
+                          order.status === "Cancelled" ? "line-through" : ""
+                        }`}>
+                        {order.totalPrice.toFixed(2)}
+                      </td>
 
-                    <td
-                      className={`border px-4 py-2 rounded-md text-sm ${
-                        order.status === "Completed" || order.status === "Paid"
-                          ? "text-green-800"
-                          : order.status === "Cancelled"
-                          ? "text-red-700"
-                          : order.status === "Placed Order"
-                          ? "text-yellow-500"
-                          : ""
-                      }`}>
-                      {order.status}
-                    </td>
-                  </tr>
-                ))}
+                      <td
+                        className={`border px-4 py-2 rounded-md text-sm ${
+                          order.status === "Completed" || order.status === "Paid"
+                            ? "text-green-800"
+                            : order.status === "Cancelled"
+                            ? "text-red-700"
+                            : order.status === "Placed Order"
+                            ? "text-yellow-500"
+                            : ""
+                        }`}>
+                        {order.status}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </div>
       )}
       {selectedOrder && (
-        <TableOrderInfo
+        <OrderDetails
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
           showMenu={showMenu}
@@ -241,8 +253,6 @@ export default function TakeAwayOverview() {
           setShowEditBtn={setShowEditBtn}
           showEditControls={showEditControls}
           setShowEditControls={setShowEditControls}
-          orders={orders}
-          setOrders={setOrders}
           tempCartItems={tempCartItems}
           setTempCartItems={setTempCartItems}
           setPayModalOpen={setPayModalOpen}
@@ -282,8 +292,6 @@ export default function TakeAwayOverview() {
         setPayModalOpen={setPayModalOpen}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
-        orders={orders}
-        setOrders={setOrders}
         setShowEditBtn={setShowEditBtn}
         // setTables={setTables}
       />

@@ -1,8 +1,11 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import { useAtom } from 'jotai';
+import { ordersAtom } from "../components/atoms/ordersAtom";
+
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
-import TableOrderInfo from "../tableOrderInfo/page";
+import OrderDetails from "../OrderDetails/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CheckOutModal from "../components/modal/checkOutModal";
@@ -17,7 +20,7 @@ export default function Tables({ menu }) {
   const [tables, setTables] = useState([]);
   const [tableNumber, setTableNumber] = useState(null);
 
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useAtom(ordersAtom);
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
@@ -287,7 +290,7 @@ export default function Tables({ menu }) {
         </div>
       )}
       {selectedOrder && (
-        <TableOrderInfo
+        <OrderDetails
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
           tables={tables}
@@ -298,8 +301,6 @@ export default function Tables({ menu }) {
           setShowEditBtn={setShowEditBtn}
           showEditControls={showEditControls}
           setShowEditControls={setShowEditControls}
-          orders={orders}
-          setOrders={setOrders}
           tempCartItems={tempCartItems}
           setTempCartItems={setTempCartItems}
           setPayModalOpen={setPayModalOpen}
@@ -339,8 +340,6 @@ export default function Tables({ menu }) {
         setPayModalOpen={setPayModalOpen}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
-        orders={orders}
-        setOrders={setOrders}
         setShowEditBtn={setShowEditBtn}
         setTables={setTables}
       />
@@ -350,7 +349,6 @@ export default function Tables({ menu }) {
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         setTempCartItems={setTempCartItems}
-        setOrders={setOrders}
         setTables={setTables}
       />
       <CancelModal

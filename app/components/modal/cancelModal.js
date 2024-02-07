@@ -10,7 +10,7 @@ export default function CancelModal({
   const handleStatusSubmitBtn = () => {
     handleCancelStatus(selectedOrder.orderNumber);
     toast.success("Order is Cancelled", {
-      duration: 1000,
+      duration: 500,
       position: "top-left",
       reverseOrder: false,
     });

@@ -1,17 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useAtom } from 'jotai';
+import { ordersAtom } from "../atoms/ordersAtom";
 
 function PaymentModal({
   isPayModalOpen,
   setPayModalOpen,
   selectedOrder,
-  orders,
-  setOrders,
   setSelectedOrder,
   setShowEditBtn,
   setTables,
 }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
   // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
@@ -92,7 +93,7 @@ function PaymentModal({
     // Reset the payment method back to "Cash"
     setPaymentMethod("Cash");
     toast.success("Payment was successful!", {
-      duration: 2000,
+      duration: 1000,
       position: "top-center",
       reverseOrder: false,
     });

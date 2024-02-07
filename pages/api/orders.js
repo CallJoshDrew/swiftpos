@@ -5,7 +5,7 @@ let orders = [
     orderType: "Dine-In",
     orderTime: "02:00 PM",
     orderDate: "Wed, Feb 07, 2024",
-    status: "Placed Order",
+    status: "Completed",
     items: [
       {
         item: {

@@ -41,12 +41,22 @@ function MenuItem({
         };
       });
       setShowRemarksBtn(true);
+      toast.success("Added to cart!", {
+        duration: 500,
+        position: "top-center",
+        reverseOrder: false,
+      });
     } else {
       // If item.selection is false and existingOrderItem is false, add it to the order with a quantity of 1
       setSelectedOrder((prevOrder) => {
         return { ...prevOrder, items: [{ item, quantity: 1 }, ...prevOrder.items] };
       });
       setShowRemarksBtn(true);
+      toast.success("Added to cart!", {
+        duration: 500,
+        position: "top-center",
+        reverseOrder: false,
+      });
     }
   };
 

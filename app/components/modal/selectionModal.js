@@ -57,7 +57,7 @@ function SelectionModal({
     });
     setSelectionModalOpen(false);
     toast.success("Added to cart!", {
-      duration: 1000,
+      duration: 500,
       position: "top-center",
       reverseOrder: false,
     });
