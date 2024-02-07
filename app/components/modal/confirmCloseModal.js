@@ -21,6 +21,7 @@ function ConfirmCloseModal({
 
   const handleConfirmClose = () => {
     if (status === "Status") {
+      if (setTables) {
       setTables((prevTables) => {
         return prevTables.map((table) => {
           if (table.orderNumber === orderNumber) {
@@ -31,6 +32,7 @@ function ConfirmCloseModal({
           }
         });
       });
+    }
       setSelectedOrder((prevSelectedOrder) => {
         return {
           ...prevSelectedOrder,

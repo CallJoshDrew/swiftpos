@@ -255,7 +255,6 @@ export default function Tables({ menu }) {
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
-              setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setShowRemarksBtn={setShowRemarksBtn}

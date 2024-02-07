@@ -105,7 +105,12 @@ function SelectionModal({
                     onChange={(e) => {
                       const selectedChoice = selectionModal.item.choices[e.target.selectedIndex];
                       console.log(selectedChoice);
-                    }}>
+                      setSelectionModal((prevSelectionModal) => ({
+                        ...prevSelectionModal,
+                        choice: selectedChoice,
+                      }));
+                    }}
+                  >
                     {selectionModal.item.choices.map((choice, index) => (
                       <option key={index} value={choice.name}>
                         {choice.name} + RM {choice.price.toFixed(2)}
@@ -120,6 +125,10 @@ function SelectionModal({
                     onChange={(e) => {
                       const selectedLevel = selectionModal.item.meat[e.target.selectedIndex];
                       console.log(selectedLevel);
+                      setSelectionModal((prevSelectionModal) => ({
+                        ...prevSelectionModal,
+                        meatLevel: selectedLevel,
+                      }));
                     }}>
                     {selectionModal.item.meat.map((meat, index) => (
                       <option key={index} value={meat.level}>
@@ -135,6 +144,10 @@ function SelectionModal({
                     onChange={(e) => {
                       const selectedAddOn = selectionModal.item.addOn[e.target.selectedIndex];
                       console.log(selectedAddOn);
+                      setSelectionModal((prevSelectionModal) => ({
+                        ...prevSelectionModal,
+                        addOn: selectedAddOn,
+                      }));
                     }}>
                     {selectionModal.item.addOn.map((addOn, index) => (
                       <option key={index} value={addOn.type}>

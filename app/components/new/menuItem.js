@@ -48,11 +48,6 @@ function MenuItem({
       });
       setShowRemarksBtn(true);
     }
-    toast.success("Added to Cart!", {
-      duration: 1000,
-      position: "top-center",
-      reverseOrder: false,
-    });
   };
 
   return (

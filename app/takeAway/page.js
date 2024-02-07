@@ -61,6 +61,7 @@ export default function TakeAwayOverview() {
 
   const handleAddNewOrderBtn = () => {
     setShowMenu(true);
+    setSelectedCategory("All");
     setTempCartItems([]);
     setShowMenu(true);
     setShowEditBtn(false);
@@ -160,7 +161,6 @@ export default function TakeAwayOverview() {
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
-              setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setShowRemarksBtn={setShowRemarksBtn}
