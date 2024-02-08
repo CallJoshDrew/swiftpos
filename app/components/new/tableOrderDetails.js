@@ -3,14 +3,11 @@ import Image from "next/image";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from 'jotai';
-import { ordersAtom } from "../components/atoms/ordersAtom";
+import { ordersAtom } from "../atoms/ordersAtom";
 
-function OrderDetails({
+function TableOrderDetails({
   selectedOrder,
   setSelectedOrder,
-  tables,
-  setTables,
-  showMenu,
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
@@ -422,13 +419,12 @@ function OrderDetails({
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
-    console.log("Tables Now is", tables);
     console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     // console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
-  }, [selectedOrder, tables, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
+  }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (
     <div className="pb-6 w-2/6 flex-auto flex flex-col relative z-20 shadow-md">
         {/* pb-60 is the setting of the bottom */}
@@ -769,7 +765,7 @@ function OrderDetails({
   );
 }
 
-export default React.memo(OrderDetails);
+export default React.memo(TableOrderDetails);
 
 // showEditBtn
 // Status === "Placed Order" && payment !=="Paid"

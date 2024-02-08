@@ -1,4 +1,8 @@
 import React from "react";
+import { useAtom } from 'jotai';
+import { tablesAtom } from "../atoms/tablesAtom";
+import { tableOrderCountAtom } from "../atoms/tableOrderCount";
+import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 
 function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
   const isSelected = selectedCategory === category;
@@ -19,11 +23,8 @@ function CategoryCard({
   setShowMenu,
   selectedCategory,
   setSelectedCategory,
-  setOrderCounter,
   selectedOrder,
   setSelectedOrder,
-  tables,
-  setTables,
   setShowEditBtn,
   setShowEditControls,
   tempCartItems,
@@ -34,7 +35,22 @@ function CategoryCard({
   remarks,
   tempRemarks,
 }) {
-  const { status, orderNumber } = selectedOrder;
+
+  const { status, orderNumber, orderType } = selectedOrder;
+  // Why need coma? when you destructure an array, you can choose which elements to assign to variables. 
+  // If you want to skip certain elements, you can leave their places empty.
+  const [, setTables] = useAtom(tablesAtom);
+
+  function useOrderCounter(orderType) {
+    const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
+    const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
+  
+    const orderCounter = orderType === 'Dine-In' ? tableOrderCounter : takeAwayOrderCounter;
+    const setOrderCounter = orderType === 'Dine-In' ? setTableOrderCounter : setTakeAwayOrderCounter;
+  
+    return [orderCounter, setOrderCounter];
+  }
+  const [, setOrderCounter] = useOrderCounter(orderType);
   // Sort the items in tempCartItems and selectedOrder.items by their id
   const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
   const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
@@ -92,21 +108,33 @@ function CategoryCard({
       console.log("items and remarks are not the same");
     } else if (status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-      if (setTables) {
-        setTables((prevTables) => {
-          return prevTables.map((table) => {
-            if (table.orderNumber === orderNumber) {
-              return {
-                ...table,
-                orderNumber: "",
-                occupied: false,
-              };
-            } else {
-              return table;
-            }
+        if (orderType === "Dine-In") {
+          setTables((prevTables) => {
+            return prevTables.map((table) => {
+              if (table.orderNumber === orderNumber) {
+                const { orderNumber, occupied, ...rest } = table;
+                return rest;
+              } else {
+                return table;
+              }
+            });
           });
-        });
-      }
+        }
+      // if (orderType ==="Dine-In") {
+      //   setTables((prevTables) => {
+      //     return prevTables.map((table) => {
+      //       if (table.orderNumber === orderNumber) {
+      //         return {
+      //           ...table,
+      //           orderNumber: "",
+      //           occupied: false,
+      //         };
+      //       } else {
+      //         return table;
+      //       }
+      //     });
+      //   });
+      // }
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",
@@ -165,17 +193,3 @@ function CategoryCard({
 }
 
 export default React.memo(CategoryCard);
-
-// Find the index of the table with the current orderNumber
-// If it finds a match, it returns the index of that item. If it doesn’t find a match, it returns -1.
-// const tableIndex = tables.findIndex(
-//   (table) => table.orderNumber === selectedOrder.orderNumber
-// );
-// if (tableIndex !== -1) {
-// If the table is found, update its orderNumber and occupied status
-//   setTables((prevTables) =>
-//     prevTables.map((table, index) =>
-//       index === tableIndex ? { ...table, orderNumber: "", occupied: false } : table
-//     )
-//   );
-// }

@@ -2,15 +2,31 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAtom } from "jotai";
+import { ordersAtom } from "./atoms/ordersAtom";
+import { tablesAtom } from "./atoms/tablesAtom";
+import { tableOrderCountAtom } from "./atoms/tableOrderCount";
+import { takeAwayOrderCountAtom } from "./atoms/takeAwayOrderCount";
 
 export default function SideNav() {
   const path = usePathname();
+
+  const [, setOrders] = useAtom(ordersAtom);
+  const [, setTables] = useAtom(tablesAtom);
+  const [, setTableOrderCounter] = useAtom(tableOrderCountAtom);
+  const [, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
+
+  const handleClearLocalStorage = () => {
+    setOrders([]);
+    setTables([]); // Reset to initial value
+    setTableOrderCounter(1);
+    setTakeAwayOrderCounter(1);
+    // Do this for all atoms that use atomWithStorage
+  };
   return (
     <div className="py-10 w-1/6 flex-auto relative">
       <div className="fixed flex flex-col w-1/6 px-6">
-        <div className="text-green-800 text-center font-bold text-sm">
-          POS SYSTEM
-        </div>
+        <div className="text-green-800 text-center font-bold text-sm">POS SYSTEM</div>
         <Link
           href="/"
           className={
@@ -19,22 +35,13 @@ export default function SideNav() {
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6"
           }>
           <svg
-            className={
-              path === "/"
-                ? "w-8 h-8 text-white"
-                : "w-8 h-8 text-green-800"
-            }
+            className={path === "/" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
             <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
           </svg>
-          <div
-            className={
-              path === "/" ? "text-white text-sm " : "text-black text-sm"
-            }>
-            来吹水
-          </div>
+          <div className={path === "/" ? "text-white text-sm " : "text-black text-sm"}>来吹水</div>
         </Link>
         {/* <Link
           href="/tablesOverview"
@@ -96,22 +103,13 @@ export default function SideNav() {
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
           <svg
-            className={
-              path === "/takeAway"
-                ? "w-8 h-8 text-white"
-                : "w-8 h-8 text-green-800"
-            }
+            className={path === "/takeAway" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
             <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
           </svg>
-          <div
-            className={
-              path === "/takeAway"
-                ? "text-white text-sm "
-                : "text-black text-sm"
-            }>
+          <div className={path === "/takeAway" ? "text-white text-sm " : "text-black text-sm"}>
             来打包
           </div>
         </Link>
@@ -123,11 +121,7 @@ export default function SideNav() {
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
           <svg
-          className={
-            path === "/totalOrders"
-              ? "w-8 h-8 text-white"
-              : "w-8 h-8 text-green-800"
-          }
+            className={path === "/totalOrders" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -139,13 +133,8 @@ export default function SideNav() {
               d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
             />
           </svg>
-          <div
-            className={
-              path === "/totalOrders"
-                ? "text-white text-sm "
-                : "text-black text-sm"
-            }>
-              订单总数
+          <div className={path === "/totalOrders" ? "text-white text-sm " : "text-black text-sm"}>
+            订单总数
           </div>
         </Link>
         <Link
@@ -156,11 +145,7 @@ export default function SideNav() {
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
           <svg
-            className={
-              path === "/salesReport"
-                ? "w-8 h-8 text-white"
-                : "w-8 h-8 text-green-800"
-            }
+            className={path === "/salesReport" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
@@ -171,12 +156,7 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-          <div
-            className={
-              path === "/salesReport"
-                ? "text-white text-sm "
-                : "text-black text-sm"
-            }>
+          <div className={path === "/salesReport" ? "text-white text-sm " : "text-black text-sm"}>
             招財貓
           </div>
         </Link>
@@ -188,11 +168,7 @@ export default function SideNav() {
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
           <svg
-            className={
-              path === "/setting"
-                ? "w-8 h-8 text-white"
-                : "w-8 h-8 text-green-800"
-            }
+            className={path === "/setting" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
@@ -208,13 +184,28 @@ export default function SideNav() {
               clipRule="evenodd"
             />
           </svg>
-          <div
-            className={
-              path === "/setting" ? "text-white text-sm " : "text-black text-sm"
-            }>
+          <div className={path === "/setting" ? "text-white text-sm " : "text-black text-sm"}>
             唔好按
           </div>
         </Link>
+        <div className="flex flex-col items-center mt-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8 text-green-800">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+            />
+          </svg>
+          <div className="text-sm text-black" onClick={handleClearLocalStorage}>
+            清除存储
+          </div>
+        </div>
       </div>
       {/* <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
         <Link

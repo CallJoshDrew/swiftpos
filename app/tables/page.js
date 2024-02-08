@@ -2,14 +2,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAtom } from 'jotai';
 import { ordersAtom } from "../components/atoms/ordersAtom";
+import { tablesAtom } from "../components/atoms/tablesAtom";
+import { fetchTablesAtom } from "../components/atoms/tablesAtom";
+import { tableOrderCountAtom } from "../components/atoms/tableOrderCount";
 
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
-import OrderDetails from "../OrderDetails/page";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CheckOutModal from "../components/modal/checkOutModal";
 import CancelModal from "../components/modal/cancelModal";
+import OrderDetails from "../components/new/orderDetails";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -17,10 +20,13 @@ export default function Tables({ menu }) {
   const [showEditControls, setShowEditControls] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const [tables, setTables] = useState([]);
   const [tableNumber, setTableNumber] = useState(null);
-
+  
+  const [, fetchTables] = useAtom(fetchTablesAtom);
+  const [tables, setTables] = useAtom(tablesAtom);
   const [orders, setOrders] = useAtom(ordersAtom);
+  const [orderCounter, setOrderCounter] = useAtom(tableOrderCountAtom);
+
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
@@ -46,7 +52,7 @@ export default function Tables({ menu }) {
     remarks: "No Remarks",
   });
 
-  const [orderCounter, setOrderCounter] = useState(1);
+ 
 
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
@@ -55,9 +61,8 @@ export default function Tables({ menu }) {
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch("/api/tableNames")
-      .then((response) => response.json())
-      .then((data) => setTables(data));
+    fetchTables();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update the order counter when the date changes
@@ -68,7 +73,7 @@ export default function Tables({ menu }) {
       setOrderCounter(1);
       setCurrentDate(today);
     }
-  }, [currentDate]);
+  }, [currentDate, setOrderCounter]);
 
   const findOrder = (orderNumber) => {
     if (Array.isArray(orders)) {
@@ -135,6 +140,7 @@ export default function Tables({ menu }) {
       setTempCartItems(existingOrder.items);
       // have to set to true evertime and then use useEffect to set it false.
       setShowEditBtn(true);
+      setShowEditControls(false);
       //   setRemarks((prevRemarks) => selectedOrder.remarks);
     } else {
       generatedOrderID(tables[tableIndex].name);
@@ -235,11 +241,8 @@ export default function Tables({ menu }) {
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              setOrderCounter={setOrderCounter}
               selectedOrder={selectedOrder}
               setSelectedOrder={setSelectedOrder}
-              tables={tables}
-              setTables={setTables}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
@@ -293,9 +296,6 @@ export default function Tables({ menu }) {
         <OrderDetails
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
-          tables={tables}
-          setTables={setTables}
-          showMenu={showMenu}
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}
@@ -327,8 +327,6 @@ export default function Tables({ menu }) {
         tempCartItems={tempCartItems}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
-        setTables={setTables}
-        setOrderCounter={setOrderCounter}
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
         remarks={remarks}
@@ -341,7 +339,6 @@ export default function Tables({ menu }) {
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         setShowEditBtn={setShowEditBtn}
-        setTables={setTables}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}
@@ -349,7 +346,6 @@ export default function Tables({ menu }) {
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
         setTempCartItems={setTempCartItems}
-        setTables={setTables}
       />
       <CancelModal
         isCancelModalOpen={isCancelModalOpen}

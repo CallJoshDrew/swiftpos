@@ -1,4 +1,8 @@
 import React from "react";
+import { useAtom } from 'jotai';
+import { tablesAtom } from "../atoms/tablesAtom";
+import { tableOrderCountAtom } from "../atoms/tableOrderCount";
+import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 
 function ConfirmCloseModal({
   isConfirmCloseModal,
@@ -9,30 +13,38 @@ function ConfirmCloseModal({
   tempCartItems,
   selectedOrder,
   setSelectedOrder,
-  setTables,
-  setOrderCounter,
   setShowRemarksBtn,
   setShowRemarksArea,
   remarks,
   setRemarks,
   tempRemarks,
 }) {
-  const { status, orderNumber } = selectedOrder;
-
+  const { status, orderNumber, orderType } = selectedOrder;
+  const [, setTables] = useAtom(tablesAtom);
+  function useOrderCounter(orderType) {
+    const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
+    const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
+  
+    const orderCounter = orderType === 'Dine-In' ? tableOrderCounter : takeAwayOrderCounter;
+    const setOrderCounter = orderType === 'Dine-In' ? setTableOrderCounter : setTakeAwayOrderCounter;
+  
+    return [orderCounter, setOrderCounter];
+  }
+  const [, setOrderCounter] = useOrderCounter(orderType);
   const handleConfirmClose = () => {
     if (status === "Status") {
-      if (setTables) {
-      setTables((prevTables) => {
-        return prevTables.map((table) => {
-          if (table.orderNumber === orderNumber) {
-            const { orderNumber, occupied, ...rest } = table;
-            return rest;
-          } else {
-            return table;
-          }
+      if (orderType === "Dine-In") {
+        setTables((prevTables) => {
+          return prevTables.map((table) => {
+            if (table.orderNumber === orderNumber) {
+              const { orderNumber, occupied, ...rest } = table;
+              return rest;
+            } else {
+              return table;
+            }
+          });
         });
-      });
-    }
+      }
       setSelectedOrder((prevSelectedOrder) => {
         return {
           ...prevSelectedOrder,
@@ -40,7 +52,8 @@ function ConfirmCloseModal({
           orderNumber: "Order Number",
           items: [],
           remarks: "No Remarks",
-      }});
+        };
+      });
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);

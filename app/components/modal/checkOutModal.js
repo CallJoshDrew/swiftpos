@@ -1,7 +1,8 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
+import { tablesAtom } from "../atoms/tablesAtom";
 
 function CheckOutModal({
   isCheckOutModalOpen,
@@ -9,8 +10,9 @@ function CheckOutModal({
   selectedOrder,
   setSelectedOrder,
   setTempCartItems,
-  setTables = () => {}, // default value for setTables
 }) {
+  const [tables, setTables] = useAtom(tablesAtom);
+  const { orderNumber, orderType } = selectedOrder;
   const [orders, setOrders] = useAtom(ordersAtom);
   // Define a function to close the checkout modal
   const handleModalClose = () => {
@@ -44,7 +46,7 @@ function CheckOutModal({
     setTempCartItems([]);
     setOrders((prevOrders) => {
       return prevOrders.map((order) => {
-        if (order.orderNumber === selectedOrder.orderNumber) {
+        if (order.orderNumber === orderNumber) {
           return {
             ...order,
             status: "Completed",
@@ -62,19 +64,18 @@ function CheckOutModal({
         checkOut: `${timeString}, ${dateString}`,
       };
     });
-    setTables((prevTables) => {
-      return prevTables.map((table) => {
-        if (table.orderNumber === selectedOrder.orderNumber) {
-          return {
-            ...table,
-            orderNumber: "",
-            occupied: false,
-          };
-        } else {
-          return table;
-        }
+    if (orderType === "Dine-In") {
+      setTables((prevTables) => {
+        return prevTables.map((table) => {
+          if (table.orderNumber === orderNumber) {
+            const { orderNumber, occupied, ...rest } = table;
+            return rest;
+          } else {
+            return table;
+          }
+        });
       });
-    });
+    }
     toast.success("Successfully Check Out!", {
       duration: 1000,
       position: "top-center",

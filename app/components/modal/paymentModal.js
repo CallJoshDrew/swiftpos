@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 
 function PaymentModal({
@@ -10,7 +10,6 @@ function PaymentModal({
   selectedOrder,
   setSelectedOrder,
   setShowEditBtn,
-  setTables,
 }) {
   const [orders, setOrders] = useAtom(ordersAtom);
   // Initialize state variables for payment method, amount received, amount change, and input value
@@ -48,36 +47,33 @@ function PaymentModal({
 
   const handlePaymentStatus = (newAmountReceived, newAmountChange) => {
     const { timeString, dateString } = getFormattedDateAndTime();
+    let statusType;
+    if (selectedOrder?.orderType === "Dine-In") {
+      statusType = "Paid";
+    } else if (selectedOrder?.orderType === "TakeAway") {
+      statusType = "Completed";
+    }
     setOrders((prevOrders) => {
-        return prevOrders.map((order) => {
-          if (order.orderNumber === selectedOrder.orderNumber) {
-            return {
-              ...order,
-              status: "Paid",
-              paymentMethod,
-              amountReceived: newAmountReceived,
-              amountChange: newAmountChange,
-              paymentTime: `${timeString}, ${dateString}`,
-            };
-          } else {
-            return order;
-          }
-        });
+      return prevOrders.map((order) => {
+        if (order.orderNumber === selectedOrder.orderNumber) {
+          return {
+            ...order,
+            status: statusType,
+            paymentMethod,
+            amountReceived: newAmountReceived,
+            amountChange: newAmountChange,
+            paymentTime: `${timeString}, ${dateString}`,
+          };
+        } else {
+          return order;
+        }
       });
-
-    //   // Update the tables state
-    //   setTables((prevTables) =>
-    //     prevTables.map((table) =>
-    //       table.orderNumber === selectedOrder.orderNumber
-    //         ? { ...table, status: "Paid" } // Update the table's status
-    //         : table
-    //     )
-    //   );
+    });
 
     setSelectedOrder((prevSelectedOrder) => {
       const newOrder = {
         ...prevSelectedOrder,
-        status: "Paid",
+        status: statusType,
         paymentMethod,
         amountReceived: newAmountReceived,
         amountChange: newAmountChange,

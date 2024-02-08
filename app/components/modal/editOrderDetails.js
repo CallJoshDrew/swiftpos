@@ -162,7 +162,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
               Change Status
             </button>
             <button
-              className="text-sm text-white bg-red-600 px-4 py-2 rounded-lg"
+              className="text-sm text-white bg-red-700 px-4 py-2 rounded-lg"
               onClick={() => {
                 setEditOrderModalOpen(false);
               }}>
@@ -187,19 +187,19 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
                 <tr className="bg-white text-gray-600 text-center">
                   <td
                     className={`text-sm border py-2 font-semibold ${
-                      selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                      selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                     }`}>
                     {totalItems}
                   </td>
                   <td
                     className={`text-sm border py-2 font-semibold ${
-                      selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                      selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                     }`}>
                     {totalQuantity}
                   </td>
                   <td
                     className={`text-sm border py-2 font-semibold ${
-                      selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                      selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                     }`}>
                     {selectedOrder?.paymentMethod ? selectedOrder.paymentMethod : "None"}
                   </td>
@@ -212,7 +212,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
               <div className="text-gray-600 text-md">Subtotal</div>
               <div
                 className={`text-gray-600 text-md ${
-                  selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                  selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                 }`}>
                 {selectedOrder?.subTotal?.toFixed(2)}
               </div>
@@ -221,7 +221,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
               <div className="text-gray-600 text-md">Service Charge</div>
               <div
                 className={`text-gray-600 text-md ${
-                  selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                  selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                 }`}>
                 {selectedOrder?.serviceCharge?.toFixed(2)}
               </div>
@@ -231,7 +231,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
                 <div className="text-gray-600 text-md">Amount Received</div>
                 <div
                   className={`text-gray-600 text-md ${
-                    selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                    selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                   }`}>
                   {selectedOrder?.amountReceived.toFixed(2)}
                 </div>
@@ -242,7 +242,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
                 <div className="text-gray-600 text-md">Change</div>
                 <div
                   className={`text-gray-600 text-md ${
-                    selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                    selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                   }`}>
                   {selectedOrder?.amountChange.toFixed(2)}
                 </div>
@@ -253,7 +253,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
               <div className="text-gray-600 text-base font-bold">Total Sales</div>
               <div
                 className={`text-gray-600 text-base font-bold ${
-                  selectedOrder?.status === "Cancelled" ? "line-through text-red-600" : ""
+                  selectedOrder?.status === "Cancelled" ? "line-through text-red-700" : ""
                 }`}>
                 RM {selectedOrder?.totalPrice?.toFixed(2)}
               </div>
@@ -261,7 +261,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
           </div>
           <div
           className={`w-full mb-4 mt-2 rounded-md p-2 text-sm font-medium text-center ${
-            selectedOrder?.status === "Cancelled" ? "text-red-600" : "text-green-800"
+            selectedOrder?.status === "Cancelled" ? "text-red-700" : "text-green-800"
           }`}>
             {orderStatus}
           </div>

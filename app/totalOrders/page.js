@@ -42,6 +42,7 @@ export default function Receipts() {
                 <th className="px-4 py-4 border-b font-light">Order Time</th>
                 <th className="px-4 py-4 border-b font-light">Qty</th>
                 <th className="px-4 py-4 border-b font-light">Status</th>
+                <th className="px-4 py-4 border-b font-light">Payment</th>
                 <th className="px-4 py-4 border-b font-light">Sales (RM)</th>
                 <th className="px-4 py-4 border-b font-light">Details</th>
               </tr>
@@ -66,15 +67,19 @@ export default function Receipts() {
                     </td>
                     <td
                       className={`border px-4 py-2 rounded-md text-sm ${
-                        order.status === "Completed" || order.status === "Paid"
+                        order.status === "Completed"
                           ? "text-green-800"
                           : order.status === "Cancelled"
                           ? "text-red-700"
-                          : order.status === "Placed Order"
-                          ? "text-yellow-500"
                           : ""
                       }`}>
                       {order.status}
+                    </td>
+                    <td
+                      className={`border px-4 py-2 ${
+                        order.status === "Cancelled" ? "line-through" : ""
+                      }`}>
+                      {(order.paymentMethod)? order.paymentMethod:"None"}
                     </td>
                     <td
                       className={`border px-4 py-2 ${
