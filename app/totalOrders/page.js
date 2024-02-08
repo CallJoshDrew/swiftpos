@@ -85,7 +85,7 @@ export default function Receipts() {
                     <td
                       className="border px-4 py-2 text-green-800 underline"
                       onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
-                      Edit
+                      Change
                     </td>
                   </tr>
                 ))}
@@ -94,7 +94,7 @@ export default function Receipts() {
         </div>
         <EditOrderDetails
           isEditOrderModalOpen={isEditOrderModalOpen}
-          setEsetEditOrderModalOpen={setEditOrderModalOpen}
+          setEditOrderModalOpen={setEditOrderModalOpen}
           selectedOrder={selectedOrder}
         />
         </div>
