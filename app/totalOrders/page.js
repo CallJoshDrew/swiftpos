@@ -3,22 +3,25 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import EditOrderDetails from "../components/modal/editOrderDetails";
+import CalendarModal from "../components/modal/calendarModal";
 
-export default function Receipts() {
+export default function TotalOrders() {
   const [orders, setOrders] = useAtom(ordersAtom);
   const [selectedOrder, setSelectedOrder] = useState({});
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [isEditOrderModalOpen, setEditOrderModalOpen] = useState(false);
+  const [isCalendarModalOpen, setCalendarModalOpen] = useState(false);
 
   const handleCalendarBtn = () => {
-    console.log("Clicked Calendar Btn");
+    setCalendarModalOpen(true);
   };
 
   const handleSelectedOrderBtn = (orderNumber) => {
     const selectedOrder = orders.find((order) => order.orderNumber === orderNumber);
-    const itemsWithOrderID = selectedOrder.items.map((item) => ({
-      ...item,
-    }));
+    // const itemsWithOrderID = selectedOrder.items.map((item) => ({
+    //   ...item,
+    // }));
     setSelectedOrder(selectedOrder);
     setEditOrderModalOpen(true);
   };
@@ -49,7 +52,12 @@ export default function Receipts() {
             </thead>
             <tbody>
               {orders
-                .filter((order) => order.status === "Completed" || order.status === "Cancelled")
+                .filter(
+                  (order) =>
+                    (order.status === "Completed" || order.status === "Cancelled") &&
+                    new Date(order.orderDate).toDateString() === selectedDate.toDateString()
+                    // toDateString() = Fri Feb 09 2024, without it = Fri Feb 09 2024 20:18:19 GMT+0800 (Malaysia Time)
+                )
                 .map((order, index) => (
                   <tr
                     key={index}
@@ -113,6 +121,12 @@ export default function Receipts() {
           isEditOrderModalOpen={isEditOrderModalOpen}
           setEditOrderModalOpen={setEditOrderModalOpen}
           selectedOrder={selectedOrder}
+        />
+        <CalendarModal
+          isCalendarModalOpen={isCalendarModalOpen}
+          setCalendarModalOpen={setCalendarModalOpen}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
       </div>
     </>
