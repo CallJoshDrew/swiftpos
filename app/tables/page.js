@@ -68,12 +68,22 @@ export default function Tables({ menu }) {
   // Update the order counter when the date changes
   // It only runs when the parent or this component render, unless setCurrentDate is used in another component.
   useEffect(() => {
-    const today = new Date().toDateString();
-    if (today !== currentDate) {
-      setOrderCounter(1);
-      setCurrentDate(today);
-    }
+    // Define the function that checks the date and updates state
+    const checkDate = () => {
+      const today = new Date().toDateString();
+      if (today !== currentDate) {
+        setOrderCounter(1);
+        setCurrentDate(today);
+      }
+    };
+    // Run the check immediately when the component mounts
+    checkDate();
+    // Then set up the interval to run the check every hour
+    const interval = setInterval(checkDate, 3600000);
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
+  
 
   const findOrder = (orderNumber) => {
     if (Array.isArray(orders)) {
@@ -205,7 +215,10 @@ export default function Tables({ menu }) {
       return prevTables.map((table) => {
         if (table.orderNumber === orderNumber) {
           const { orderNumber, occupied, ...rest } = table;
+          // extracting the orderNumber and occupied properties from the table object and assigning them to 
+          // new variables with the same names
           return rest;
+          // returns a new object rest that doesn’t include the orderNumber and occupied properties.
         } else {
           return table;
         }

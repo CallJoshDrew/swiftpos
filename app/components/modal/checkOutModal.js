@@ -12,7 +12,6 @@ function CheckOutModal({
   setTempCartItems,
 }) {
   const [tables, setTables] = useAtom(tablesAtom);
-  const { orderNumber, orderType } = selectedOrder;
   const [orders, setOrders] = useAtom(ordersAtom);
   // Define a function to close the checkout modal
   const handleModalClose = () => {
@@ -46,7 +45,7 @@ function CheckOutModal({
     setTempCartItems([]);
     setOrders((prevOrders) => {
       return prevOrders.map((order) => {
-        if (order.orderNumber === orderNumber) {
+        if (order.orderNumber === selectedOrder?.orderNumber) {
           return {
             ...order,
             status: "Completed",
@@ -64,10 +63,10 @@ function CheckOutModal({
         checkOut: `${timeString}, ${dateString}`,
       };
     });
-    if (orderType === "Dine-In") {
+    if (selectedOrder?.orderType === "Dine-In") {
       setTables((prevTables) => {
         return prevTables.map((table) => {
-          if (table.orderNumber === orderNumber) {
+          if (table.orderNumber === selectedOrder?.orderNumber) {
             const { orderNumber, occupied, ...rest } = table;
             return rest;
           } else {

@@ -1,10 +1,8 @@
 "use client";
+import React from "react";
 import Image from "next/image";
-import React, { useEffect } from "react";
-import toast from "react-hot-toast";
-import { useAtom } from "jotai";
 
-function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder }) {
+function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder, setChangeStatusModalOpen }) {
   console.log(selectedOrder);
   const totalItems = selectedOrder?.items?.length;
   const totalQuantity = selectedOrder?.items?.reduce(
@@ -20,11 +18,11 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
     orderStatus = "STATUS: COMPLETED";
   } else if (selectedOrder?.status === "Cancelled") {
     orderStatus = "STATUS: CANCELLED";
-  } 
+  }
   return (
     <>
-      <div className="fixed inset-0 bg-gray-500 opacity-80 z-40"></div>
-      <div className="fixed inset-0 flex items-center justify-center z-50 ">
+      <div className="fixed inset-0 bg-gray-500 opacity-80 z-20"></div>
+      <div className="fixed inset-0 flex items-center justify-center z-30 ">
         <div className="bg-white p-8 rounded-l-lg shadow-lg w-4/6 h-full mt-10 ml-4 overflow-y-scroll">
           <div className="rounded-lg flex my-2 justify-between items-center">
             <div className="flex justify-between items-center w-full">
@@ -153,14 +151,16 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
           </div>
         </div>
         <div className="w-2/6 h-full rounded-r-lg shadow-lg bg-gray-100 mt-10 mr-4 pt-6 px-4">
-          <div className="flex justify-between">
-          <button
-              className="text-sm text-white bg-green-800 px-4 py-2 rounded-lg"
-              onClick={() => {
-                setEditOrderModalOpen(false);
-              }}>
-              Change Status
-            </button>
+          <div className={`flex ${selectedOrder?.status === "Cancelled" ? "justify-between" : "justify-end"}`}>
+          {selectedOrder?.status === "Cancelled" && (
+              <button
+                className="text-sm text-white bg-green-800 px-4 py-2 rounded-lg"
+                onClick={() => {
+                  setChangeStatusModalOpen(true);
+                }}>
+                Change Status
+              </button>
+            )}
             <button
               className="text-sm text-white bg-red-700 px-4 py-2 rounded-lg"
               onClick={() => {
@@ -260,9 +260,9 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
             </div>
           </div>
           <div
-          className={`w-full mb-4 mt-2 rounded-md p-2 text-sm font-medium text-center ${
-            selectedOrder?.status === "Cancelled" ? "text-red-700" : "text-green-800"
-          }`}>
+            className={`w-full mb-4 mt-2 rounded-md p-2 text-sm font-medium text-center ${
+              selectedOrder?.status === "Cancelled" ? "text-red-700" : "text-green-800"
+            }`}>
             {orderStatus}
           </div>
         </div>

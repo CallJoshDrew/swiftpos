@@ -56,11 +56,20 @@ export default function TakeAwayOverview() {
   const [isCheckOutModalOpen, setCheckOutModalOpen] = useState(false);
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
   useEffect(() => {
-    const today = new Date().toDateString();
-    if (today !== currentDate) {
-      setOrderCounter(1);
-      setCurrentDate(today);
-    }
+    // Define the function that checks the date and updates state
+    const checkDate = () => {
+      const today = new Date().toDateString();
+      if (today !== currentDate) {
+        setOrderCounter(1);
+        setCurrentDate(today);
+      }
+    };
+    // Run the check immediately when the component mounts
+    checkDate();
+    // Then set up the interval to run the check every hour
+    const interval = setInterval(checkDate, 3600000);
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
 
   const handleAddNewOrderBtn = () => {

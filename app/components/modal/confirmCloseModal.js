@@ -19,7 +19,6 @@ function ConfirmCloseModal({
   setRemarks,
   tempRemarks,
 }) {
-  const { status, orderNumber, orderType } = selectedOrder;
   const [, setTables] = useAtom(tablesAtom);
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
@@ -30,13 +29,13 @@ function ConfirmCloseModal({
   
     return [orderCounter, setOrderCounter];
   }
-  const [, setOrderCounter] = useOrderCounter(orderType);
+  const [, setOrderCounter] = useOrderCounter(selectedOrder?.orderType);
   const handleConfirmClose = () => {
-    if (status === "Status") {
-      if (orderType === "Dine-In") {
+    if (selectedOrder?.status === "Status") {
+      if (selectedOrder?.orderType === "Dine-In") {
         setTables((prevTables) => {
           return prevTables.map((table) => {
-            if (table.orderNumber === orderNumber) {
+            if (table.orderNumber === selectedOrder?.orderNumber) {
               const { orderNumber, occupied, ...rest } = table;
               return rest;
             } else {
@@ -57,7 +56,7 @@ function ConfirmCloseModal({
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
-    } else if (status === "Placed Order") {
+    } else if (selectedOrder?.status === "Placed Order") {
       setShowEditBtn(true);
       console.log("Set to true from ConfirmCloseModal");
       // if (remarks ==="") {
