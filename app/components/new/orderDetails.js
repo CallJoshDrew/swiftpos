@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 
 function OrderDetails({
@@ -427,7 +427,7 @@ function OrderDetails({
   }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (
     <div className="pb-6 w-2/6 flex-auto flex flex-col relative z-20 shadow-md">
-        {/* pb-60 is the setting of the bottom */}
+      {/* pb-60 is the setting of the bottom */}
       <div className="fixed h-screen w-2/6 overflow-y-scroll pt-4 pb-64 px-6 space-y-4">
         <div className="rounded-lg flex my-2 justify-between items-center">
           <div className="flex justify-between items-center w-full">
@@ -516,6 +516,8 @@ function OrderDetails({
             }`}>
             {selectedOrder?.status === "Placed Order"
               ? `${selectedOrder?.orderTime}, ${selectedOrder?.orderDate}`
+              : selectedOrder?.status === "Cancelled"
+              ? `${selectedOrder?.cancellationTime}, ${selectedOrder?.orderDate}`
               : selectedOrder?.paymentTime}
           </div>
         </div>
@@ -722,45 +724,43 @@ function OrderDetails({
         </div>
       </div>
       <div className="fixed w-2/6 bottom-0 overflow-y-scroll bg-gray-100 mt-8 pt-3 px-6">
-          <div className="bg-gray-100 py-2 rounded-md">
-            <div className="flex justify-between items-center">
-              <div className="text-gray-600 text-sm">Subtotal</div>
-              <div className="text-gray-600 text-sm">{subTotal.toFixed(2)}</div>
-            </div>
-            <div className="flex justify-between items-center">
-              <div className="text-gray-600 text-sm">Service Charge</div>
-              <div className="text-gray-600 text-sm">{serviceCharge.toFixed(2)}</div>
-            </div>
-            {selectedOrder?.amountReceived && (
-              <div className="flex justify-between items-center">
-                <div className="text-gray-600 text-sm">Amount Received</div>
-                <div className="text-gray-600 text-sm">
-                  {selectedOrder?.amountReceived.toFixed(2)}
-                </div>
-              </div>
-            )}
-            {selectedOrder?.amountChange !== undefined && selectedOrder?.amountChange !== null && (
-              <div className="flex justify-between items-center">
-                <div className="text-gray-600 text-sm">Change</div>
-                <div className="text-gray-600 text-sm">
-                  {selectedOrder?.amountChange.toFixed(2)}
-                </div>
-              </div>
-            )}
-            <hr className="h-px my-3 bg-black border-dashed" />
-            <div className="flex justify-between items-center">
-              <div className="text-gray-600 text-base font-bold">Total Sales</div>
-              <div className="text-gray-600 text-base font-bold">RM {totalPrice.toFixed(2)}</div>
-            </div>
+        <div className="bg-gray-100 py-2 rounded-md">
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Subtotal</div>
+            <div className="text-gray-600 text-sm">{subTotal.toFixed(2)}</div>
           </div>
-          <button
-            className={`${orderStatusCSS} text-white w-full mb-4 mt-2 rounded-md p-2 text-sm font-medium`}
-            onClick={handleMethod !== "Disabled" ? handleMethod : undefined}
-            disabled={handleMethod === "Disabled"}>
-            {/* The disabled attribute is true if handleMethod is "Disabled" */}
-            {orderStatus}
-          </button>
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-sm">Service Charge</div>
+            <div className="text-gray-600 text-sm">{serviceCharge.toFixed(2)}</div>
+          </div>
+          {selectedOrder?.amountReceived && (
+            <div className="flex justify-between items-center">
+              <div className="text-gray-600 text-sm">Amount Received</div>
+              <div className="text-gray-600 text-sm">
+                {selectedOrder?.amountReceived.toFixed(2)}
+              </div>
+            </div>
+          )}
+          {selectedOrder?.amountChange !== undefined && selectedOrder?.amountChange !== null && (
+            <div className="flex justify-between items-center">
+              <div className="text-gray-600 text-sm">Change</div>
+              <div className="text-gray-600 text-sm">{selectedOrder?.amountChange.toFixed(2)}</div>
+            </div>
+          )}
+          <hr className="h-px my-3 bg-black border-dashed" />
+          <div className="flex justify-between items-center">
+            <div className="text-gray-600 text-base font-bold">Total Sales</div>
+            <div className="text-gray-600 text-base font-bold">RM {totalPrice.toFixed(2)}</div>
+          </div>
         </div>
+        <button
+          className={`${orderStatusCSS} text-white w-full mb-4 mt-2 rounded-md p-2 text-sm font-medium`}
+          onClick={handleMethod !== "Disabled" ? handleMethod : undefined}
+          disabled={handleMethod === "Disabled"}>
+          {/* The disabled attribute is true if handleMethod is "Disabled" */}
+          {orderStatus}
+        </button>
+      </div>
     </div>
   );
 }

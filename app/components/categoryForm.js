@@ -24,7 +24,7 @@ export default function Setting() {
       onSubmit={handleSubmit}
       name="NewCategory"
       className="flex flex-col space-y-2">
-      <div className="text-md px-1">Add New Category</div>
+      <div className="text-md px-1 text-gray-700">Add New Category</div>
       <div className="flex space-x-2">
         <input
           type="text"
