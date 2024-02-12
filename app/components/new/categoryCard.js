@@ -36,7 +36,6 @@ function CategoryCard({
   tempRemarks,
 }) {
 
-  const { status, orderNumber, orderType } = selectedOrder;
   // Why need coma? when you destructure an array, you can choose which elements to assign to variables. 
   // If you want to skip certain elements, you can leave their places empty.
   const [, setTables] = useAtom(tablesAtom);
@@ -50,7 +49,7 @@ function CategoryCard({
   
     return [orderCounter, setOrderCounter];
   }
-  const [, setOrderCounter] = useOrderCounter(orderType);
+  const [, setOrderCounter] = useOrderCounter(selectedOrder?.orderType);
   // Sort the items in tempCartItems and selectedOrder.items by their id
   const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
   const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
@@ -80,10 +79,10 @@ function CategoryCard({
   const handleCloseMenu = () => {
     // close if it is the same items and status is "Placed Order"
     if (
-      status === "Placed Order" && (remarks !== tempRemarks)) {
+      selectedOrder?.status === "Placed Order" && (remarks !== tempRemarks)) {
         setIsConfirmCloseModal(true);
     } else if (
-      status === "Placed Order" &&
+      selectedOrder?.status === "Placed Order" &&
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
       setShowMenu(false);
       setShowEditBtn(true);
@@ -97,21 +96,21 @@ function CategoryCard({
         }));
       }
     } else if (
-      status === "Placed Order" &&
+      selectedOrder?.status === "Placed Order" &&
       !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
       setIsConfirmCloseModal(true);
       console.log("items are not the same, but remarks the same");
     } else if (
-      status === "Placed Order" &&
+      selectedOrder?.status === "Placed Order" &&
       !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks !== tempRemarks)) {
       setIsConfirmCloseModal(true);
       console.log("items and remarks are not the same");
-    } else if (status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+    } else if (selectedOrder?.status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-        if (orderType === "Dine-In") {
+        if (selectedOrder?.orderType === "Dine-In") {
           setTables((prevTables) => {
             return prevTables.map((table) => {
-              if (table.orderNumber === orderNumber) {
+              if (table.orderNumber === selectedOrder?.orderNumber) {
                 const { orderNumber, occupied, ...rest } = table;
                 return rest;
               } else {
@@ -147,7 +146,7 @@ function CategoryCard({
       setShowEditControls(false);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
-    } else if (status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+    } else if (selectedOrder?.status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
       setIsConfirmCloseModal(true);
     }
   };

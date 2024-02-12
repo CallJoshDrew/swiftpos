@@ -3,20 +3,24 @@ import { Chart as ChartJS } from "chart.js/auto";
 
 export default function MonthChart({ UserData }) {
   const chartData = {
-    labels: UserData.map((data) => data.month),
+    labels: UserData?.map((data) => data.month),
     datasets: [
       {
         label: "Total Sales",
-        data: UserData.map((data) => data.sales),
+        data: UserData?.map((data) => data.sales),
         backgroundColor: ["rgba(29,163,74)"],
         borderColor: "black",
-        borderWidth: 1,
+        borderRadius: 4,
+        borderWidth: 2,
+        width: 200,
       },
     ],
   };
   return (
-    <div className="w-5/6">
-      <Bar title="month" data={chartData} />
+    <div className="w-full h-[400px] p-6 shadow-sm bg-white rounded-md">
+      <div style={{ width: '100%', height: '100%' }}>
+        <Bar title="month" data={chartData} options={{ maintainAspectRatio: false }} />
+      </div>
     </div>
   );
 }
