@@ -1,33 +1,118 @@
 "use client";
 import { useState } from "react";
 
-import { UserData } from "../data/userData";
-import Daychart from "../components/dayChart";
-import WeekChart from "../components/weekChart";
-import MonthChart from "../components/monthChart";
+import { SalesData } from "../data/salesData";
+import Daychart from "../components/chart/dayChart";
+import WeekChart from "../components/chart/weekChart";
+import MonthChart from "../components/chart/monthChart";
 import Image from "next/image";
 
 export default function SalesReport() {
   const [selected, setSelected] = useState("today");
+  const [salesToday, setSalesToday] = useState();
+  const [salesThisWeek, setSalesThisWeek] = useState();
+  const [salesThisMonth, setSalesThisMonth] = useState();
+
+  // Map the month number to the month name
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1; // This is a number
+  const currentYear = String(today.getFullYear()); // Get the current year as a string
+  const currentMonthName = monthNames[today.getMonth()]; // This is a string
+  const todayString = `${today.getMonth() + 1}/${today.getDate()}/${String(
+    today.getFullYear()
+  ).slice(2)}`;
+  // console.log(todayString);
+  // Find the sales data for today
+  const todaySalesData = SalesData[currentYear][currentMonthName].find(
+    (data) => data.date === todayString
+  );
+  // console.log(todaySalesData);
+  let totalSalesToday = 0;
+  if (todaySalesData) {
+    todaySalesData.orders.forEach((order) => {
+      if (order.status === "Completed") {
+        totalSalesToday += order.totalPrice;
+      }
+    });
+  }
+
+  // Weekly sales
+  let totalSalesWeek = 0;
+  const dayOfWeek = today.getDay(); // 0 (Sunday) - 6 (Saturday)
+  const startOfWeek = new Date(today); // copy of const today = New Date(),
+  startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Last Monday which is two days ago.
+  // console.log(startOfWeek) which is 12 Feb 2024 Monday as the first day of the week which we set.
+  for (let i = 0; i < dayOfWeek - 1; i++) {
+    const weekDay = new Date(startOfWeek);
+    weekDay.setDate(startOfWeek.getDate() + i);
+    // Only count the sales if it's within the same month
+    if (weekDay.getMonth() + 1 === currentMonth) {
+      const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
+        weekDay.getFullYear()
+      ).slice(2)}`;
+      const weekDaySalesData = SalesData[currentYear][currentMonthName].find(
+        (data) => data.date === weekDayString
+      );
+      if (weekDaySalesData) {
+        weekDaySalesData.orders.forEach((order) => {
+          if (order.status === "Completed") {
+            totalSalesWeek += order.totalPrice;
+          }
+        });
+      }
+    }
+  }
+
+  // Monthly sales
+  let totalSalesMonth = 0;
+  SalesData[currentYear][currentMonthName].forEach((day) => {
+    // Only count the sales if it's within the current month
+    if (day.date.startsWith(String(currentMonth))) {
+      day.orders.forEach((order) => {
+        if (order.status === "Completed") {
+          totalSalesMonth += order.totalPrice;
+        }
+      });
+    }
+  });
 
   return (
-    <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-10 px-6">
+    <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-8 px-6">
       <div className="flex items-center py-2 space-x-4">
-        <div className="flex flex-col py-2 px-4 bg-white rounded-md flex-grow">
+        {/* <div className="flex flex-col py-2 px-4 bg-white rounded-md flex-grow">
           <div className="text-gray-500 text-sm">Avg.Sales/Day</div>
           <div className="text-md text-green-700">RM 2,888</div>
-        </div>
+        </div> */}
         <div className="flex flex-col py-2 px-4 bg-white rounded-md flex-grow">
           <div className="text-gray-500 text-sm">Today Sales</div>
-          <div className="text-md text-green-700">RM 3,888</div>
+          <div className="text-md text-green-700">
+            RM{" "}
+            {totalSalesToday.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
         </div>
         <div className="flex flex-col py-2 px-4 bg-white rounded-md flex-grow">
           <div className="text-gray-500 text-sm">This Week Sales</div>
-          <div className="text-md text-green-700">RM 29,888</div>
+          <div className="text-md text-green-700">
+            RM{" "}
+            {totalSalesWeek.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
         </div>
         <div className="flex flex-col py-2 px-4 bg-white rounded-md flex-grow">
           <div className="text-gray-500 text-sm">This Month Sales</div>
-          <div className="text-md text-green-700">RM 128,888</div>
+          <div className="text-md text-green-700">
+            RM{" "}
+            {totalSalesMonth.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
         </div>
       </div>
       <div className="bg-gray-100 text-black">
@@ -131,9 +216,15 @@ export default function SalesReport() {
           </div>
         </div>
         <div className="space-y-4">
-          {selected === "today" && <Daychart UserData={UserData.today} />}
-          {selected === "weekly" && <WeekChart UserData={UserData.weekly} />}
-          {selected === "monthly" && <MonthChart UserData={UserData.monthly} />}
+          {selected === "today" && (
+            <Daychart SalesData={SalesData} currentYear={currentYear} currentMonthName={currentMonthName} todayString={todayString} />
+          )}
+          {selected === "weekly" && (
+            <WeekChart SalesData={SalesData} currentYear={currentYear} currentMonthName={currentMonthName} startOfWeek={startOfWeek}/>
+          )}
+          {selected === "monthly" && (
+            <MonthChart SalesData={SalesData} currentYear={currentYear} monthNames={monthNames} />
+          )}
         </div>
       </div>
     </div>
