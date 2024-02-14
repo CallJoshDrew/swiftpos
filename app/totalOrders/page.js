@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
-import EditOrderDetails from "../components/modal/editOrderDetails";
+import EditOrderDetailsModal from "../components/modal/editOrderDetailsModal";
 import CalendarModal from "../components/modal/calendarModal";
 import ChangeStatusModal from "../components/modal/changeStatusModal";
 
@@ -120,7 +120,7 @@ export default function TotalOrders() {
           </table>
         </div>
         {isEditOrderModalOpen && (
-          <EditOrderDetails
+          <EditOrderDetailsModal
             isEditOrderModalOpen={isEditOrderModalOpen}
             setEditOrderModalOpen={setEditOrderModalOpen}
             selectedOrder={selectedOrder}

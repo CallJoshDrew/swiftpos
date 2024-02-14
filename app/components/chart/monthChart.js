@@ -38,7 +38,7 @@ const chartData = {
 };
 
   return (
-    <div className="w-full h-[400px] p-6 shadow-sm bg-white rounded-md">
+    <div className="w-full h-[450px] p-6 shadow-sm bg-white rounded-md">
       <div style={{ width: '100%', height: '100%' }}>
         <Bar title="month" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>

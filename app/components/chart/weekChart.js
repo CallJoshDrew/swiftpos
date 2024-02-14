@@ -50,7 +50,7 @@ export default function WeekChart({ SalesData, currentYear, currentMonthName, st
   };
 
   return (
-    <div className="w-full h-[400px] p-6 shadow-sm bg-white rounded-md">
+    <div className="w-full h-[450px] p-6 shadow-sm bg-white rounded-md">
       <div style={{ width: '100%', height: '100%' }}>
         <Bar title="week" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>

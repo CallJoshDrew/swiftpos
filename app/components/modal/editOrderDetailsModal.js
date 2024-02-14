@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 
-function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder, setChangeStatusModalOpen }) {
+function EditOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder, setChangeStatusModalOpen }) {
   console.log(selectedOrder);
   const totalItems = selectedOrder?.items?.length;
   const totalQuantity = selectedOrder?.items?.reduce(
@@ -271,7 +271,7 @@ function EditOrderDetails({ isEditOrderModalOpen, setEditOrderModalOpen, selecte
   );
 }
 
-export default React.memo(EditOrderDetails);
+export default React.memo(EditOrderDetailsModal);
 
 // showEditBtn
 // Status === "Placed Order" && payment !=="Paid"
