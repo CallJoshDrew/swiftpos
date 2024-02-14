@@ -13,8 +13,34 @@ export default function SalesReport() {
   const [salesThisWeek, setSalesThisWeek] = useState();
   const [salesThisMonth, setSalesThisMonth] = useState();
 
+  const getTopFiveText = () => {
+    switch (selected) {
+      case "today":
+        return "Today's Top 5";
+      case "weekly":
+        return "This Week's Top 5";
+      case "monthly":
+        return "This Month's Top 5";
+      default:
+        return "Today's Top 5";
+    }
+  };
+
   // Map the month number to the month name
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const today = new Date();
   const currentMonth = today.getMonth() + 1; // This is a number
   const currentYear = String(today.getFullYear()); // Get the current year as a string
@@ -22,12 +48,10 @@ export default function SalesReport() {
   const todayString = `${today.getMonth() + 1}/${today.getDate()}/${String(
     today.getFullYear()
   ).slice(2)}`;
-  // console.log(todayString);
   // Find the sales data for today
   const todaySalesData = SalesData[currentYear][currentMonthName].find(
     (data) => data.date === todayString
   );
-  // console.log(todaySalesData);
   let totalSalesToday = 0;
   if (todaySalesData) {
     todaySalesData.orders.forEach((order) => {
@@ -76,6 +100,139 @@ export default function SalesReport() {
       });
     }
   });
+
+
+  // Calculate Top Items List
+  // Function to get orders for today
+  function getTodayOrders() {
+    const todaySalesData = SalesData[currentYear][currentMonthName].find(
+      (data) => data.date === todayString
+    );
+    return todaySalesData ? todaySalesData.orders : [];
+  }
+
+  // Function to get orders for this week
+  function getWeekOrders() {
+    let weekOrders = [];
+
+    for (let i = 0; i < dayOfWeek - 1; i++) {
+      const weekDay = new Date(startOfWeek);
+      weekDay.setDate(startOfWeek.getDate() + i);
+
+      if (weekDay.getMonth() + 1 === currentMonth) {
+        const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
+          weekDay.getFullYear()
+        ).slice(2)}`;
+        const weekDaySalesData = SalesData[currentYear][currentMonthName].find(
+          (data) => data.date === weekDayString
+        );
+        if (weekDaySalesData) {
+          weekOrders = weekOrders.concat(weekDaySalesData.orders);
+        }
+      }
+    }
+
+    return weekOrders;
+  }
+
+  // Function to get orders for this month
+  function getMonthOrders() {
+    let monthOrders = [];
+
+    SalesData[currentYear][currentMonthName].forEach((day) => {
+      if (day.date.startsWith(String(currentMonth))) {
+        monthOrders = monthOrders.concat(day.orders);
+      }
+    });
+
+    return monthOrders;
+  }
+
+  // Function to calculate top 5 items for a given set of orders
+  function calculateTopItems(orders) {
+    let itemQuantityMap = {};
+    let itemPriceMap = {};
+    let itemImageMap = {};
+
+    orders.forEach((order) => {
+      // Only process the order if its status is "Completed"
+      if (order.status === "Completed") {
+        order.items.forEach((item) => {
+          if (itemQuantityMap[item.item.name]) {
+            itemQuantityMap[item.item.name] += item.quantity;
+            itemPriceMap[item.item.name] += item.quantity * item.item.price;
+          } else {
+            itemQuantityMap[item.item.name] = item.quantity;
+            itemPriceMap[item.item.name] = item.quantity * item.item.price;
+            itemImageMap[item.item.name] = item.item.image;
+          }
+        });
+      }
+    });
+
+    let itemQuantityPairs = Object.entries(itemQuantityMap);
+    itemQuantityPairs.sort((a, b) => b[1] - a[1]);
+
+    // Return top 5 items
+    return itemQuantityPairs.slice(0, 5).map((pair) => ({
+      name: pair[0],
+      quantity: pair[1],
+      totalPrice: itemPriceMap[pair[0]],
+      image: itemImageMap[pair[0]],
+    }));
+  }
+
+  // Calculate top 5 items for today, this week, and this month
+  const topTodayItems = calculateTopItems(getTodayOrders());
+  const topWeekItems = calculateTopItems(getWeekOrders());
+  const topMonthItems = calculateTopItems(getMonthOrders());
+
+  console.log(topTodayItems);
+  console.log(topWeekItems);
+  console.log(topMonthItems);
+
+  // Function to calculate all items for a given set of orders
+  function calculateAllItems(orders) {
+    let itemQuantityMap = {};
+    let itemPriceMap = {};
+    let itemImageMap = {};
+
+    orders.forEach((order) => {
+      // Only process the order if its status is "Completed"
+      if (order.status === "Completed") {
+        order.items.forEach((item) => {
+          if (itemQuantityMap[item.item.name]) {
+            itemQuantityMap[item.item.name] += item.quantity;
+            itemPriceMap[item.item.name] += item.quantity * item.item.price;
+          } else {
+            itemQuantityMap[item.item.name] = item.quantity;
+            itemPriceMap[item.item.name] = item.quantity * item.item.price;
+            itemImageMap[item.item.name] = item.item.image;
+          }
+        });
+      }
+    });
+
+    let itemQuantityPairs = Object.entries(itemQuantityMap);
+    itemQuantityPairs.sort((a, b) => b[1] - a[1]);
+
+    // Return all items
+    return itemQuantityPairs.map((pair) => ({
+      name: pair[0],
+      quantity: pair[1],
+      totalPrice: itemPriceMap[pair[0]],
+      image: itemImageMap[pair[0]],
+    }));
+  }
+
+  // Calculate all items for today, this week, and this month
+  const allTodayItems = calculateAllItems(getTodayOrders());
+  const allWeekItems = calculateAllItems(getWeekOrders());
+  const allMonthItems = calculateAllItems(getMonthOrders());
+
+  console.log(allTodayItems);
+  console.log(allWeekItems);
+  console.log(allMonthItems);
 
   return (
     <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-8 px-6">
@@ -140,7 +297,7 @@ export default function SalesReport() {
           </button>
         </div>
         <div className="flex space-x-2 text-black bg-white px-5 py-4 rounded-md items-center my-2">
-          <div className="text-lg text-black">This Week Top 5</div>
+          <div className="text-lg text-black">{getTopFiveText()}</div>
           <div className="flex flex-grow justify-end space-x-2">
             <div className="flex space-x-2 items-center justify-center py-2 px-3 border-solid border-gray-100 rounded-md border shadow-sm">
               <Image
@@ -217,10 +374,20 @@ export default function SalesReport() {
         </div>
         <div className="space-y-4">
           {selected === "today" && (
-            <Daychart SalesData={SalesData} currentYear={currentYear} currentMonthName={currentMonthName} todayString={todayString} />
+            <Daychart
+              SalesData={SalesData}
+              currentYear={currentYear}
+              currentMonthName={currentMonthName}
+              todayString={todayString}
+            />
           )}
           {selected === "weekly" && (
-            <WeekChart SalesData={SalesData} currentYear={currentYear} currentMonthName={currentMonthName} startOfWeek={startOfWeek}/>
+            <WeekChart
+              SalesData={SalesData}
+              currentYear={currentYear}
+              currentMonthName={currentMonthName}
+              startOfWeek={startOfWeek}
+            />
           )}
           {selected === "monthly" && (
             <MonthChart SalesData={SalesData} currentYear={currentYear} monthNames={monthNames} />
