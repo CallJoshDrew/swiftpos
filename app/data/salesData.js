@@ -74,6 +74,80 @@ export const SalesData = {
             paymentTime: "02:26 PM, Mon, Jan 1, 2024",
           },
         ],
+      },
+      {
+        date: "1/2/24",
+        orders: [
+          {
+            orderNumber: "#TableL18-0001",
+            tableName: "Table L18",
+            orderType: "Dine-In",
+            orderTime: "02:00 PM",
+            orderDate: "Tue, Jan 2, 2024",
+            status: "Completed",
+            items: [
+              {
+                item: {
+                  id: 22,
+                  name: "Nasi Ayam",
+                  category: "Dish",
+                  price: 7,
+                  image: "/nasiAyam.png",
+                },
+                quantity: 5,
+              },
+              {
+                item: {
+                  id: 44,
+                  name: "Lemon Teh",
+                  category: "Drinks",
+                  price: 2.5,
+                  image: "/pandan.png",
+                },
+                quantity: 6,
+              },
+            ],
+            subTotal: 50,
+            serviceCharge: 0,
+            totalPrice: 50,
+            quantity: 11,
+            paymentMethod: "Cash",
+            remarks: "No Remarks",
+            amountChange: 0,
+            amountReceived: 50,
+            paymentTime: "02:10 PM, Tue, Jan 2, 2024",
+          },
+          {
+            orderNumber: "#Table8-0002",
+            tableName: "Table 8",
+            orderType: "Dine-In",
+            orderTime: "02:18 PM",
+            orderDate: "Tue, Jan 2, 2024",
+            status: "Completed",
+            items: [
+              {
+                item: {
+                  id: 3,
+                  name: "HawFlakes",
+                  category: "Cakes",
+                  price: 4.2,
+                  image: "/hawFlakes.png",
+                },
+                quantity: 5,
+              },
+            ],
+
+            subTotal: 21,
+            serviceCharge: 0,
+            totalPrice: 21,
+            quantity: 5,
+            paymentMethod: "Cash",
+            remarks: "No Remarks",
+            amountChange: 0,
+            amountReceived: 21,
+            paymentTime: "02:26 PM, Tue, Jan 2, 2024",
+          },
+        ],
       }
     ],
     Feb: [

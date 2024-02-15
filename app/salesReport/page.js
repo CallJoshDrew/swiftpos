@@ -126,26 +126,21 @@ export default function SalesReport() {
   // Function to get orders for this week
   function getWeekOrders() {
     let weekOrders = [];
-    for (let i = 0; i < selectedDay; i++) {
-      const weekDay = new Date(startOfWeek);
-      weekDay.setDate(startOfWeek.getDate() + i);
+    const startOfWeekDate = new Date(startOfWeek);
+    const endOfWeekDate = new Date(startOfWeek);
+    endOfWeekDate.setDate(startOfWeekDate.getDate() + 6); // 6 days after the start of the week
 
-      if (weekDay.getMonth() + 1 === selectedMonth) {
-        const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
-          weekDay.getFullYear()
-        ).slice(2)}`;
-        const weekDaySalesData = SalesData[selectedYear][selectedMonthName].find(
-          (data) => data.date === weekDayString
-        );
-        if (weekDaySalesData) {
+    Object.values(SalesData[selectedYear]).forEach((month) => {
+      month.forEach((day) => {
+        const dayDate = new Date(day.date);
+        if (dayDate >= startOfWeekDate && dayDate <= endOfWeekDate) {
           // Filter out orders where status !== "Completed"
-          const completedOrders = weekDaySalesData.orders.filter(
-            (order) => order.status === "Completed"
-          );
+          const completedOrders = day.orders.filter((order) => order.status === "Completed");
           weekOrders = weekOrders.concat(completedOrders);
         }
-      }
-    }
+      });
+    });
+
     return weekOrders;
   }
 
@@ -207,6 +202,21 @@ export default function SalesReport() {
     return calculateItems(orders);
   }
 
+  function getYearOrders() {
+    let yearOrders = [];
+
+    Object.values(SalesData[selectedYear]).forEach((month) => {
+      month.forEach((day) => {
+        yearOrders = yearOrders.concat(day.orders);
+      });
+    });
+
+    return yearOrders;
+  }
+
+  const topYearItems = calculateTopItems(getYearOrders());
+  const allYearItems = calculateAllItems(getYearOrders());
+
   // Calculate top 5 items for today, this week, and this month
   const topTodayItems = calculateTopItems(getTodayOrders());
   const topWeekItems = calculateTopItems(getWeekOrders());
@@ -238,10 +248,7 @@ export default function SalesReport() {
     topFiveItems = topMonthItems;
   } else if (selectedBtn === "yearly") {
     topFiveText = "Year's Top 5";
-    topFiveItems = topMonthItems;
-  } else if (selectedBtn === "calendar") {
-    topFiveText = "Day Top 5";
-    topFiveItems = topTodayItems;
+    topFiveItems = topYearItems;
   }
 
   function formatDate(date) {
@@ -298,51 +305,50 @@ export default function SalesReport() {
   return (
     <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 pt-8 px-6">
       <div className="bg-gray-100 text-black">
-        <div className="flex space-x-4 ">
-          <button
-            onClick={() => setSelectedBtn("today")}
-            className={`py-2 px-4 rounded-md ${
-              selectedBtn === "today" ? "bg-green-700 text-white shadow-md " : "bg-white text-black"
-            }`}>
-            {selectedDayBtn}
-          </button>
-          <button
-            onClick={() => setSelectedBtn("weekly")}
-            className={`py-2 px-4 rounded-md ${
-              selectedBtn === "weekly"
-                ? "bg-green-700 text-white shadow-md "
-                : "bg-white text-black"
-            }`}>
-            {selectedWeekBtn}
-          </button>
-          <button
-            onClick={() => setSelectedBtn("monthly")}
-            className={`py-2 px-4 rounded-md ${
-              selectedBtn === "monthly"
-                ? "bg-green-700 text-white shadow-md "
-                : "bg-white text-black"
-            }`}>
-            {selectedMonthBtn}
-          </button>
-          <button
-            onClick={() => setSelectedBtn("yearly")}
-            className={`py-2 px-4 rounded-md ${
-              selectedBtn === "yearly"
-                ? "bg-green-700 text-white shadow-md "
-                : "bg-white text-black"
-            }`}>
-            {selectedYearBtn}
-          </button>
+        <div className="flex justify-between">
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setSelectedBtn("today")}
+              className={`py-2 px-4 rounded-md ${
+                selectedBtn === "today"
+                  ? "bg-green-700 text-white shadow-md "
+                  : "bg-white text-black"
+              }`}>
+              {selectedDayBtn}
+            </button>
+            <button
+              onClick={() => setSelectedBtn("weekly")}
+              className={`py-2 px-4 rounded-md ${
+                selectedBtn === "weekly"
+                  ? "bg-green-700 text-white shadow-md "
+                  : "bg-white text-black"
+              }`}>
+              {selectedWeekBtn}
+            </button>
+            <button
+              onClick={() => setSelectedBtn("monthly")}
+              className={`py-2 px-4 rounded-md ${
+                selectedBtn === "monthly"
+                  ? "bg-green-700 text-white shadow-md "
+                  : "bg-white text-black"
+              }`}>
+              {selectedMonthBtn}
+            </button>
+            <button
+              onClick={() => setSelectedBtn("yearly")}
+              className={`py-2 px-4 rounded-md ${
+                selectedBtn === "yearly"
+                  ? "bg-green-700 text-white shadow-md "
+                  : "bg-white text-black"
+              }`}>
+              {selectedYearBtn}
+            </button>
+          </div>
           <button
             onClick={() => {
-              setSelectedBtn("calendar");
               setSalesCalendarModalOpen(true);
             }}
-            className={`py-2 px-4 rounded-md ${
-              selectedBtn === "calendar"
-                ? "bg-green-700 text-white shadow-md "
-                : "bg-white text-black"
-            }`}>
+            className=" text-xs py-1 my-1 px-4 rounded-md bg-green-700 text-white shadow-md">
             Calendar
           </button>
         </div>
@@ -408,7 +414,12 @@ export default function SalesReport() {
             />
           )}
           {selectedBtn === "monthly" && (
-            <MonthChart SalesData={SalesData} selectedYear={selectedYear} selectedMonthName={selectedMonthName} monthNames={monthNames} />
+            <MonthChart
+              SalesData={SalesData}
+              selectedYear={selectedYear}
+              selectedMonthName={selectedMonthName}
+              monthNames={monthNames}
+            />
           )}
           {selectedBtn === "yearly" && (
             <YearChart SalesData={SalesData} selectedYear={selectedYear} monthNames={monthNames} />
@@ -422,40 +433,47 @@ export default function SalesReport() {
             />
           )}
         </div>
-        <div className="flex flex-col text-black bg-white px-4 pb-4 pt-3 rounded-md mt-2">
-          <div className="flex justify-between items-center mt-1 mb-3">
-            <div className="text-lg text-black mx-2">{topFiveText}</div>
-            <button
-              className="text-xs bg-green-700 text-white px-4 py-2 rounded-md"
-              onClick={() => setTopSoldItemsModalOpen(true)}>
-              More Info
-            </button>
-          </div>
+        <div className="flex justify-between items-end mt-3 mb-2">
+          <div className="text-lg text-black mx-2">{topFiveText}</div>
+          <button
+            className="text-xs bg-green-700 text-white px-4 py-2 rounded-md"
+            onClick={() => setTopSoldItemsModalOpen(true)}>
+            More Info
+          </button>
+        </div>
+        <div
+          className={`flex flex-col text-black bg-white px-4 pt-5 rounded-md ${
+            topFiveItems.length === 0 ? "h-[68px] " : "pb-4"
+          }`}>
           <div className="flex justify-between space-x-2">
-            {topFiveItems?.map((item, index) => (
-              <div
-                key={index}
-                className="flex space-x-2 items-center justify-center py-2 px-3 border-gray-100 rounded-md shadow-md">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  as="image"
-                  width="100"
-                  height="100"
-                  className="h-8 w-8 object-cover rounded-md"
-                />
-                <div className="flex flex-col items-start">
-                  <div className="text-xs">{item.name}</div>
-                  <div className="text-xs text-green-700">
-                    RM{" "}
-                    {item.totalPrice.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+            {topFiveItems.length > 0 ? (
+              topFiveItems.map((item, index) => (
+                <div key={index} className="flex space-x-2 items-center justify-center px-3">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    as="image"
+                    width="100"
+                    height="100"
+                    className="h-8 w-8 object-cover rounded-md"
+                  />
+                  <div className="flex flex-col items-start">
+                    <div className="text-xs">{item.name}</div>
+                    <div className="text-xs text-green-700">
+                      RM{" "}
+                      {item.totalPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center pt-1 w-full text-gray-500">
+                No data is available / restaurant was not open during this day
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -466,6 +484,7 @@ export default function SalesReport() {
           allTodayItems={allTodayItems}
           allWeekItems={allWeekItems}
           allMonthItems={allMonthItems}
+          allYearItems={allYearItems}
           selectedDayBtn={selectedDayBtn}
           selectedWeekBtn={selectedWeekBtn}
           selectedMonthBtn={selectedMonthBtn}
