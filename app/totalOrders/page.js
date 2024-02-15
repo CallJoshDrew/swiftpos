@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import EditOrderDetailsModal from "../components/modal/editOrderDetailsModal";
-import CalendarModal from "../components/modal/calendarModal";
+import OrdersCalendarModal from "../components/modal/ordersCalendarModal";
 import ChangeStatusModal from "../components/modal/changeStatusModal";
 
 export default function TotalOrders() {
@@ -127,7 +127,7 @@ export default function TotalOrders() {
             setChangeStatusModalOpen={setChangeStatusModalOpen}
           />
         )}
-        <CalendarModal
+        <OrdersCalendarModal
           isCalendarModalOpen={isCalendarModalOpen}
           setCalendarModalOpen={setCalendarModalOpen}
           selectedDate={selectedDate}

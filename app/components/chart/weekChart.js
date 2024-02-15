@@ -1,11 +1,22 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function WeekChart({ SalesData, currentYear, currentMonthName, startOfWeek }) {
+export default function WeekChart({ SalesData, selectedYear, selectedMonthName, startOfWeek }) {
 
   // Initialize an array to store the total sales for each day of the week
   let totalSalesWeek = Array(7).fill(0);
   let labelsWeek = Array(7).fill('');
+
+  function getOrdinalSuffix(date) {
+    const dayOfMonth = date.getDate();
+    if (dayOfMonth > 3 && dayOfMonth < 21) return 'th';
+    switch (dayOfMonth % 10) {
+      case 1:  return "st";
+      case 2:  return "nd";
+      case 3:  return "rd";
+      default: return "th";
+    }
+  }
 
   for (let i = 0; i < 7; i++) {
     const weekDay = new Date(startOfWeek);
@@ -14,8 +25,8 @@ export default function WeekChart({ SalesData, currentYear, currentMonthName, st
       weekDay.getFullYear()
     ).slice(2)}`;
 
-    // Get the sales data for the current day
-    const weekDaySalesData = SalesData[currentYear][currentMonthName].find(
+    // Get the sales data for the selected day
+    const weekDaySalesData = SalesData[selectedYear][selectedMonthName].find(
       (data) => data.date === weekDayString
     );
 
@@ -30,7 +41,7 @@ export default function WeekChart({ SalesData, currentYear, currentMonthName, st
     }
 
     // Create labels for the chart
-    labelsWeek[i] = weekDay.toLocaleDateString('en-US', { weekday: 'long' });
+    labelsWeek[i] = `${weekDay.toLocaleDateString('en-US', { weekday: 'short' })}_${weekDay.getDate()}${getOrdinalSuffix(weekDay)}`;
   }
 
   // Now totalSalesWeek is an array where each element is the total sales for a day of the week
@@ -50,7 +61,7 @@ export default function WeekChart({ SalesData, currentYear, currentMonthName, st
   };
 
   return (
-    <div className="w-full h-[450px] p-6 shadow-sm bg-white rounded-md">
+    <div className="w-full h-[430px] p-6 shadow-sm bg-white rounded-md">
       <div style={{ width: '100%', height: '100%' }}>
         <Bar title="week" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>

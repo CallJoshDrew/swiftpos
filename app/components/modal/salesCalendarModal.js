@@ -4,15 +4,15 @@ import toast from "react-hot-toast";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Import the default CSS
 
-export default function CalendarModal({
-  isCalendarModalOpen,
-  setCalendarModalOpen,
+export default function SalesCalendarModal({
+  isSalesCalendarModalOpen,
+  setSalesCalendarModalOpen,
   selectedDate,
   setSelectedDate,
 }) {
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
-    setCalendarModalOpen(false);
+    setSalesCalendarModalOpen(false);
     toast.success(`You have selected ${selectedDate.toDateString()}`, {
       duration: 2000,
       position: "top-center",
@@ -21,10 +21,10 @@ export default function CalendarModal({
   };
 
   const handleCloseBtn = () => {
-    setCalendarModalOpen(false);
+    setSalesCalendarModalOpen(false);
   };
 
-  if (!isCalendarModalOpen) {
+  if (!isSalesCalendarModalOpen) {
     return null;
   }
   return (

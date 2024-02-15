@@ -1,48 +1,74 @@
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
 
-export default function MonthChart({ SalesData, currentYear, monthNames }) {
+export default function MonthChart({ SalesData, selectedYear, selectedMonthName }) {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  // Get the number of days in the selected month
+  const selectedMonthNumber = monthNames.indexOf(selectedMonthName);
+  // Now use selectedMonthNumber instead of selectedMonthName
+  const daysInMonth = new Date(selectedYear, selectedMonthNumber + 1, 0).getDate();
 
-// Initialize an array to store the total sales for each month
-let totalSalesMonth = Array(12).fill(0);
+  // Initialize an array to store the total sales for each day of the month
+  let totalSalesMonth = Array(daysInMonth).fill(0);
+  let labelsMonth = Array(daysInMonth).fill("");
 
-for (let i = 0; i < 12; i++) {
-  const monthName = monthNames[i];
+  for (let i = 0; i < daysInMonth; i++) {
+    const monthDay = new Date(selectedYear, selectedMonthNumber, i + 1);
 
-  // Get the sales data for the current month
-  const monthSalesData = SalesData[currentYear][monthName];
+    const monthDayString = `${monthDay.getMonth() + 1}/${monthDay.getDate()}/${String(monthDay.getFullYear()).slice(2)}`;
 
-  if (monthSalesData) {
-    // Flatten the orders array and filter to only include those with a status of "Completed"
-    const completedOrders = monthSalesData.flatMap((day) => day.orders ? day.orders.filter((order) => order.status === "Completed") : []);
+    // Get the sales data for the selected day
+    const monthDaySalesData = SalesData[selectedYear][selectedMonthName]?.find(
+        (data) => data.date === monthDayString
+      );
 
-    // Sum up the total price of the completed orders
-    totalSalesMonth[i] = completedOrders.reduce((total, order) => total + order.totalPrice, 0);
+    if (monthDaySalesData) {
+      // Flatten the orders array and filter to only include those with a status of "Completed"
+      const completedOrders = monthDaySalesData.orders.flatMap((order) =>
+        order.status === "Completed" ? order : []
+      );
+
+      // Sum up the total price of the completed orders
+      totalSalesMonth[i] = completedOrders.reduce((total, order) => total + order.totalPrice, 0);
+    }
+
+    // Create labels for the chart
+    labelsMonth[i] = `${monthDay.getDate()}`;
   }
-}
 
-// Now totalSalesMonth is an array where each element is the total sales for a month
-const chartData = {
-  labels: monthNames,
-  datasets: [
-    {
-      label: "Sales",
-      data: totalSalesMonth,
-      backgroundColor: ["rgba(29,163,74)"],
-      borderColor: "black",
-      borderRadius: 4,
-      borderWidth: 2,
-      width: 200,
-    },
-  ],
-};
+  // Now totalSalesMonth is an array where each element is the total sales for a day of the month
+  const chartData = {
+    labels: labelsMonth,
+    datasets: [
+      {
+        label: "Sales",
+        data: totalSalesMonth,
+        backgroundColor: ["rgba(29,163,74)"],
+        borderColor: "black",
+        borderRadius: 4,
+        borderWidth: 2,
+        width: 200,
+      },
+    ],
+  };
 
   return (
-    <div className="w-full h-[450px] p-6 shadow-sm bg-white rounded-md">
-      <div style={{ width: '100%', height: '100%' }}>
+    <div className="w-full h-[430px] p-6 shadow-sm bg-white rounded-md">
+      <div style={{ width: "100%", height: "100%" }}>
         <Bar title="month" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>
     </div>
   );
 }
-

@@ -8,6 +8,10 @@ function TopSoldItemsModal({
   allTodayItems,
   allWeekItems,
   allMonthItems,
+  selectedDayBtn,
+  selectedWeekBtn,
+  selectedMonthBtn,
+  selectedYearBtn,
 }) {
   const [selectedTime, setSelectedTime] = useState("today");
 
@@ -17,6 +21,8 @@ function TopSoldItemsModal({
   } else if (selectedTime === "weekly") {
     showAllItems = allWeekItems;
   } else if (selectedTime === "monthly") {
+    showAllItems = allMonthItems;
+  } else if (selectedTime === "yearly") {
     showAllItems = allMonthItems;
   }
 
@@ -38,7 +44,7 @@ function TopSoldItemsModal({
                       ? "bg-green-700 text-white shadow-md "
                       : "bg-white text-black"
                   }`}>
-                  Today&apos;s
+                  {selectedDayBtn}
                 </button>
                 <button
                   onClick={() => setSelectedTime("weekly")}
@@ -47,7 +53,7 @@ function TopSoldItemsModal({
                       ? "bg-green-700 text-white shadow-md "
                       : "bg-white text-black"
                   }`}>
-                  Weekly
+                  {selectedWeekBtn}
                 </button>
                 <button
                   onClick={() => setSelectedTime("monthly")}
@@ -56,7 +62,16 @@ function TopSoldItemsModal({
                       ? "bg-green-700 text-white shadow-md "
                       : "bg-white text-black"
                   }`}>
-                  Monthly
+                  {selectedMonthBtn}
+                </button>
+                <button
+                  onClick={() => setSelectedTime("yearly")}
+                  className={`py-2 px-4 rounded-md ${
+                    selectedTime === "yearly"
+                      ? "bg-green-700 text-white shadow-md "
+                      : "bg-white text-black"
+                  }`}>
+                  {selectedYearBtn}
                 </button>
               </div>
               <button

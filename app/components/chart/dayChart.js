@@ -1,10 +1,10 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function Daychart({ SalesData, currentYear, currentMonthName, todayString }) {
+export default function Daychart({ SalesData, selectedYear, selectedMonthName, selectedDateString }) {
   // First, map over the days in the month and then flatten the orders arrays into a single array
-  const flattenedOrders = SalesData[currentYear][currentMonthName].flatMap((day) => {
-    if (day.date === todayString && day.orders) {
+  const flattenedOrders = SalesData[selectedYear][selectedMonthName].flatMap((day) => {
+    if (day.date === selectedDateString && day.orders) {
       return day.orders;
     } else {
       return [];
@@ -26,7 +26,7 @@ export default function Daychart({ SalesData, currentYear, currentMonthName, tod
   
     // Categorize the hours
     // "9:00 AM" means from 9:00 oclock until 9:59 AM. 
-    if (hours < 9) return 'Before 9 AM';
+    if (hours < 9) return '8 AM';
     else if (hours < 10) return '9 AM';
     else if (hours < 11) return '10 AM';
     else if (hours < 12) return '11 AM';
@@ -35,13 +35,13 @@ export default function Daychart({ SalesData, currentYear, currentMonthName, tod
     else if (hours < 15) return '2 PM';
     else if (hours < 16) return '3 PM';
     else if (hours < 17) return '4 PM';
-    else return '5 PM & after';
+    else return '5 PM';
   }
   
 
   // Create an object to store the total sales for each category
   let totalSalesByCategory = {
-    "Before 9 AM": 0,
+    "8 AM": 0,
     "9 AM": 0,
     "10 AM": 0,
     "11 AM": 0,
@@ -50,7 +50,7 @@ export default function Daychart({ SalesData, currentYear, currentMonthName, tod
     "2 PM": 0,
     "3 PM": 0,
     "4 PM": 0,
-    "5 PM & after": 0,
+    "5 PM": 0,
   };
 
   completedOrders.forEach((order) => {
@@ -75,7 +75,7 @@ export default function Daychart({ SalesData, currentYear, currentMonthName, tod
   };
 
   return (
-    <div className="w-full h-[450px] p-6 shadow-sm bg-white rounded-md">
+    <div className="w-full h-[430px] p-6 shadow-sm bg-white rounded-md">
       <div style={{ width: "100%", height: "100%" }}>
         <Bar title="day" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>
