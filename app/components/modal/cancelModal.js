@@ -1,12 +1,26 @@
 import React from "react";
 import toast from "react-hot-toast";
+import { useAtom } from "jotai";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 export default function CancelModal({
   isCancelModalOpen,
   setCancelModalOpen,
   handleCancelStatus,
-  selectedOrder,  
+  orderType, 
 }) {
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
   const handleStatusSubmitBtn = () => {
     handleCancelStatus(selectedOrder.orderNumber);
     toast.success("Order is Cancelled", {

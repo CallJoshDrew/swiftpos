@@ -4,6 +4,8 @@ import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function ConfirmCloseModal({
   isConfirmCloseModal,
@@ -12,8 +14,7 @@ function ConfirmCloseModal({
   setShowEditBtn,
   setShowEditControls,
   tempCartItems,
-  selectedOrder,
-  setSelectedOrder,
+  orderType,
   setShowRemarksBtn,
   setShowRemarksArea,
   remarks,
@@ -22,6 +23,18 @@ function ConfirmCloseModal({
 }) {
   const [, setTables] = useAtom(tablesAtom);
   const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
     const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
@@ -31,7 +44,7 @@ function ConfirmCloseModal({
   
     return [orderCounter, setOrderCounter];
   }
-  const [, setOrderCounter] = useOrderCounter(selectedOrder?.orderType);
+  const [, setOrderCounter] = useOrderCounter(orderType);
   const handleConfirmClose = () => {
     if (selectedOrder?.status === "Status") {
       if (selectedOrder?.orderType === "Dine-In") {

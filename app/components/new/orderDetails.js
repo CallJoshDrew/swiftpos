@@ -5,10 +5,11 @@ import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function OrderDetails({
-  selectedOrder,
-  setSelectedOrder,
+  orderType,
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
@@ -31,7 +32,35 @@ function OrderDetails({
   setCancelModalOpen,
 }) {
   const [orders, setOrders] = useAtom(ordersAtom);
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+  // if (selectedOrder.orderNumber !== "Order Number" && selectedOrder.status === "Status") {
+  //   setSelectedOrder((prevSelectedOrder) => ({
+  //     orderNumber: "Order Number",
+  //     tableName: "",
+  //     orderType,
+  //     orderTime: null,
+  //     orderDate: null,
+  //     status: "Status",
+  //     items: [],
+  //     subTotal: 0,
+  //     serviceCharge: 0,
+  //     totalPrice: 0,
+  //     quantity: 0,
+  //     paymentMethod: "",
+  //     remarks: "No Remarks",
+  //   }));
+  // }
 
   const handleCancelOrder = () => {
     setCancelModalOpen(true);

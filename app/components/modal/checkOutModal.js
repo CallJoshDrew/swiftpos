@@ -3,16 +3,29 @@ import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 import { tablesAtom } from "../atoms/tablesAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function CheckOutModal({
   isCheckOutModalOpen,
   setCheckOutModalOpen,
-  selectedOrder,
-  setSelectedOrder,
   setTempCartItems,
+  orderType,
 }) {
-  const [tables, setTables] = useAtom(tablesAtom);
-  const [orders, setOrders] = useAtom(ordersAtom);
+  const [, setTables] = useAtom(tablesAtom);
+  const [, setOrders] = useAtom(ordersAtom);
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+
   // Define a function to close the checkout modal
   const handleModalClose = () => {
     setCheckOutModalOpen(false);

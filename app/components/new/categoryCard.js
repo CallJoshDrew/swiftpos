@@ -1,11 +1,13 @@
-import React from "react";
-import { useAtom } from 'jotai';
+import React, { useEffect } from "react";
+import { useAtom } from "jotai";
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
-function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
+function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory }) {
   const isSelected = selectedCategory === category;
   return (
     <button
@@ -21,11 +23,10 @@ function CategoryButton({ category, itemCount, selectedCategory, setSelectedCate
 
 function CategoryCard({
   menu,
+  orderType,
   setShowMenu,
   selectedCategory,
   setSelectedCategory,
-  selectedOrder,
-  setSelectedOrder,
   setShowEditBtn,
   setShowEditControls,
   tempCartItems,
@@ -36,23 +37,35 @@ function CategoryCard({
   remarks,
   tempRemarks,
 }) {
-
-  // Why need coma? when you destructure an array, you can choose which elements to assign to variables. 
+  // Why need coma? when you destructure an array, you can choose which elements to assign to variables.
   // If you want to skip certain elements, you can leave their places empty.
   const [, setTables] = useAtom(tablesAtom);
 
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);    
 
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+  
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
     const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
   
-    const orderCounter = orderType === 'Dine-In' ? tableOrderCounter : takeAwayOrderCounter;
-    const setOrderCounter = orderType === 'Dine-In' ? setTableOrderCounter : setTakeAwayOrderCounter;
+    const orderCounter = orderType === "Dine-In" ? tableOrderCounter : takeAwayOrderCounter;
+    const setOrderCounter =
+      orderType === "Dine-In" ? setTableOrderCounter : setTakeAwayOrderCounter;
   
     return [orderCounter, setOrderCounter];
   }
-  const [, setOrderCounter] = useOrderCounter(selectedOrder?.orderType);
+  const [, setOrderCounter] = useOrderCounter(orderType);
   // Sort the items in tempCartItems and selectedOrder.items by their id
   const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
   const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
@@ -81,12 +94,13 @@ function CategoryCard({
   }, {});
   const handleCloseMenu = () => {
     // close if it is the same items and status is "Placed Order"
-    if (
-      selectedOrder?.status === "Placed Order" && (remarks !== tempRemarks)) {
-        setIsConfirmCloseModal(true);
+    if (selectedOrder?.status === "Placed Order" && remarks !== tempRemarks) {
+      setIsConfirmCloseModal(true);
     } else if (
       selectedOrder?.status === "Placed Order" &&
-      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
+      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
+      remarks === tempRemarks
+    ) {
       setIsLinkDisabled(false);
       setShowMenu(false);
       setShowEditBtn(true);
@@ -96,33 +110,40 @@ function CategoryCard({
       if (remarks === "" && tempRemarks === "") {
         setSelectedOrder((prevSelectedOrder) => ({
           ...prevSelectedOrder,
-          remarks:"No Remarks"
+          remarks: "No Remarks",
         }));
       }
     } else if (
       selectedOrder?.status === "Placed Order" &&
-      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
+      remarks === tempRemarks
+    ) {
       setIsConfirmCloseModal(true);
       console.log("items are not the same, but remarks the same");
     } else if (
       selectedOrder?.status === "Placed Order" &&
-      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks !== tempRemarks)) {
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
+      remarks !== tempRemarks
+    ) {
       setIsConfirmCloseModal(true);
       console.log("items and remarks are not the same");
-    } else if (selectedOrder?.status === "Status" && compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+    } else if (
+      selectedOrder?.status === "Status" &&
+      compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
+    ) {
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-        if (selectedOrder?.orderType === "Dine-In") {
-          setTables((prevTables) => {
-            return prevTables.map((table) => {
-              if (table.orderNumber === selectedOrder?.orderNumber) {
-                const { orderNumber, occupied, ...rest } = table;
-                return rest;
-              } else {
-                return table;
-              }
-            });
+      if (selectedOrder?.orderType === "Dine-In") {
+        setTables((prevTables) => {
+          return prevTables.map((table) => {
+            if (table.orderNumber === selectedOrder?.orderNumber) {
+              const { orderNumber, occupied, ...rest } = table;
+              return rest;
+            } else {
+              return table;
+            }
           });
-        }
+        });
+      }
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",
@@ -136,19 +157,13 @@ function CategoryCard({
       setShowEditControls(false);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
-    } else if (selectedOrder?.status === "Status" && !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)) {
+    } else if (
+      selectedOrder?.status === "Status" &&
+      !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
+    ) {
       setIsConfirmCloseModal(true);
     }
   };
-
-useEffect(() => {
-  // This code runs when the component mounts
-
-  return () => {
-    // This code runs when the component unmounts
-    console.log('Component is unmounting');
-  };
-}, []);
 
   return (
     <>

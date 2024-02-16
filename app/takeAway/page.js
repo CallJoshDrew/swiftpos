@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import { takeAwayOrderCountAtom } from "../components/atoms/takeAwayOrderCount";
+import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
+import { selectedTakeAwayOrderAtom } from "../components/atoms/selectedTakeAwayOrderAtom";
 
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard";
@@ -10,7 +12,6 @@ import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CancelModal from "../components/modal/cancelModal";
 import OrderDetails from "../components/new/orderDetails";
-import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 
 export default function TakeAwayOverview() {
   const [menu, setMenu] = useState([]);
@@ -24,9 +25,10 @@ export default function TakeAwayOverview() {
   const [orders, setOrders] = useAtom(ordersAtom);
   const [orderCounter, setOrderCounter] = useAtom(takeAwayOrderCountAtom);
   const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [selectedOrder, setSelectedOrder] = useAtom(selectedTakeAwayOrderAtom);
 
-  const [showEditBtn, setShowEditBtn] = useState(false);
-  const [showEditControls, setShowEditControls] = useState(true);
+  const [showEditBtn, setShowEditBtn] = useState(true);
+  const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [tempCartItems, setTempCartItems] = useState([]);
@@ -38,20 +40,7 @@ export default function TakeAwayOverview() {
   const [showRemarksArea, setShowRemarksArea] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [selectedOrder, setSelectedOrder] = useState({
-    orderNumber: "Order Number",
-    orderType: "TakeAway",
-    orderTime: null,
-    orderDate: null,
-    status: "Status",
-    items: [],
-    subTotal: 0,
-    serviceCharge: 0,
-    totalPrice: 0,
-    quantity: 0,
-    paymentMethod: "",
-    remarks: "No Remarks",
-  });
+ 
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
@@ -158,11 +147,10 @@ export default function TakeAwayOverview() {
           <div className="relative">
             <CategoryCard
               menu={menu}
+              orderType="TakeAway"
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              selectedOrder={selectedOrder}
-              setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
@@ -177,9 +165,8 @@ export default function TakeAwayOverview() {
           <div className="mt-[130px] px-4">
             <MenuCard
               menu={menu}
+              orderType="TakeAway"
               selectedCategory={selectedCategory}
-              selectedOrder={selectedOrder}
-              setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
@@ -253,8 +240,7 @@ export default function TakeAwayOverview() {
       )}
       {selectedOrder && (
         <OrderDetails
-          selectedOrder={selectedOrder}
-          setSelectedOrder={setSelectedOrder}
+          orderType="TakeAway"
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}
@@ -284,8 +270,7 @@ export default function TakeAwayOverview() {
         setShowEditBtn={setShowEditBtn}
         setShowEditControls={setShowEditControls}
         tempCartItems={tempCartItems}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
+        orderType="TakeAway"
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
         remarks={remarks}
@@ -295,15 +280,14 @@ export default function TakeAwayOverview() {
       <PaymentModal
         isPayModalOpen={isPayModalOpen}
         setPayModalOpen={setPayModalOpen}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
+        orderType="TakeAway"
         setShowEditBtn={setShowEditBtn}
       />
       <CancelModal
         isCancelModalOpen={isCancelModalOpen}
         setCancelModalOpen={setCancelModalOpen}
         handleCancelStatus={handleCancelStatus}
-        selectedOrder={selectedOrder}
+        orderType="TakeAway"
       />
     </>
   );

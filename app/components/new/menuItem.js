@@ -1,18 +1,31 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { useAtom } from "jotai";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function MenuItem({
   item,
-  selectedOrder,
-  setSelectedOrder,
+  orderType,
   handleItemSelection,
   setShowEditBtn,
   tempCartItems,
   setTempCartItems,
   setShowRemarksBtn,
 }) {
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
   const handleAddtoCartBtn = () => {
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(

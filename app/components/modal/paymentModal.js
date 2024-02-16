@@ -4,16 +4,28 @@ import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function PaymentModal({
   isPayModalOpen,
   setPayModalOpen,
-  selectedOrder,
-  setSelectedOrder,
   setShowEditBtn,
+  orderType,
 }) {
   const [, setOrders] = useAtom(ordersAtom);
   const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
 
   // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");

@@ -2,14 +2,28 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { useAtom } from "jotai";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
 function SelectionModal({
   isSelectionModalOpen,
   setSelectionModalOpen,
-  setSelectedOrder,
   selectionModal,
   setSelectionModal,
+  orderType,
 }) {
+  function useSelectedOrder(orderType) {
+    const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+    const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  
+    const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
+    const setSelectedOrder =
+      orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
+  
+    return [selectedOrder, setSelectedOrder];
+  }
+  const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
   const handleSelectionBtn = () => {
     // Generate a unique ID based on the current time and a random number
     const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);

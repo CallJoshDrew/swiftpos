@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import { tablesAtom } from "../components/atoms/tablesAtom";
 import { fetchTablesAtom } from "../components/atoms/tablesAtom";
 import { tableOrderCountAtom } from "../components/atoms/tableOrderCount";
 import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "../components/atoms/selectedTableOrderAtom";
 
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
@@ -17,17 +18,18 @@ import OrderDetails from "../components/new/orderDetails";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
-  const [showEditBtn, setShowEditBtn] = useState(false);
-  const [showEditControls, setShowEditControls] = useState(true);
+  const [showEditBtn, setShowEditBtn] = useState(true);
+  const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [tableNumber, setTableNumber] = useState(null);
-  
+
   const [, fetchTables] = useAtom(fetchTablesAtom);
   const [tables, setTables] = useAtom(tablesAtom);
   const [orders, setOrders] = useAtom(ordersAtom);
   const [orderCounter, setOrderCounter] = useAtom(tableOrderCountAtom);
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
+  const [selectedOrder, setSelectedOrder] = useAtom(selectedTableOrderAtom);
 
   const [tempCartItems, setTempCartItems] = useState([]);
 
@@ -38,23 +40,6 @@ export default function Tables({ menu }) {
   const [showRemarksArea, setShowRemarksArea] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
-  const [selectedOrder, setSelectedOrder] = useState({
-    orderNumber: "Order Number",
-    tableName: "",
-    orderType: "Dine-In",
-    orderTime: null,
-    orderDate: null,
-    status: "Status",
-    items: [],
-    subTotal: 0,
-    serviceCharge: 0,
-    totalPrice: 0,
-    quantity: 0,
-    paymentMethod: "",
-    remarks: "No Remarks",
-  });
-
- 
 
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false); // Controls whether the payment modal is open
@@ -85,7 +70,6 @@ export default function Tables({ menu }) {
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
-  
 
   const findOrder = (orderNumber) => {
     if (Array.isArray(orders)) {
@@ -134,7 +118,7 @@ export default function Tables({ menu }) {
 
   const selectedTable = (tableIndex) => {
     if (!tables) {
-      console.error('Tables is undefined');
+      console.error("Tables is undefined");
     } else {
       console.log(tables);
     }
@@ -143,7 +127,7 @@ export default function Tables({ menu }) {
     let orderNumber = tables[tableIndex].orderNumber;
     const generatedOrderID = (tableName) => {
       const paddedCounter = String(orderCounter).padStart(4, "0");
-      let tableNameWithoutSpace = tableName.replace(/\s/g, '');
+      let tableNameWithoutSpace = tableName.replace(/\s/g, "");
       orderNumber = `#${tableNameWithoutSpace}-${paddedCounter}`;
       // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
@@ -161,8 +145,25 @@ export default function Tables({ menu }) {
         setShowEditControls(false);
         //   setRemarks((prevRemarks) => selectedOrder.remarks);
       } else {
-        console.error('No order found with orderNumber:', tables[tableIndex].orderNumber);
+        console.error("No order found with orderNumber:", tables[tableIndex].orderNumber);
         // Handle the case when no existing order is found
+        setTables((prevTables) => {
+          return prevTables.map((table) => {
+            if (table.orderNumber === selectedOrder?.orderNumber) {
+              const { orderNumber, occupied, ...rest } = table;
+              return rest;
+            } else {
+              return table;
+            }
+          });
+        });
+        setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+        setSelectedOrder((prevSelectedOrder) => ({
+          ...prevSelectedOrder,
+          orderNumber: "Order Number",
+          tableName: "",
+          items: [],
+        }));
       }
     } else {
       generatedOrderID(tables[tableIndex].name);
@@ -228,7 +229,7 @@ export default function Tables({ menu }) {
       return prevTables.map((table) => {
         if (table.orderNumber === orderNumber) {
           const { orderNumber, occupied, ...rest } = table;
-          // extracting the orderNumber and occupied properties from the table object and assigning them to 
+          // extracting the orderNumber and occupied properties from the table object and assigning them to
           // new variables with the same names
           return rest;
           // returns a new object rest that doesn’t include the orderNumber and occupied properties.
@@ -256,7 +257,6 @@ export default function Tables({ menu }) {
       // console.log("Set to false from useEffect");
     }
   }, [selectedOrder]);
-
   return (
     <>
       {showMenu ? (
@@ -264,11 +264,10 @@ export default function Tables({ menu }) {
           <div className="relative">
             <CategoryCard
               menu={menu}
+              orderType="Dine-In"
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              selectedOrder={selectedOrder}
-              setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
@@ -283,9 +282,8 @@ export default function Tables({ menu }) {
           <div className="mt-[130px] px-4">
             <MenuCard
               menu={menu}
+              orderType="Dine-In"
               selectedCategory={selectedCategory}
-              selectedOrder={selectedOrder}
-              setSelectedOrder={setSelectedOrder}
               setShowEditBtn={setShowEditBtn}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
@@ -320,8 +318,7 @@ export default function Tables({ menu }) {
       )}
       {selectedOrder && (
         <OrderDetails
-          selectedOrder={selectedOrder}
-          setSelectedOrder={setSelectedOrder}
+          orderType="Dine-In"
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}
@@ -351,8 +348,7 @@ export default function Tables({ menu }) {
         setShowEditBtn={setShowEditBtn}
         setShowEditControls={setShowEditControls}
         tempCartItems={tempCartItems}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
+        orderType="Dine-In"
         setShowRemarksBtn={setShowRemarksBtn}
         setShowRemarksArea={setShowRemarksArea}
         remarks={remarks}
@@ -362,22 +358,20 @@ export default function Tables({ menu }) {
       <PaymentModal
         isPayModalOpen={isPayModalOpen}
         setPayModalOpen={setPayModalOpen}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
+        orderType="Dine-In"
         setShowEditBtn={setShowEditBtn}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}
         setCheckOutModalOpen={setCheckOutModalOpen}
-        selectedOrder={selectedOrder}
-        setSelectedOrder={setSelectedOrder}
         setTempCartItems={setTempCartItems}
+        orderType="Dine-In"
       />
       <CancelModal
         isCancelModalOpen={isCancelModalOpen}
         setCancelModalOpen={setCancelModalOpen}
         handleCancelStatus={handleCancelStatus}
-        selectedOrder={selectedOrder}
+        orderType="Dine-In"
       />
     </>
   );
