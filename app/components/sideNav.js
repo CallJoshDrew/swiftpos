@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAtom } from "jotai";
@@ -8,6 +8,7 @@ import { tablesAtom } from "./atoms/tablesAtom";
 import { tableOrderCountAtom } from "./atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "./atoms/takeAwayOrderCount";
 import toast from "react-hot-toast";
+import { isLinkDisabledAtom } from "./atoms/linkDisableAtom";
 
 export default function SideNav() {
   const path = usePathname();
@@ -16,6 +17,7 @@ export default function SideNav() {
   const [, setTables] = useAtom(tablesAtom);
   const [, setTableOrderCounter] = useAtom(tableOrderCountAtom);
   const [, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
+  const [isLinkDisabled, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
 
   const handleClearLocalStorage = () => {
     setOrders([]);
@@ -32,6 +34,7 @@ export default function SideNav() {
   return (
     <div className="py-10 w-1/6 flex-auto relative">
       <div className="fixed flex flex-col w-1/6 px-6">
+        <div className="relative"></div>
         <div className="text-green-800 text-center font-bold text-sm">POS SYSTEM</div>
         <Link
           href="/"
@@ -142,7 +145,6 @@ export default function SideNav() {
             唔好按
           </div>
         </Link>
-
         <div
           className="flex flex-col items-center mt-6 hover:bg-red-700 hover:rounded-md py-2 group"
           onClick={handleClearLocalStorage}>
@@ -191,6 +193,7 @@ export default function SideNav() {
           </div>
         </Link>
       </div> */}
+      {isLinkDisabled && <div className="absolute inset-0 bg-gray-300 opacity-70"></div>}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
+import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 
 function ConfirmCloseModal({
   isConfirmCloseModal,
@@ -20,6 +21,7 @@ function ConfirmCloseModal({
   tempRemarks,
 }) {
   const [, setTables] = useAtom(tablesAtom);
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
     const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
@@ -72,6 +74,7 @@ function ConfirmCloseModal({
         };
       });
     }
+    setIsLinkDisabled(false);
     setShowMenu(false);
     setShowEditControls(false);
     setIsConfirmCloseModal(false);

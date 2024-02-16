@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
+import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 
 function OrderDetails({
   selectedOrder,
@@ -30,6 +31,8 @@ function OrderDetails({
   setCancelModalOpen,
 }) {
   const [orders, setOrders] = useAtom(ordersAtom);
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+
   const handleCancelOrder = () => {
     setCancelModalOpen(true);
   };
@@ -168,6 +171,7 @@ function OrderDetails({
     });
   };
   const handleEditOrder = () => {
+    setIsLinkDisabled(true);
     setShowEditBtn(false);
     // console.log("set to false from handleEditOrder");
     setShowEditControls(true);
@@ -250,7 +254,7 @@ function OrderDetails({
       paymentMethod: "",
       remarks: remarks === "" ? "No Remarks" : remarks,
     };
-
+    setIsLinkDisabled(false);
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
     setOrders((prevOrders) => [...prevOrders, newOrder]);
@@ -308,6 +312,7 @@ function OrderDetails({
       quantity: totalQuantity,
       remarks,
     };
+    setIsLinkDisabled(false);
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
     setOrders((prevOrders) => {
@@ -422,7 +427,7 @@ function OrderDetails({
     console.log("Orders Now is", orders);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
-    // console.log("SelectedOrder Now is", selectedOrder);
+    console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
   return (

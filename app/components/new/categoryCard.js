@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
+import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 
 function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory, }) {
   const isSelected = selectedCategory === category;
@@ -39,6 +40,8 @@ function CategoryCard({
   // Why need coma? when you destructure an array, you can choose which elements to assign to variables. 
   // If you want to skip certain elements, you can leave their places empty.
   const [, setTables] = useAtom(tablesAtom);
+
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
 
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
@@ -84,6 +87,7 @@ function CategoryCard({
     } else if (
       selectedOrder?.status === "Placed Order" &&
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) && (remarks === tempRemarks)) {
+      setIsLinkDisabled(false);
       setShowMenu(false);
       setShowEditBtn(true);
       console.log("Set to true from closeMenu");
@@ -119,27 +123,13 @@ function CategoryCard({
             });
           });
         }
-      // if (orderType ==="Dine-In") {
-      //   setTables((prevTables) => {
-      //     return prevTables.map((table) => {
-      //       if (table.orderNumber === orderNumber) {
-      //         return {
-      //           ...table,
-      //           orderNumber: "",
-      //           occupied: false,
-      //         };
-      //       } else {
-      //         return table;
-      //       }
-      //     });
-      //   });
-      // }
       setSelectedOrder((prevSelectedOrder) => ({
         ...prevSelectedOrder,
         orderNumber: "Order Number",
         tableName: "",
         items: [],
       }));
+      setIsLinkDisabled(false);
       setShowMenu(false);
       setShowEditBtn(false);
       console.log("set to false from category");
@@ -150,6 +140,15 @@ function CategoryCard({
       setIsConfirmCloseModal(true);
     }
   };
+
+useEffect(() => {
+  // This code runs when the component mounts
+
+  return () => {
+    // This code runs when the component unmounts
+    console.log('Component is unmounting');
+  };
+}, []);
 
   return (
     <>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
+import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 
 function PaymentModal({
   isPayModalOpen,
@@ -11,7 +12,9 @@ function PaymentModal({
   setSelectedOrder,
   setShowEditBtn,
 }) {
-  const [orders, setOrders] = useAtom(ordersAtom);
+  const [, setOrders] = useAtom(ordersAtom);
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+
   // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
@@ -82,7 +85,7 @@ function PaymentModal({
       console.log(newOrder); // Log the new order
       return newOrder;
     });
-
+    setIsLinkDisabled(false);
     setPayModalOpen(false);
     setShowEditBtn(false);
     console.log("set to false from payment");

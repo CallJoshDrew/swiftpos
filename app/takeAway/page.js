@@ -10,6 +10,7 @@ import ConfirmCloseModal from "../components/modal/confirmCloseModal";
 import PaymentModal from "../components/modal/paymentModal";
 import CancelModal from "../components/modal/cancelModal";
 import OrderDetails from "../components/new/orderDetails";
+import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 
 export default function TakeAwayOverview() {
   const [menu, setMenu] = useState([]);
@@ -22,6 +23,7 @@ export default function TakeAwayOverview() {
   const [showMenu, setShowMenu] = useState(false);
   const [orders, setOrders] = useAtom(ordersAtom);
   const [orderCounter, setOrderCounter] = useAtom(takeAwayOrderCountAtom);
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
 
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [showEditControls, setShowEditControls] = useState(true);
@@ -73,6 +75,7 @@ export default function TakeAwayOverview() {
   }, [currentDate, setOrderCounter]);
 
   const handleAddNewOrderBtn = () => {
+    setIsLinkDisabled(true);
     setShowMenu(true);
     setSelectedCategory("All");
     setTempCartItems([]);

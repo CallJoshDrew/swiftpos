@@ -5,6 +5,7 @@ import { ordersAtom } from "../components/atoms/ordersAtom";
 import { tablesAtom } from "../components/atoms/tablesAtom";
 import { fetchTablesAtom } from "../components/atoms/tablesAtom";
 import { tableOrderCountAtom } from "../components/atoms/tableOrderCount";
+import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
@@ -26,6 +27,7 @@ export default function Tables({ menu }) {
   const [tables, setTables] = useAtom(tablesAtom);
   const [orders, setOrders] = useAtom(ordersAtom);
   const [orderCounter, setOrderCounter] = useAtom(tableOrderCountAtom);
+  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
 
   const [tempCartItems, setTempCartItems] = useState([]);
 
@@ -131,6 +133,11 @@ export default function Tables({ menu }) {
   };
 
   const selectedTable = (tableIndex) => {
+    if (!tables) {
+      console.error('Tables is undefined');
+    } else {
+      console.log(tables);
+    }
     setSelectedCategory("All");
     setTableNumber(tableIndex);
     let orderNumber = tables[tableIndex].orderNumber;
@@ -146,12 +153,17 @@ export default function Tables({ menu }) {
       const existingOrder = orders.find(
         (order) => order.orderNumber === tables[tableIndex].orderNumber
       );
-      setSelectedOrder(existingOrder);
-      setTempCartItems(existingOrder.items);
-      // have to set to true evertime and then use useEffect to set it false.
-      setShowEditBtn(true);
-      setShowEditControls(false);
-      //   setRemarks((prevRemarks) => selectedOrder.remarks);
+      if (existingOrder) {
+        setSelectedOrder(existingOrder);
+        setTempCartItems(existingOrder.items);
+        // have to set to true evertime and then use useEffect to set it false.
+        setShowEditBtn(true);
+        setShowEditControls(false);
+        //   setRemarks((prevRemarks) => selectedOrder.remarks);
+      } else {
+        console.error('No order found with orderNumber:', tables[tableIndex].orderNumber);
+        // Handle the case when no existing order is found
+      }
     } else {
       generatedOrderID(tables[tableIndex].name);
       setSelectedOrder((prevSelectedOrder) => ({
@@ -182,6 +194,7 @@ export default function Tables({ menu }) {
             : table
         )
       );
+      setIsLinkDisabled(true);
       // This is when no items added
       setShowMenu(true);
       setShowEditBtn(false);
