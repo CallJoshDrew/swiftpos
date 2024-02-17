@@ -24,7 +24,7 @@ export default function TakeAwayOverview() {
   const [showMenu, setShowMenu] = useState(false);
   const [orders, setOrders] = useAtom(ordersAtom);
   const [orderCounter, setOrderCounter] = useAtom(takeAwayOrderCountAtom);
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
   const [selectedOrder, setSelectedOrder] = useAtom(selectedTakeAwayOrderAtom);
 
   const [showEditBtn, setShowEditBtn] = useState(true);
@@ -40,7 +40,7 @@ export default function TakeAwayOverview() {
   const [showRemarksArea, setShowRemarksArea] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(new Date().toDateString());
- 
+
   // State variables related to modals
   const [isPayModalOpen, setPayModalOpen] = useState(false);
   const [isConfirmCloseModal, setIsConfirmCloseModal] = useState(false);
@@ -63,8 +63,22 @@ export default function TakeAwayOverview() {
     return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
 
+  const updateOrders = (prevOrders, updatedOrder) => {
+    // Find the orderNumber
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };
   const handleAddNewOrderBtn = () => {
-    // setIsLinkDisabled(true);Debugging now, thus disabled this. 
+    // setIsLinkDisabled(true);Debugging now, thus disabled this.
     setShowMenu(true);
     setSelectedCategory("All");
     setTempCartItems([]);
@@ -78,7 +92,7 @@ export default function TakeAwayOverview() {
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
     };
     generatedOrderID();
-    setSelectedOrder((prevSelectedOrder) => ({
+    const newOrder = {
       orderNumber,
       orderType: "TakeAway",
       orderTime: null,
@@ -91,7 +105,9 @@ export default function TakeAwayOverview() {
       quantity: 0,
       paymentMethod: "",
       remarks: "No Remarks",
-    }));
+    };
+    setSelectedOrder(newOrder);
+    setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
   };
   const handleSelectedOrderBtn = (orderNumber) => {
     const order = orders.find((order) => order.orderNumber === orderNumber);
@@ -188,51 +204,67 @@ export default function TakeAwayOverview() {
             <table className="table-auto w-full">
               <thead>
                 <tr className="bg-green-800 text-white text-center">
-                  {/* <th className="px-4 py-4 border-b font-light">No.</th> */}
                   <th className="px-4 py-4 border-b font-light">Order No.</th>
                   <th className="px-4 py-4 border-b font-light">Qty</th>
                   <th className="px-4 py-4 border-b font-light">Price (RM)</th>
                   <th className="px-4 py-4 border-b font-light">Status</th>
-                  {/* <th className="px-4 py-4 border-b font-light">Details</th> */}
                 </tr>
               </thead>
               <tbody>
-                {takeAwayOrders.reverse().map((order, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
-                    } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
-                    onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
-                    {/* <td className="border px-4 py-2">{takeAwayOrders.length - index}</td> */}
-                    <td className="border px-4 py-2">{order.orderNumber}</td>
-                    <td
-                      className={`border px-4 py-2 ${
-                        order.status === "Cancelled" ? "line-through" : ""
-                      }`}>
-                      {order.quantity}
-                    </td>
-                    <td
-                      className={`border px-4 py-2 ${
-                        order.status === "Cancelled" ? "line-through" : ""
-                      }`}>
-                      {order.totalPrice.toFixed(2)}
-                    </td>
-
-                    <td
-                      className={`border px-4 py-2 rounded-md text-sm ${
-                        order.status === "Completed" || order.status === "Paid"
-                          ? "text-green-800"
-                          : order.status === "Cancelled"
-                          ? "text-red-700"
-                          : order.status === "Placed Order"
-                          ? "text-yellow-500"
-                          : ""
-                      }`}>
-                      {order.status}
+                {takeAwayOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4 text-gray-500">
+                      No data is available / Please place your first order.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  takeAwayOrders.reverse().map((order, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        order.orderNumber === selectedOrder.orderNumber ? "bg-gray-100" : "bg-white"
+                      } text-gray-600 text-center hover:bg-gray-200 transition-colors duration-200`}
+                      onClick={() => handleSelectedOrderBtn(order.orderNumber)}>
+                      <td
+                        className={`border px-4 py-2 ${
+                          order.status === "Cancelled" ? "line-through text-red-700" : ""
+                        } ${order.status === "Status" ? "text-red-700" : ""}`}>
+                        {order.orderNumber}
+                      </td>
+                      <td
+                        className={`border px-4 py-2 ${
+                          order.status === "Cancelled" ? "line-through text-red-700" : ""
+                        } ${order.status === "Status" ? "text-red-700" : ""}`}>
+                        {order.status !== "Status"
+                          ? order.quantity
+                          : order.items.length === 0
+                          ? "Order First"
+                          : "Print First"}
+                      </td>
+                      <td
+                        className={`border px-4 py-2 ${
+                          order.status === "Cancelled" ? "line-through text-red-700" : ""
+                        } ${order.status === "Status" ? "text-red-700" : ""}`}>
+                        {order.totalPrice.toFixed(2)}
+                      </td>
+
+                      <td
+                        className={`border px-4 py-2 rounded-md text-sm ${
+                          order.status === "Completed" || order.status === "Paid"
+                            ? "text-green-800"
+                            : order.status === "Cancelled"
+                            ? "text-red-700"
+                            : order.status === "Placed Order"
+                            ? "text-yellow-500"
+                            : order.status === "Status"
+                            ? "text-red-700"
+                            : ""
+                        }`}>
+                        {order.status === "Status" ? "Waiting" : order.status}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

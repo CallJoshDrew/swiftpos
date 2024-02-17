@@ -19,7 +19,7 @@ import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAt
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
-  const [showEditBtn, setShowEditBtn] = useState(true);
+  const [showEditBtn, setShowEditBtn] = useState(false);
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -72,23 +72,6 @@ export default function Tables({ menu }) {
     return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
 
-  // useEffect(() => {
-  //   setSelectedOrder({
-  //     orderNumber: "Order Number",
-  //     tableName: "",
-  //     orderType: "Dine-In",
-  //     orderTime: null,
-  //     orderDate: null,
-  //     status: "Status",
-  //     items: [],
-  //     subTotal: 0,
-  //     serviceCharge: 0,
-  //     totalPrice: 0,
-  //     quantity: 0,
-  //     paymentMethod: "",
-  //     remarks: "No Remarks",
-  //   });
-  // }, [/* dependencies */]);
   const findOrder = (orderNumber) => {
     if (Array.isArray(orders)) {
       return orders.find((order) => order.orderNumber === orderNumber);
