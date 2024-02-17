@@ -1,11 +1,12 @@
 import React from "react";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
+import { ordersAtom } from "../atoms/ordersAtom";
 
 function ConfirmCloseModal({
   isConfirmCloseModal,
@@ -21,16 +22,17 @@ function ConfirmCloseModal({
   setRemarks,
   tempRemarks,
 }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
   const [, setTables] = useAtom(tablesAtom);
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
     const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
-  
+
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
-  
+
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
@@ -38,13 +40,32 @@ function ConfirmCloseModal({
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
     const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
-  
-    const orderCounter = orderType === 'Dine-In' ? tableOrderCounter : takeAwayOrderCounter;
-    const setOrderCounter = orderType === 'Dine-In' ? setTableOrderCounter : setTakeAwayOrderCounter;
-  
+
+    const orderCounter = orderType === "Dine-In" ? tableOrderCounter : takeAwayOrderCounter;
+    const setOrderCounter =
+      orderType === "Dine-In" ? setTableOrderCounter : setTakeAwayOrderCounter;
+
     return [orderCounter, setOrderCounter];
   }
   const [, setOrderCounter] = useOrderCounter(orderType);
+  // Helper function to update orders
+  const updateOrders = (prevOrders, updatedOrder) => {
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };
+  // Helper function to remove an order
+  const removeOrder = (prevOrders, orderToRemove) => {
+    return prevOrders.filter((order) => order.orderNumber !== orderToRemove.orderNumber);
+  };
   const handleConfirmClose = () => {
     if (selectedOrder?.status === "Status") {
       if (selectedOrder?.orderType === "Dine-In") {
@@ -59,14 +80,17 @@ function ConfirmCloseModal({
           });
         });
       }
+      // Remove the order from orders before updating selectedOrder
+      setOrders((prevOrders) => removeOrder(prevOrders, selectedOrder));
       setSelectedOrder((prevSelectedOrder) => {
-        return {
+        const updatedOrder = {
           ...prevSelectedOrder,
           tableName: "",
           orderNumber: "Order Number",
           items: [],
           remarks: "No Remarks",
         };
+        return updatedOrder;
       });
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       setShowRemarksBtn(false);
@@ -79,12 +103,14 @@ function ConfirmCloseModal({
       // } else {
       //   setRemarks(tempRemarks);
       // }
-      setSelectedOrder((prevOrder) => {
-        return {
+      setSelectedOrder((prevSelectedOrder) => {
+        const updatedOrder = {
           ...prevOrder,
           items: tempCartItems,
           remarks: remarks === "" ? "No Remarks" : tempRemarks,
         };
+        setOrders((prevOrders) => updateOrders(prevOrders, updatedOrder));
+        return updatedOrder;
       });
     }
     setIsLinkDisabled(false);

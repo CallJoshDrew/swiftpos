@@ -2,27 +2,41 @@
 import React from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { useAtom } from "jotai";
+import { ordersAtom } from "../atoms/ordersAtom";
+import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
-function MenuItem({
-  item,
-  orderType,
-  handleItemSelection,
-  setShowRemarksBtn,
-}) {
+function MenuItem({ item, orderType, handleItemSelection, setShowRemarksBtn }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
+
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
     const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
-  
+
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
-  
+
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+
+  // Helper function to update orders
+  const updateOrders = (prevOrders, updatedOrder) => {
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+    // -1 means the orderNumber is not found in orders array. Then it will add new array which is the updatedOrder.
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      // if founded, add the prevOrders key value into the updatedOrders.
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };
   const handleAddtoCartBtn = () => {
     // Check if the item is already in the order
     const existingOrderItem = selectedOrder.items.find(
@@ -40,15 +54,16 @@ function MenuItem({
             ? { ...orderItem, quantity: orderItem.quantity + 1 }
             : orderItem
         );
-        // Find the updated item
         const updatedItem = updatedItems.find((orderItem) => orderItem.item.id === item.id);
         // Filter out the updated item from the array
         const remainingItems = updatedItems.filter((orderItem) => orderItem.item.id !== item.id);
         // Add the updated item at the beginning of the array
-        return {
+        const newOrder = {
           ...prevOrder,
           items: [updatedItem, ...remainingItems],
         };
+        setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
+        return newOrder;
       });
       setShowRemarksBtn(true);
       toast.success("Added to cart!", {
@@ -59,7 +74,9 @@ function MenuItem({
     } else {
       // If item.selection is false and existingOrderItem is false, add it to the order with a quantity of 1
       setSelectedOrder((prevOrder) => {
-        return { ...prevOrder, items: [{ item, quantity: 1 }, ...prevOrder.items] };
+        const newOrder = { ...prevOrder, items: [{ item, quantity: 1 }, ...prevOrder.items] };
+        setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
+        return newOrder;
       });
       setShowRemarksBtn(true);
       toast.success("Added to cart!", {

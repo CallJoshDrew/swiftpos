@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
+import { ordersAtom } from "../atoms/ordersAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 
@@ -13,22 +14,39 @@ function SelectionModal({
   setSelectionModal,
   orderType,
 }) {
+  const [orders, setOrders] = useAtom(ordersAtom);
+
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
     const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
-  
+
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
-  
+
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+
+  const updateOrders = (prevOrders, updatedOrder) => {
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+  
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };  
+
   const handleSelectionBtn = () => {
     // Generate a unique ID based on the current time and a random number
     const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
-
     setSelectedOrder((prevOrder) => {
+      let newOrder;
       // Check if the item is already in the order
       const existingOrderItem = prevOrder.items.find(
         (orderItem) => orderItem.item.id === selectionModal.item.id
@@ -41,17 +59,21 @@ function SelectionModal({
             : orderItem
         );
         // Find the updated item
-        const updatedItem = updatedItems.find((orderItem) => orderItem.item.id === selectionModal.item.id);
+        const updatedItem = updatedItems.find(
+          (orderItem) => orderItem.item.id === selectionModal.item.id
+        );
         // Filter out the updated item from the array
-        const remainingItems = updatedItems.filter((orderItem) => orderItem.item.id !== selectionModal.item.id);
+        const remainingItems = updatedItems.filter(
+          (orderItem) => orderItem.item.id !== selectionModal.item.id
+        );
         // Add the updated item at the beginning of the array
-        return {
+        newOrder = {
           ...prevOrder,
           items: [updatedItem, ...remainingItems],
         };
       } else {
         // If the item is not in the order, add it to the order with a quantity of 1
-        return {
+        newOrder = {
           ...prevOrder,
           items: [
             {
@@ -68,6 +90,8 @@ function SelectionModal({
           ],
         };
       }
+      setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
+      return newOrder;
     });
     setSelectionModalOpen(false);
     toast.success("Added to cart!", {
@@ -123,8 +147,7 @@ function SelectionModal({
                         ...prevSelectionModal,
                         choice: selectedChoice,
                       }));
-                    }}
-                  >
+                    }}>
                     {selectionModal.item.choices.map((choice, index) => (
                       <option key={index} value={choice.name}>
                         {choice.name} + RM {choice.price.toFixed(2)}

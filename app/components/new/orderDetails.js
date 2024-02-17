@@ -304,7 +304,24 @@ function OrderDetails({
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
-    setOrders((prevOrders) => [...prevOrders, newOrder]);
+    
+    setOrders((prevOrders) => {
+      // Find the index of the order with the matching orderNumber
+      const orderIndex = prevOrders.findIndex(
+        (order) => order.orderNumber === selectedOrder?.orderNumber
+      );
+    
+      if (orderIndex === -1) {
+        // If the order is not found, add it to prevOrders
+        return [...prevOrders, newOrder];
+      } else {
+        // If the order is found, replace it with newOrder
+        const updatedOrders = [...prevOrders];
+        updatedOrders[orderIndex] = newOrder;
+        return updatedOrders;
+      }
+    });
+    
     // setTables((prevTables) =>
     //   prevTables.map((table) =>
     //     table.name === tableName

@@ -94,7 +94,7 @@ export default function Tables({ menu }) {
       return orders.find((order) => order.orderNumber === orderNumber);
     }
   };
-  
+
   const determineButtonStyle = (table, order, index) => {
     let buttonStyle = "bg-white text-black";
     if (index === tableIndex) {
@@ -133,6 +133,20 @@ export default function Tables({ menu }) {
     }
     return tableStatus;
   };
+  const updateOrders = (prevOrders, updatedOrder) => {
+    // Find the orderNumber
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };
 
   const selectedTable = (tableIndex) => {
     if (!tables) {
@@ -153,8 +167,7 @@ export default function Tables({ menu }) {
     };
     if (tables[tableIndex].occupied) {
       // Find the order with the same orderNumber as the occupied table
-      const existingOrder = findOrder(tables[tableIndex].orderNumber
-      );
+      const existingOrder = findOrder(tables[tableIndex].orderNumber);
       if (existingOrder) {
         setSelectedOrder(existingOrder);
         setTempCartItems(existingOrder.items);
@@ -185,21 +198,24 @@ export default function Tables({ menu }) {
       }
     } else {
       generatedOrderID(tables[tableIndex].name);
-      setSelectedOrder({
+      const newOrder = {
         orderNumber,
         tableName: tables[tableIndex].name,
         orderType: "Dine-In",
         orderTime: null,
         orderDate: null,
         status: "Status",
-        items:[],
+        items: [],
         subTotal: 0,
         serviceCharge: 0,
         totalPrice: 0,
         quantity: 0,
         paymentMethod: "",
         remarks: "No Remarks",
-      });
+      };
+
+      setSelectedOrder(newOrder);
+      setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
       setTempCartItems([]);
       setTables((prevTables) =>
         prevTables.map((table, index) =>

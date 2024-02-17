@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useAtom } from "jotai";
-import { useUpdateAtom } from 'jotai/utils';
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
@@ -44,7 +43,7 @@ function CategoryCard({
   const [, setTables] = useAtom(tablesAtom);
   const [orders, setOrders] = useAtom(ordersAtom);
 
-  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);    
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
 
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
@@ -53,19 +52,19 @@ function CategoryCard({
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
-  
+
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
-  
+
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
     const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
-  
+
     const orderCounter = orderType === "Dine-In" ? tableOrderCounter : takeAwayOrderCounter;
     const setOrderCounter =
       orderType === "Dine-In" ? setTableOrderCounter : setTakeAwayOrderCounter;
-  
+
     return [orderCounter, setOrderCounter];
   }
   const [, setOrderCounter] = useOrderCounter(orderType);
@@ -95,6 +94,25 @@ function CategoryCard({
     counts[item.category] = (counts[item.category] || 0) + 1;
     return counts;
   }, {});
+  // Helper function to update orders
+  const updateOrders = (prevOrders, updatedOrder) => {
+    const orderIndex = prevOrders.findIndex(
+      (order) => order.orderNumber === updatedOrder.orderNumber
+    );
+
+    if (orderIndex === -1) {
+      return [...prevOrders, updatedOrder];
+    } else {
+      const updatedOrders = [...prevOrders];
+      updatedOrders[orderIndex] = updatedOrder;
+      return updatedOrders;
+    }
+  };
+  // Helper function to remove an order
+  const removeOrder = (prevOrders, orderToRemove) => {
+    return prevOrders.filter((order) => order.orderNumber !== orderToRemove.orderNumber);
+  };
+
   const handleCloseMenu = () => {
     // close if it is the same items and status is "Placed Order"
     if (selectedOrder?.status === "Placed Order" && remarks !== tempRemarks) {
@@ -104,17 +122,21 @@ function CategoryCard({
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
       remarks === tempRemarks
     ) {
-      // setIsLinkDisabled(false);Debugging now, thus disabled this. 
+      // setIsLinkDisabled(false);Debugging now, thus disabled this.
       setShowMenu(false);
       setShowEditBtn(true);
       console.log("Set to true from closeMenu");
       setShowEditControls(false);
       setShowRemarksBtn(false);
       if (remarks === "" && tempRemarks === "") {
-        setSelectedOrder((prevSelectedOrder) => ({
-          ...prevSelectedOrder,
-          remarks: "No Remarks",
-        }));
+        setSelectedOrder((prevSelectedOrder) => {
+          const updatedOrder = {
+            ...prevSelectedOrder,
+            remarks: "No Remarks",
+          };
+          setOrders((prevOrders) => updateOrders(prevOrders, updatedOrder));
+          return updatedOrder;
+        });
       }
     } else if (
       selectedOrder?.status === "Placed Order" &&
@@ -134,7 +156,9 @@ function CategoryCard({
       selectedOrder?.status === "Status" &&
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
     ) {
+      console.log("items and remarks are the same");
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+      // Below is only for setTables which need to be updated. TakeAway don't have tables.
       if (selectedOrder?.orderType === "Dine-In") {
         setTables((prevTables) => {
           return prevTables.map((table) => {
@@ -146,14 +170,21 @@ function CategoryCard({
             }
           });
         });
+      
+        // Remove the order from orders before updating selectedOrder
+        setOrders((prevOrders) => removeOrder(prevOrders, selectedOrder));
+        setSelectedOrder((prevSelectedOrder) => {
+          const updatedOrder = {
+            ...prevSelectedOrder,
+            orderNumber: "Order Number",
+            tableName: "",
+            items: [],
+          };
+          return updatedOrder;
+        });
       }
-      setSelectedOrder((prevSelectedOrder) => ({
-        ...prevSelectedOrder,
-        orderNumber: "Order Number",
-        tableName: "",
-        items: [],
-      }));
-      // setIsLinkDisabled(false); Debugging now, thus disabled this. 
+      
+      // setIsLinkDisabled(false); Debugging now, thus disabled this.
       setShowMenu(false);
       setShowEditBtn(false);
       console.log("set to false from category");
@@ -168,26 +199,6 @@ function CategoryCard({
     }
   };
 
-  useEffect(() => {
-    // This function will be called whenever `selectedOrder` changes
-    setOrders((prevOrders) => {
-      // Find the order in `prevOrders` that matches `selectedOrder`
-      const orderIndex = prevOrders.findIndex(
-        (order) => order.orderNumber === selectedOrder.orderNumber
-      );
-  
-      if (orderIndex === -1) {
-        // If the order is not found, add it to `prevOrders`
-        return [...prevOrders, selectedOrder];
-      } else {
-        // If the order is found, replace it with `selectedOrder`
-        const updatedOrders = [...prevOrders];
-        updatedOrders[orderIndex] = selectedOrder;
-        return updatedOrders;
-      }
-    });
-  }, [selectedOrder, setOrders]); // Dependencies of the effect
-  
   return (
     <>
       <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">
