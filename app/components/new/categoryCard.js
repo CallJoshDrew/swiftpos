@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
+import { useUpdateAtom } from 'jotai/utils';
 import { tablesAtom } from "../atoms/tablesAtom";
 import { tableOrderCountAtom } from "../atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
+import { ordersAtom } from "../atoms/ordersAtom";
 
 function CategoryButton({ category, itemCount, selectedCategory, setSelectedCategory }) {
   const isSelected = selectedCategory === category;
@@ -40,13 +42,14 @@ function CategoryCard({
   // Why need coma? when you destructure an array, you can choose which elements to assign to variables.
   // If you want to skip certain elements, you can leave their places empty.
   const [, setTables] = useAtom(tablesAtom);
+  const [orders, setOrders] = useAtom(ordersAtom);
 
   const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);    
 
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
     const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
-  
+
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
@@ -101,7 +104,7 @@ function CategoryCard({
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
       remarks === tempRemarks
     ) {
-      setIsLinkDisabled(false);
+      // setIsLinkDisabled(false);Debugging now, thus disabled this. 
       setShowMenu(false);
       setShowEditBtn(true);
       console.log("Set to true from closeMenu");
@@ -150,7 +153,7 @@ function CategoryCard({
         tableName: "",
         items: [],
       }));
-      setIsLinkDisabled(false);
+      // setIsLinkDisabled(false); Debugging now, thus disabled this. 
       setShowMenu(false);
       setShowEditBtn(false);
       console.log("set to false from category");
@@ -165,6 +168,26 @@ function CategoryCard({
     }
   };
 
+  useEffect(() => {
+    // This function will be called whenever `selectedOrder` changes
+    setOrders((prevOrders) => {
+      // Find the order in `prevOrders` that matches `selectedOrder`
+      const orderIndex = prevOrders.findIndex(
+        (order) => order.orderNumber === selectedOrder.orderNumber
+      );
+  
+      if (orderIndex === -1) {
+        // If the order is not found, add it to `prevOrders`
+        return [...prevOrders, selectedOrder];
+      } else {
+        // If the order is found, replace it with `selectedOrder`
+        const updatedOrders = [...prevOrders];
+        updatedOrders[orderIndex] = selectedOrder;
+        return updatedOrders;
+      }
+    });
+  }, [selectedOrder, setOrders]); // Dependencies of the effect
+  
   return (
     <>
       <div className="bg-gray-100 flex justify-between w-3/6 fixed top-0 z-20 px-4 pt-9">

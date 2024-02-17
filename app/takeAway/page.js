@@ -64,7 +64,7 @@ export default function TakeAwayOverview() {
   }, [currentDate, setOrderCounter]);
 
   const handleAddNewOrderBtn = () => {
-    setIsLinkDisabled(true);
+    // setIsLinkDisabled(true);Debugging now, thus disabled this. 
     setShowMenu(true);
     setSelectedCategory("All");
     setTempCartItems([]);

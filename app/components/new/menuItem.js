@@ -10,9 +10,6 @@ function MenuItem({
   item,
   orderType,
   handleItemSelection,
-  setShowEditBtn,
-  tempCartItems,
-  setTempCartItems,
   setShowRemarksBtn,
 }) {
   function useSelectedOrder(orderType) {

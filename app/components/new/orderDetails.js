@@ -4,11 +4,15 @@ import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
+import { tablesAtom } from "../atoms/tablesAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
+import { tableOrderCountAtom } from "../atoms/tableOrderCount";
+import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
 
 function OrderDetails({
+  // tableName,
   orderType,
   setShowMenu,
   showEditBtn,
@@ -32,6 +36,20 @@ function OrderDetails({
   setCancelModalOpen,
 }) {
   const [orders, setOrders] = useAtom(ordersAtom);
+  const [tables, setTables] = useAtom(tablesAtom);
+  // console.log(tableName);
+
+  function useOrderCounter(orderType) {
+    const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
+    const [takeAwayOrderCounter, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
+
+    const orderCounter = orderType === "Dine-In" ? tableOrderCounter : takeAwayOrderCounter;
+    const setOrderCounter =
+      orderType === "Dine-In" ? setTableOrderCounter : setTakeAwayOrderCounter;
+
+    return [orderCounter, setOrderCounter];
+  }
+  const [orderCounter, setOrderCounter] = useOrderCounter(orderType);
   const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
@@ -44,23 +62,14 @@ function OrderDetails({
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
-  // if (selectedOrder.orderNumber !== "Order Number" && selectedOrder.status === "Status") {
-  //   setSelectedOrder((prevSelectedOrder) => ({
-  //     orderNumber: "Order Number",
-  //     tableName: "",
-  //     orderType,
-  //     orderTime: null,
-  //     orderDate: null,
-  //     status: "Status",
-  //     items: [],
-  //     subTotal: 0,
-  //     serviceCharge: 0,
-  //     totalPrice: 0,
-  //     quantity: 0,
-  //     paymentMethod: "",
-  //     remarks: "No Remarks",
-  //   }));
-  // }
+  // useEffect(() => {
+  //   if (selectedOrder.orderNumber === "Order Number" &&) {
+  //     setSelectedOrder((prevSelectedOrder) => ({
+  //       ...prevSelectedOrder,
+  //       items: [],
+  //     }));
+  //   }
+  // }, [selectedOrder, setSelectedOrder]);
 
   const handleCancelOrder = () => {
     setCancelModalOpen(true);
@@ -200,7 +209,7 @@ function OrderDetails({
     });
   };
   const handleEditOrder = () => {
-    setIsLinkDisabled(true);
+    // setIsLinkDisabled(true);Debugging now, thus disabled this.
     setShowEditBtn(false);
     // console.log("set to false from handleEditOrder");
     setShowEditControls(true);
@@ -265,13 +274,22 @@ function OrderDetails({
     });
     return totalQuantity;
   };
+  // let orderNumber;
+  // const generatedOrderID = (tableName) => {
+  //   const paddedCounter = String(orderCounter).padStart(4, "0");
+  //   let tableNameWithoutSpace = tableName.replace(/\s/g, "");
+  //   orderNumber = `#${tableNameWithoutSpace}-${paddedCounter}`;
+  //   setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
+  // };
 
   const handlePlaceOrderBtn = () => {
     const { timeString, dateString } = getFormattedDateAndTime();
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
-
+    // generatedOrderID(tableName);
     const newOrder = {
       ...selectedOrder,
+      // orderNumber,
+      // tableName,
       orderTime: timeString,
       orderDate: dateString,
       status: "Placed Order",
@@ -283,10 +301,23 @@ function OrderDetails({
       paymentMethod: "",
       remarks: remarks === "" ? "No Remarks" : remarks,
     };
-    setIsLinkDisabled(false);
+    // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
     setOrders((prevOrders) => [...prevOrders, newOrder]);
+    // setTables((prevTables) =>
+    //   prevTables.map((table) =>
+    //     table.name === tableName
+    //       ? {
+    //           ...table,
+    //           orderNumber,
+    //           occupied: true,
+    //           name: tableName,
+    //         }
+    //       : table
+    //   )
+    // );
+
     setShowMenu(false);
     setShowEditControls(false);
     setShowRemarksBtn(false);
@@ -341,7 +372,7 @@ function OrderDetails({
       quantity: totalQuantity,
       remarks,
     };
-    setIsLinkDisabled(false);
+    // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
     setOrders((prevOrders) => {
@@ -454,11 +485,13 @@ function OrderDetails({
   useEffect(() => {
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
     console.log("Orders Now is", orders);
+    console.log("Tables Now is", tables);
+    // console.log("Order Counter Now is", orderCounter);
     // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
-  }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks]);
+  }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks, orderCounter, tables]);
   return (
     <div className="pb-6 w-2/6 flex-auto flex flex-col relative z-20 shadow-md">
       {/* pb-60 is the setting of the bottom */}

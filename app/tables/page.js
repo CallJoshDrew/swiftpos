@@ -15,6 +15,7 @@ import PaymentModal from "../components/modal/paymentModal";
 import CheckOutModal from "../components/modal/checkOutModal";
 import CancelModal from "../components/modal/cancelModal";
 import OrderDetails from "../components/new/orderDetails";
+import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAtom";
 
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -22,7 +23,7 @@ export default function Tables({ menu }) {
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const [tableNumber, setTableNumber] = useState(null);
+  const [tableIndex, setTableIndex] = useAtom(selectedTableIndexAtom);
 
   const [, fetchTables] = useAtom(fetchTablesAtom);
   const [tables, setTables] = useAtom(tablesAtom);
@@ -71,15 +72,32 @@ export default function Tables({ menu }) {
     return () => clearInterval(interval);
   }, [currentDate, setOrderCounter]);
 
+  // useEffect(() => {
+  //   setSelectedOrder({
+  //     orderNumber: "Order Number",
+  //     tableName: "",
+  //     orderType: "Dine-In",
+  //     orderTime: null,
+  //     orderDate: null,
+  //     status: "Status",
+  //     items: [],
+  //     subTotal: 0,
+  //     serviceCharge: 0,
+  //     totalPrice: 0,
+  //     quantity: 0,
+  //     paymentMethod: "",
+  //     remarks: "No Remarks",
+  //   });
+  // }, [/* dependencies */]);
   const findOrder = (orderNumber) => {
     if (Array.isArray(orders)) {
       return orders.find((order) => order.orderNumber === orderNumber);
     }
   };
-
+  
   const determineButtonStyle = (table, order, index) => {
     let buttonStyle = "bg-white text-black";
-    if (index === tableNumber) {
+    if (index === tableIndex) {
       buttonStyle = "bg-green-800 text-white";
     } else if (table.occupied === true && order && order.status === "Completed") {
       buttonStyle = "bg-white text-black";
@@ -123,19 +141,19 @@ export default function Tables({ menu }) {
       console.log(tables);
     }
     setSelectedCategory("All");
-    setTableNumber(tableIndex);
-    let orderNumber = tables[tableIndex].orderNumber;
+    setTableIndex(tableIndex);
+    let orderNumber;
     const generatedOrderID = (tableName) => {
       const paddedCounter = String(orderCounter).padStart(4, "0");
       let tableNameWithoutSpace = tableName.replace(/\s/g, "");
       orderNumber = `#${tableNameWithoutSpace}-${paddedCounter}`;
+
       // console.log("Calling OrderNumber after generatedOrderID", orderNumber);
       setOrderCounter((prevOrderCounter) => prevOrderCounter + 1);
     };
     if (tables[tableIndex].occupied) {
       // Find the order with the same orderNumber as the occupied table
-      const existingOrder = orders.find(
-        (order) => order.orderNumber === tables[tableIndex].orderNumber
+      const existingOrder = findOrder(tables[tableIndex].orderNumber
       );
       if (existingOrder) {
         setSelectedOrder(existingOrder);
@@ -147,41 +165,41 @@ export default function Tables({ menu }) {
       } else {
         console.error("No order found with orderNumber:", tables[tableIndex].orderNumber);
         // Handle the case when no existing order is found
-        setTables((prevTables) => {
-          return prevTables.map((table) => {
-            if (table.orderNumber === selectedOrder?.orderNumber) {
-              const { orderNumber, occupied, ...rest } = table;
-              return rest;
-            } else {
-              return table;
-            }
-          });
-        });
-        setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-        setSelectedOrder((prevSelectedOrder) => ({
-          ...prevSelectedOrder,
-          orderNumber: "Order Number",
-          tableName: "",
-          items: [],
-        }));
+        // setTables((prevTables) => {
+        //   return prevTables.map((table) => {
+        //     if (table.orderNumber === selectedOrder?.orderNumber) {
+        //       const { orderNumber, occupied, ...rest } = table;
+        //       return rest;
+        //     } else {
+        //       return table;
+        //     }
+        //   });
+        // });
+        // setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+        // setSelectedOrder((prevSelectedOrder) => ({
+        //   ...prevSelectedOrder,
+        //   orderNumber: "Order Number",
+        //   tableName: "",
+        //   items: [],
+        // }));
       }
     } else {
       generatedOrderID(tables[tableIndex].name);
-      setSelectedOrder((prevSelectedOrder) => ({
+      setSelectedOrder({
         orderNumber,
         tableName: tables[tableIndex].name,
         orderType: "Dine-In",
         orderTime: null,
         orderDate: null,
         status: "Status",
-        items: [],
+        items:[],
         subTotal: 0,
         serviceCharge: 0,
         totalPrice: 0,
         quantity: 0,
         paymentMethod: "",
         remarks: "No Remarks",
-      }));
+      });
       setTempCartItems([]);
       setTables((prevTables) =>
         prevTables.map((table, index) =>
@@ -195,7 +213,7 @@ export default function Tables({ menu }) {
             : table
         )
       );
-      setIsLinkDisabled(true);
+      // setIsLinkDisabled(true); later enable it. Now debugging.
       // This is when no items added
       setShowMenu(true);
       setShowEditBtn(false);
@@ -318,6 +336,7 @@ export default function Tables({ menu }) {
       )}
       {selectedOrder && (
         <OrderDetails
+          // tableName={tableName}
           orderType="Dine-In"
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}

@@ -9,6 +9,8 @@ import { tableOrderCountAtom } from "./atoms/tableOrderCount";
 import { takeAwayOrderCountAtom } from "./atoms/takeAwayOrderCount";
 import toast from "react-hot-toast";
 import { isLinkDisabledAtom } from "./atoms/linkDisableAtom";
+import { selectedTableOrderAtom } from "./atoms/selectedTableOrderAtom";
+import { selectedTakeAwayOrderAtom } from "./atoms/selectedTakeAwayOrderAtom";
 
 export default function SideNav() {
   const path = usePathname();
@@ -18,12 +20,44 @@ export default function SideNav() {
   const [, setTableOrderCounter] = useAtom(tableOrderCountAtom);
   const [, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
   const [isLinkDisabled, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [, setSelectedTableOrder ] = useAtom(selectedTableOrderAtom)
+  const [, setSelectedTakeAwayOrder ] = useAtom(selectedTakeAwayOrderAtom)
 
   const handleClearLocalStorage = () => {
     setOrders([]);
     setTables([]); // Reset to initial value
     setTableOrderCounter(1);
     setTakeAwayOrderCounter(1);
+    setSelectedTableOrder({
+      orderNumber: "Order Number",
+      tableName: "",
+      orderType: "Dine-In",
+      orderTime: null,
+      orderDate: null,
+      status: "Status",
+      items: [],
+      subTotal: 0,
+      serviceCharge: 0,
+      totalPrice: 0,
+      quantity: 0,
+      paymentMethod: "",
+      remarks: "No Remarks",
+    });
+    setSelectedTakeAwayOrder({
+      orderNumber: "Order Number",
+      orderType: "TakeAway",
+      orderTime: null,
+      orderDate: null,
+      status: "Status",
+      items: [],
+      subTotal: 0,
+      serviceCharge: 0,
+      totalPrice: 0,
+      quantity: 0,
+      paymentMethod: "",
+      remarks: "No Remarks",
+    });
+    // setIsLinkDisabled(false);Debugging now, thus disabled this. 
     // Do this for all atoms that use atomWithStorage
     toast.success("Local Storage is cleared!", {
       duration: 1500,
