@@ -345,7 +345,7 @@ function OrderDetails({
       //   console.log("set to true from handlePlaceOrderBtn");
     } else {
       setShowEditBtn(false);
-      //   console.log("set to false from handlePlaceOrderBtn");
+        // console.log("set to false from handlePlaceOrderBtn");
     }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
@@ -501,10 +501,10 @@ function OrderDetails({
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
-    console.log("Orders Now is", orders);
-    console.log("Tables Now is", tables);
+    // console.log("Orders Now is", orders);
+    // console.log("Tables Now is", tables);
     // console.log("Order Counter Now is", orderCounter);
-    // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
+    console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);

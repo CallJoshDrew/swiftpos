@@ -20,6 +20,8 @@ import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAt
 export default function Tables({ menu }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
+  console.log("Initial showEditBtn",showEditBtn);
+  
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -31,7 +33,7 @@ export default function Tables({ menu }) {
   const [orderCounter, setOrderCounter] = useAtom(tableOrderCountAtom);
   const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
   const [selectedOrder, setSelectedOrder] = useAtom(selectedTableOrderAtom);
-
+  
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
@@ -160,24 +162,6 @@ export default function Tables({ menu }) {
         //   setRemarks((prevRemarks) => selectedOrder.remarks);
       } else {
         console.error("No order found with orderNumber:", tables[tableIndex].orderNumber);
-        // Handle the case when no existing order is found
-        // setTables((prevTables) => {
-        //   return prevTables.map((table) => {
-        //     if (table.orderNumber === selectedOrder?.orderNumber) {
-        //       const { orderNumber, occupied, ...rest } = table;
-        //       return rest;
-        //     } else {
-        //       return table;
-        //     }
-        //   });
-        // });
-        // setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-        // setSelectedOrder((prevSelectedOrder) => ({
-        //   ...prevSelectedOrder,
-        //   orderNumber: "Order Number",
-        //   tableName: "",
-        //   items: [],
-        // }));
       }
     } else {
       generatedOrderID(tables[tableIndex].name);
@@ -272,6 +256,10 @@ export default function Tables({ menu }) {
     ) {
       setShowEditBtn(false);
       // console.log("Set to false from useEffect");
+    } else if (selectedOrder.status ==="Status" && selectedOrder.orderNumber !=="Order Number" && selectedOrder.orderTime === null) {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
     }
   }, [selectedOrder]);
   return (
