@@ -1,8 +1,8 @@
 import React from "react";
 import { useAtom } from "jotai";
 import { tablesAtom } from "../atoms/tablesAtom";
-import { tableOrderCountAtom } from "../atoms/tableOrderCount";
-import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
+import { tableOrderCountAtom } from "../atoms/tableOrderCountAtom";
+import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCountAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";

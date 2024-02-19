@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -26,4 +27,13 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader {
+  border-top-color: rgb(21 128 61);
+  animation: spin 0.5s linear infinite;
+}
 

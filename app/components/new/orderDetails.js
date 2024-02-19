@@ -8,8 +8,8 @@ import { tablesAtom } from "../atoms/tablesAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
-import { tableOrderCountAtom } from "../atoms/tableOrderCount";
-import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCount";
+import { tableOrderCountAtom } from "../atoms/tableOrderCountAtom";
+import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCountAtom";
 
 function OrderDetails({
   // tableName,

@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import { tablesAtom } from "../components/atoms/tablesAtom";
 import { fetchTablesAtom } from "../components/atoms/tablesAtom";
-import { tableOrderCountAtom } from "../components/atoms/tableOrderCount";
+import { tableOrderCountAtom } from "../components/atoms/tableOrderCountAtom";
 import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../components/atoms/selectedTableOrderAtom";
 
@@ -17,7 +17,14 @@ import CancelModal from "../components/modal/cancelModal";
 import OrderDetails from "../components/new/orderDetails";
 import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAtom";
 
-export default function Tables({ menu }) {
+export default function Tables() {
+  const [menu, setMenu] = useState([]); // Stores the menu items
+  // Fetch the menu data when the component mounts
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((response) => response.json())
+      .then((data) => setMenu(data));
+  }, []);
   const [showMenu, setShowMenu] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
   console.log("Initial showEditBtn",showEditBtn);

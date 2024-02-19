@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
-import { takeAwayOrderCountAtom } from "../components/atoms/takeAwayOrderCount";
+import { takeAwayOrderCountAtom } from "../components/atoms/takeAwayOrderCountAtom";
 import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 import { selectedTakeAwayOrderAtom } from "../components/atoms/selectedTakeAwayOrderAtom";
 

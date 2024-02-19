@@ -1,90 +1,113 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAtom } from "jotai";
 import { ordersAtom } from "./atoms/ordersAtom";
 import { tablesAtom } from "./atoms/tablesAtom";
-import { tableOrderCountAtom } from "./atoms/tableOrderCount";
-import { takeAwayOrderCountAtom } from "./atoms/takeAwayOrderCount";
+import { tableOrderCountAtom } from "./atoms/tableOrderCountAtom";
+import { takeAwayOrderCountAtom } from "./atoms/takeAwayOrderCountAtom";
 import toast from "react-hot-toast";
 import { isLinkDisabledAtom } from "./atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "./atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "./atoms/selectedTakeAwayOrderAtom";
+import { selectedTableIndexAtom } from "./atoms/selectedTableIndexAtom";
+import { todayRegisteredAtom } from "./atoms/todayRegisteredAtom";
 
 export default function SideNav() {
   const path = usePathname();
-
+  const router = useRouter();
   const [, setOrders] = useAtom(ordersAtom);
   const [, setTables] = useAtom(tablesAtom);
   const [, setTableOrderCounter] = useAtom(tableOrderCountAtom);
   const [, setTakeAwayOrderCounter] = useAtom(takeAwayOrderCountAtom);
-  const [isLinkDisabled, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
-  const [, setSelectedTableOrder ] = useAtom(selectedTableOrderAtom)
-  const [, setSelectedTakeAwayOrder ] = useAtom(selectedTakeAwayOrderAtom)
+  const [isLinkDisabled, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
+  const [, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
+  const [, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
+  const [, setTableIndex] = useAtom(selectedTableIndexAtom);
+  const [, setTodayRegistered] = useAtom(todayRegisteredAtom);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClearLocalStorage = () => {
-    setOrders([]);
-    setTables([]); // Reset to initial value
-    setTableOrderCounter(1);
-    setTakeAwayOrderCounter(1);
-    setSelectedTableOrder({
-      orderNumber: "Order Number",
-      tableName: "",
-      orderType: "Dine-In",
-      orderTime: null,
-      orderDate: null,
-      status: "Status",
-      items: [],
-      subTotal: 0,
-      serviceCharge: 0,
-      totalPrice: 0,
-      quantity: 0,
-      paymentMethod: "",
-      remarks: "No Remarks",
-    });
-    setSelectedTakeAwayOrder({
-      orderNumber: "Order Number",
-      orderType: "TakeAway",
-      orderTime: null,
-      orderDate: null,
-      status: "Status",
-      items: [],
-      subTotal: 0,
-      serviceCharge: 0,
-      totalPrice: 0,
-      quantity: 0,
-      paymentMethod: "",
-      remarks: "No Remarks",
-    });
-    // setIsLinkDisabled(false);Debugging now, thus disabled this. 
-    // Do this for all atoms that use atomWithStorage
-    toast.success("Local Storage is cleared!", {
-      duration: 1500,
-      position: "top-center",
-      reverseOrder: false,
-    });
+    if (showConfirmModal) {
+      // Clear local storage
+      setOrders([]);
+      setTables([]); // Reset to initial value
+      setTableIndex(null);
+      setTodayRegistered({});
+      setTableOrderCounter(1);
+      setTakeAwayOrderCounter(1);
+      setSelectedTableOrder({
+        orderNumber: "Order Number",
+        tableName: "",
+        orderType: "Dine-In",
+        orderTime: null,
+        orderDate: null,
+        status: "Status",
+        items: [],
+        subTotal: 0,
+        serviceCharge: 0,
+        totalPrice: 0,
+        quantity: 0,
+        paymentMethod: "",
+        remarks: "No Remarks",
+      });
+      setSelectedTakeAwayOrder({
+        orderNumber: "Order Number",
+        orderType: "TakeAway",
+        orderTime: null,
+        orderDate: null,
+        status: "Status",
+        items: [],
+        subTotal: 0,
+        serviceCharge: 0,
+        totalPrice: 0,
+        quantity: 0,
+        paymentMethod: "",
+        remarks: "No Remarks",
+      });
+      // setIsLinkDisabled(false);Debugging now, thus disabled this.
+      // Do this for all atoms that use atomWithStorage
+
+      setTimeout(() => {
+        setShowConfirmModal(false);
+        router.push("/");
+      }, 1000);
+      toast.success("Local Storage is cleared!", {
+        duration: 2000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+    } else {
+      // Show the confirmation modal
+      setShowConfirmModal(true);
+    }
   };
+
   return (
     <div className="py-10 w-1/6 flex-auto relative">
       <div className="fixed flex flex-col w-1/6 px-6">
         <div className="relative"></div>
         <div className="text-green-800 text-center font-bold text-sm">POS SYSTEM</div>
         <Link
-          href="/"
+          href="/tables"
           className={
-            path === "/"
+            path === "/tables"
               ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6"
           }>
           <svg
-            className={path === "/" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
+            className={path === "/tables" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor">
             <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
           </svg>
-          <div className={path === "/" ? "text-white text-sm " : "text-black text-sm"}>来吹水</div>
+          <div className={path === "/tables" ? "text-white text-sm " : "text-black text-sm"}>
+            来吹水
+          </div>
         </Link>
         <Link
           href="/takeAway"
@@ -228,6 +251,48 @@ export default function SideNav() {
         </Link>
       </div> */}
       {isLinkDisabled && <div className="absolute inset-0 bg-gray-300 opacity-70"></div>}
+      {showConfirmModal && (
+        <div className="fixed z-50 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              ​
+            </span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                      All data for this app will be erased forever.
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-lg text-gray-500">
+                        Are you sure you want to clear local storage?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={handleClearLocalStorage}>
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setShowConfirmModal(false)}>
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
