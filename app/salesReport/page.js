@@ -313,11 +313,11 @@ export default function SalesReport() {
   useEffect(() => {
     if (todayRegistered.openForRegister === false) {
       setLoading(true);
-      toast.success("Please Register First", {
-        duration: 1000,
-        position: "top-center",
-        reverseOrder: false,
-      });
+      // toast.success("Please Register First", {
+      //   duration: 1000,
+      //   position: "top-center",
+      //   reverseOrder: false,
+      // });
       setTimeout(() => {
         setLoading(false);
       }, 2000);

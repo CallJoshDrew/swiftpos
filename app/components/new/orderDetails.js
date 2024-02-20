@@ -14,6 +14,7 @@ import { takeAwayOrderCountAtom } from "../atoms/takeAwayOrderCountAtom";
 function OrderDetails({
   // tableName,
   orderType,
+  showMenu,
   setShowMenu,
   showEditBtn,
   setShowEditBtn,
@@ -443,7 +444,7 @@ function OrderDetails({
     orderStatus = "Empty Cart";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
-  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
+  } else if (selectedOrder?.status == "Placed Order" && showEditBtn) {
     orderStatus = "Update Order & Print";
     isSameItems && remarks === tempRemarks
       ? (orderStatusCSS = "bg-gray-500")
@@ -451,7 +452,7 @@ function OrderDetails({
     isSameItems && remarks === tempRemarks
       ? (handleMethod = "Disabled")
       : (handleMethod = handleUpdateOrderBtn);
-  } else if (selectedOrder?.status == "Placed Order") {
+  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
     handleMethod = handlePaymentBtn;
@@ -565,7 +566,7 @@ function OrderDetails({
                   </div>
                 )}
               {Array.isArray(selectedOrder?.items) &&
-                showEditBtn &&
+                showEditBtn && !showMenu &&
                 selectedOrder?.status !== "Paid" &&
                 selectedOrder?.status !== "Completed" &&
                 selectedOrder?.status !== "Cancelled" && (

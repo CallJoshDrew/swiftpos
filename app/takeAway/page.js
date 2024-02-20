@@ -165,11 +165,11 @@ export default function TakeAwayOverview() {
   useEffect(() => {
     if (todayRegistered.openForRegister === false) {
       setLoading(true);
-      toast.success("Please Register First", {
-        duration: 1000,
-        position: "top-center",
-        reverseOrder: false,
-      });
+      // toast.success("Please Register First", {
+      //   duration: 1000,
+      //   position: "top-center",
+      //   reverseOrder: false,
+      // });
       setTimeout(() => {
         setLoading(false);
       }, 2000);
@@ -242,7 +242,7 @@ export default function TakeAwayOverview() {
               </thead>
               <tbody>
                 {takeAwayOrders.length === 0 ? (
-                  <tr>
+                  <tr className="bg-white">
                     <td colSpan="4" className="text-center py-4 text-gray-500">
                       No data is available / Please place your first order.
                     </td>

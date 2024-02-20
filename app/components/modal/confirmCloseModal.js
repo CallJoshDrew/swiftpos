@@ -93,6 +93,8 @@ function ConfirmCloseModal({
         return updatedOrder;
       });
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
+      setShowEditBtn(false);
+      console.log("ShowEditBtn Ran");
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
     } else if (selectedOrder?.status === "Placed Order") {
@@ -105,7 +107,7 @@ function ConfirmCloseModal({
       // }
       setSelectedOrder((prevSelectedOrder) => {
         const updatedOrder = {
-          ...prevOrder,
+          ...prevSelectedOrder,
           items: tempCartItems,
           remarks: remarks === "" ? "No Remarks" : tempRemarks,
         };

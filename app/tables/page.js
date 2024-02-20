@@ -272,22 +272,23 @@ export default function Tables() {
     } else if (
       selectedOrder.status === "Status" &&
       selectedOrder.orderNumber !== "Order Number" &&
-      selectedOrder.orderTime === null
+      selectedOrder.orderTime === null 
     ) {
       setShowEditBtn(true);
-    } else {
-      setShowEditBtn(false);
+      console.log("showEditBtn Ran from useEffect")
+    } else if (selectedOrder.status ==="Placed Order"){
+      setShowEditBtn(true);
     }
-  }, [selectedOrder]);
+  }, [selectedOrder, showMenu]);
 
   useEffect(() => {
     if (todayRegistered.openForRegister === false) {
       setLoading(true);
-      toast.success("Please Register First", {
-        duration: 1000,
-        position: "top-center",
-        reverseOrder: false,
-      });
+      // toast.success("Please Register First", {
+      //   duration: 1000,
+      //   position: "top-center",
+      //   reverseOrder: false,
+      // });
       setTimeout(() => {
         setLoading(false);
       }, 2000);
@@ -367,6 +368,7 @@ export default function Tables() {
         <OrderDetails
           // tableName={tableName}
           orderType="Dine-In"
+          showMenu={showMenu}
           setShowMenu={setShowMenu}
           showEditBtn={showEditBtn}
           setShowEditBtn={setShowEditBtn}

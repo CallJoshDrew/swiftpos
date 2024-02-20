@@ -73,18 +73,16 @@ export default function SideNav() {
       // Do this for all atoms that use atomWithStorage
 
       setTimeout(() => {
-        setShowConfirmModal(false);
         router.push("/");
-      }, 2000);
+      }, 1500);
       toast.success("Local Storage is cleared!", {
-        duration: 2000,
+        duration: 1000,
         position: "top-center",
         reverseOrder: false,
       });
-      // setTimeout(() => {
-      //   setShowConfirmModal(false);
-      //   setLoading(false);
-      // }, 20000);
+      setTimeout(() => {
+        setShowConfirmModal(false);
+      }, 1000);
     } else {
       // Show the confirmation modal
       setShowConfirmModal(true);

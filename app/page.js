@@ -70,11 +70,11 @@ export default function Home() {
   useEffect(() => {
     if (todayRegistered.openForRegister === true && !formSubmitted) {
       router.push("/tables");
-      toast.success("You already register today!", {
-        duration: 1000,
-        position: "top-center",
-        reverseOrder: false,
-      });
+      // toast.success("You already register today!", {
+      //   duration: 1000,
+      //   position: "top-center",
+      //   reverseOrder: false,
+      // });
       setLoading(false);
     }
     // console.log(todayRegistered);
