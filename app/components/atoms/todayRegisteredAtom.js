@@ -1,3 +1,3 @@
 import { atomWithStorage } from 'jotai/utils';
 
-export const todayRegisteredAtom = atomWithStorage('todayRegisteredAtom', {});
+export const todayRegisteredAtom = atomWithStorage('todayRegistered', {});
