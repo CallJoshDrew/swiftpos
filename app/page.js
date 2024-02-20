@@ -9,9 +9,9 @@ import { todayRegisteredAtom } from "./components/atoms/todayRegisteredAtom";
 
 export default function Home() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
-  console.log(todayRegistered);
+  // console.log(todayRegistered);
   const [showModal, setShowModal] = useState(false);
 
   // Helper function to format date and time
@@ -44,39 +44,48 @@ export default function Home() {
   };
 
   const handleConfirm = () => {
+    setLoading(true);
     // Format the date and time before saving
     setTodayRegistered({
       ...formData,
       timeAndDate: formatDateTime(new Date(formData.timeAndDate)),
+      openForRegister: true,
     });
     setShowModal(false);
     setFormSubmitted(true);
-    setTimeout(() => {
-      toast.success("Registration is successful!", {
-        duration: 2000,
-        position: "top-center",
-        reverseOrder: false,
-      });
 
-      // Navigate to '/tables' after 2 seconds
-      setTimeout(() => {
-        router.push("/tables");
-      }, 2000);
+    toast.success("Registration is successful!", {
+      duration: 1000,
+      position: "top-center",
+      reverseOrder: false,
+    });
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    setTimeout(() => {
+      router.push("/tables");
     }, 1000);
   };
 
   useEffect(() => {
-    if (Object.keys(todayRegistered).length !== 0 && !formSubmitted) {
+    if (todayRegistered.openForRegister === true && !formSubmitted) {
       router.push("/tables");
       toast.success("You already register today!", {
         duration: 1000,
         position: "top-center",
         reverseOrder: false,
       });
+      setLoading(false);
     }
-    setLoading(false);
-    console.log(todayRegistered);
+    // console.log(todayRegistered);
   }, [todayRegistered, router, formSubmitted]);
+  if (loading) {
+    return (
+      <div className="bg-gray-100 min-w-full min-h-screen flex items-center justify-center">
+        <div className="loader ease-linear rounded-full border-4 h-12 w-12 mb-4"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -146,7 +155,7 @@ export default function Home() {
               </div>
             </form>
             <div className="block text-gray-500 text-md mb-2" htmlFor="availableCash">
-              This is a demo unit for your perusal  
+              This is a demo unit for your perusal
             </div>
             {showModal && (
               <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -156,9 +165,7 @@ export default function Home() {
                   </div>
                   <span
                     className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                    aria-hidden="true">
-                    ​
-                  </span>
+                    aria-hidden="true"></span>
                   <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">

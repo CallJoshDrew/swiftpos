@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import { tablesAtom } from "../components/atoms/tablesAtom";
@@ -7,6 +8,8 @@ import { fetchTablesAtom } from "../components/atoms/tablesAtom";
 import { tableOrderCountAtom } from "../components/atoms/tableOrderCountAtom";
 import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../components/atoms/selectedTableOrderAtom";
+import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAtom";
+import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
@@ -15,7 +18,7 @@ import PaymentModal from "../components/modal/paymentModal";
 import CheckOutModal from "../components/modal/checkOutModal";
 import CancelModal from "../components/modal/cancelModal";
 import OrderDetails from "../components/new/orderDetails";
-import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAtom";
+import { useRouter } from "next/navigation";
 
 export default function Tables() {
   const [menu, setMenu] = useState([]); // Stores the menu items
@@ -25,10 +28,11 @@ export default function Tables() {
       .then((response) => response.json())
       .then((data) => setMenu(data));
   }, []);
+
   const [showMenu, setShowMenu] = useState(false);
   const [showEditBtn, setShowEditBtn] = useState(false);
-  console.log("Initial showEditBtn",showEditBtn);
-  
+  // console.log("Initial showEditBtn",showEditBtn);
+
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -40,7 +44,9 @@ export default function Tables() {
   const [orderCounter, setOrderCounter] = useAtom(tableOrderCountAtom);
   const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
   const [selectedOrder, setSelectedOrder] = useAtom(selectedTableOrderAtom);
-  
+  const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [tempCartItems, setTempCartItems] = useState([]);
 
   const [remarks, setRemarks] = useState(undefined);
@@ -263,12 +269,41 @@ export default function Tables() {
     ) {
       setShowEditBtn(false);
       // console.log("Set to false from useEffect");
-    } else if (selectedOrder.status ==="Status" && selectedOrder.orderNumber !=="Order Number" && selectedOrder.orderTime === null) {
+    } else if (
+      selectedOrder.status === "Status" &&
+      selectedOrder.orderNumber !== "Order Number" &&
+      selectedOrder.orderTime === null
+    ) {
       setShowEditBtn(true);
     } else {
       setShowEditBtn(false);
     }
   }, [selectedOrder]);
+
+  useEffect(() => {
+    if (todayRegistered.openForRegister === false) {
+      setLoading(true);
+      toast.success("Please Register First", {
+        duration: 1000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    }
+  }, [todayRegistered, router]);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-100 min-w-full min-h-screen flex items-center justify-center z-10">
+        <div className="loader ease-linear rounded-full border-4 h-12 w-12 mb-4"></div>
+      </div>
+    );
+  }
   return (
     <>
       {showMenu ? (

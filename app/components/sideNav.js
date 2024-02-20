@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,17 +26,18 @@ export default function SideNav() {
   const [, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
   const [, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
   const [, setTableIndex] = useAtom(selectedTableIndexAtom);
-  const [, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClearLocalStorage = () => {
     if (showConfirmModal) {
+      // setLoading(true);
       // Clear local storage
       setOrders([]);
       setTables([]); // Reset to initial value
       setTableIndex(null);
-      setTodayRegistered({});
+      setTodayRegistered({openForRegister: false});
       setTableOrderCounter(1);
       setTakeAwayOrderCounter(1);
       setSelectedTableOrder({
@@ -74,17 +75,23 @@ export default function SideNav() {
       setTimeout(() => {
         setShowConfirmModal(false);
         router.push("/");
-      }, 1000);
+      }, 2000);
       toast.success("Local Storage is cleared!", {
         duration: 2000,
         position: "top-center",
         reverseOrder: false,
       });
+      // setTimeout(() => {
+      //   setShowConfirmModal(false);
+      //   setLoading(false);
+      // }, 20000);
     } else {
       // Show the confirmation modal
       setShowConfirmModal(true);
     }
   };
+
+  
 
   return (
     <div className="py-10 w-1/6 flex-auto relative">

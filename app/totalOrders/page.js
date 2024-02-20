@@ -1,13 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
 import EditOrderDetailsModal from "../components/modal/editOrderDetailsModal";
 import OrdersCalendarModal from "../components/modal/ordersCalendarModal";
 import ChangeStatusModal from "../components/modal/changeStatusModal";
+import { useRouter } from "next/navigation";
+import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
 export default function TotalOrders() {
   const [orders, setOrders] = useAtom(ordersAtom);
+  const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -27,6 +33,30 @@ export default function TotalOrders() {
     setSelectedOrder(selectedOrder);
     setEditOrderModalOpen(true);
   };
+  useEffect(() => {
+    if (todayRegistered.openForRegister === false) {
+      setLoading(true);
+      toast.success("Please Register First", {
+        duration: 1000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    }
+  }, [todayRegistered, router]);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-100 min-w-full min-h-screen flex items-center justify-center z-10">
+        <div className="loader ease-linear rounded-full border-4 h-12 w-12 mb-4"></div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">

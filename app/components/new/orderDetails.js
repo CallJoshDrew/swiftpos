@@ -504,7 +504,7 @@ function OrderDetails({
     // console.log("Orders Now is", orders);
     // console.log("Tables Now is", tables);
     // console.log("Order Counter Now is", orderCounter);
-    console.log("showEdit Button Initial State is False But Now is", showEditBtn);
+    // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);

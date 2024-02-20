@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+import toast from "react-hot-toast";
+import { useAtom } from "jotai";
 import { SalesData } from "../data/salesData";
 import Daychart from "../components/chart/dayChart";
 import WeekChart from "../components/chart/weekChart";
@@ -9,6 +11,8 @@ import Image from "next/image";
 import TopSoldItemsModal from "../components/modal/topSoldItemsModal";
 import SalesCalendarModal from "../components/modal/salesCalendarModal";
 import MonthChart from "../components/chart/monthChart";
+import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
+import { useRouter } from "next/navigation";
 
 export default function SalesReport() {
   const [selectedBtn, setSelectedBtn] = useState("today");
@@ -20,6 +24,9 @@ export default function SalesReport() {
   const [isTopSoldItemsModalOpen, setTopSoldItemsModalOpen] = useState(false);
   const [isSalesCalendarModalOpen, setSalesCalendarModalOpen] = useState(false);
 
+  const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   // Map the month number to the month name
   const monthNames = [
     "Jan",
@@ -302,6 +309,31 @@ export default function SalesReport() {
   let selectedWeekBtn = `Week: ${startOfWeek.getDate()} - ${formatWeek(endOfWeek)}`;
   let selectedMonthBtn = `Month: ${selectedMonthName}`;
   let selectedYearBtn = `Year: ${selectedYear}`;
+
+  useEffect(() => {
+    if (todayRegistered.openForRegister === false) {
+      setLoading(true);
+      toast.success("Please Register First", {
+        duration: 1000,
+        position: "top-center",
+        reverseOrder: false,
+      });
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    }
+  }, [todayRegistered, router]);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-100 min-w-full min-h-screen flex items-center justify-center z-10">
+        <div className="loader ease-linear rounded-full border-4 h-12 w-12 mb-4"></div>
+      </div>
+    );
+  }
   return (
     <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 pt-8 px-6">
       <div className="bg-gray-100 text-black">
