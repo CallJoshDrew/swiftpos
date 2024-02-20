@@ -16,8 +16,8 @@ function OrderDetails({
   orderType,
   showMenu,
   setShowMenu,
-  showEditBtn,
-  setShowEditBtn,
+  // showEditBtn,
+  // setShowEditBtn,
   showEditControls,
   setShowEditControls,
   tempCartItems,
@@ -211,7 +211,10 @@ function OrderDetails({
   };
   const handleEditOrder = () => {
     // setIsLinkDisabled(true);Debugging now, thus disabled this.
-    setShowEditBtn(false);
+    setSelectedOrder({
+      ...selectedOrder,
+      showEditBtn: false,
+    });
     // console.log("set to false from handleEditOrder");
     setShowEditControls(true);
     setShowMenu(true);
@@ -301,6 +304,7 @@ function OrderDetails({
       quantity: totalQuantity,
       paymentMethod: "",
       remarks: remarks === "" ? "No Remarks" : remarks,
+      showEditBtn: true,
     };
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
@@ -341,13 +345,13 @@ function OrderDetails({
     setShowRemarksBtn(false);
     // Only want to show the Edit Btn when client already placed order but haven't pay yet.
     // check newOrder.status instead of selectedOrder.status for the latest status
-    if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
-      setShowEditBtn(true);
-      //   console.log("set to true from handlePlaceOrderBtn");
-    } else {
-      setShowEditBtn(false);
-        // console.log("set to false from handlePlaceOrderBtn");
-    }
+    // if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
+    //   setShowEditBtn(true);
+    //   //   console.log("set to true from handlePlaceOrderBtn");
+    // } else {
+    //   setShowEditBtn(false);
+    //     // console.log("set to false from handlePlaceOrderBtn");
+    // }
     toast.success("Placed Order & Printing Now", {
       duration: 1000,
       position: "top-center",
@@ -389,6 +393,7 @@ function OrderDetails({
       totalPrice,
       quantity: totalQuantity,
       remarks,
+      showEditBtn: true,
     };
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
@@ -404,6 +409,7 @@ function OrderDetails({
             totalPrice,
             quantity: totalQuantity,
             remarks: remarks === "" ? "No Remarks" : remarks,
+            showEditBtn: true,
           };
         } else {
           return order;
@@ -413,13 +419,13 @@ function OrderDetails({
     setShowMenu(false);
     setShowEditControls(false);
     setShowRemarksBtn(false);
-    if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
-      setShowEditBtn(true);
-      //   console.log("set to true from update button");
-    } else {
-      setShowEditBtn(false);
-      //   console.log("set to false from update button");
-    }
+    // if (newOrder.status === "Placed Order" && newOrder.payment !== "Paid") {
+    //   setShowEditBtn(true);
+    //   //   console.log("set to true from update button");
+    // } else {
+    //   setShowEditBtn(false);
+    //   //   console.log("set to false from update button");
+    // }
     toast.success("Successfully Updated Order", {
       duration: 1000,
       position: "top-center",
@@ -444,7 +450,7 @@ function OrderDetails({
     orderStatus = "Empty Cart";
     orderStatusCSS = "bg-gray-500";
     handleMethod = "Disabled";
-  } else if (selectedOrder?.status == "Placed Order" && showEditBtn) {
+  } else if (selectedOrder?.status == "Placed Order" && selectedOrder?.showEditBtn === false) {
     orderStatus = "Update Order & Print";
     isSameItems && remarks === tempRemarks
       ? (orderStatusCSS = "bg-gray-500")
@@ -452,7 +458,7 @@ function OrderDetails({
     isSameItems && remarks === tempRemarks
       ? (handleMethod = "Disabled")
       : (handleMethod = handleUpdateOrderBtn);
-  } else if (selectedOrder?.status == "Placed Order" && !showEditBtn) {
+  } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
     handleMethod = handlePaymentBtn;
@@ -505,11 +511,11 @@ function OrderDetails({
     // console.log("Orders Now is", orders);
     // console.log("Tables Now is", tables);
     // console.log("Order Counter Now is", orderCounter);
-    // console.log("showEdit Button Initial State is False But Now is", showEditBtn);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
-    console.log("SelectedOrder Now is", selectedOrder);
+    console.log("SelectedOrder Allow Edit is", selectedOrder.showEditBtn);
+    // console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
-  }, [selectedOrder, orders, showEditBtn, showEditControls, tempCartItems, remarks, orderCounter, tables]);
+  }, [selectedOrder, orders, showEditControls, tempCartItems, remarks, orderCounter, tables]);
   return (
     <div className="pb-6 w-2/6 flex-auto flex flex-col relative z-20 shadow-md">
       {/* pb-60 is the setting of the bottom */}
@@ -540,7 +546,7 @@ function OrderDetails({
             </div>
             <div className="flex">
               {Array.isArray(selectedOrder?.items) &&
-                !showEditBtn &&
+                selectedOrder?.showEditBtn === false &&
                 showRemarksBtn &&
                 selectedOrder?.items.length > 0 &&
                 selectedOrder?.status !== "Paid" &&
@@ -566,7 +572,7 @@ function OrderDetails({
                   </div>
                 )}
               {Array.isArray(selectedOrder?.items) &&
-                showEditBtn && !showMenu &&
+                selectedOrder?.showEditBtn === true && 
                 selectedOrder?.status !== "Paid" &&
                 selectedOrder?.status !== "Completed" &&
                 selectedOrder?.status !== "Cancelled" && (

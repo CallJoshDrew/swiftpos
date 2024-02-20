@@ -12,7 +12,7 @@ function ConfirmCloseModal({
   isConfirmCloseModal,
   setIsConfirmCloseModal,
   setShowMenu,
-  setShowEditBtn,
+  // setShowEditBtn,
   setShowEditControls,
   tempCartItems,
   orderType,
@@ -89,16 +89,17 @@ function ConfirmCloseModal({
           orderNumber: "Order Number",
           items: [],
           remarks: "No Remarks",
+          showEditBtn: false,
         };
         return updatedOrder;
       });
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
-      setShowEditBtn(false);
+      // setShowEditBtn(false);
       console.log("ShowEditBtn Ran");
       setShowRemarksBtn(false);
       setShowRemarksArea(false);
     } else if (selectedOrder?.status === "Placed Order") {
-      setShowEditBtn(true);
+      // setShowEditBtn(true);
       console.log("Set to true from ConfirmCloseModal");
       // if (remarks ==="") {
       //   setRemarks("No Remarks");
@@ -110,6 +111,7 @@ function ConfirmCloseModal({
           ...prevSelectedOrder,
           items: tempCartItems,
           remarks: remarks === "" ? "No Remarks" : tempRemarks,
+          showEditBtn: true,
         };
         setOrders((prevOrders) => updateOrders(prevOrders, updatedOrder));
         return updatedOrder;

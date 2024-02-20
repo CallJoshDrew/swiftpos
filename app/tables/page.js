@@ -30,8 +30,6 @@ export default function Tables() {
   }, []);
 
   const [showMenu, setShowMenu] = useState(false);
-  const [showEditBtn, setShowEditBtn] = useState(false);
-  // console.log("Initial showEditBtn",showEditBtn);
 
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -168,9 +166,8 @@ export default function Tables() {
       const existingOrder = findOrder(tables[tableIndex].orderNumber);
       if (existingOrder) {
         setSelectedOrder(existingOrder);
+        console.log(existingOrder);
         setTempCartItems(existingOrder.items);
-        // have to set to true evertime and then use useEffect to set it false.
-        setShowEditBtn(true);
         setShowEditControls(false);
         //   setRemarks((prevRemarks) => selectedOrder.remarks);
       } else {
@@ -192,6 +189,7 @@ export default function Tables() {
         quantity: 0,
         paymentMethod: "",
         remarks: "No Remarks",
+        showEditBtn: false,
       };
 
       setSelectedOrder(newOrder);
@@ -212,8 +210,6 @@ export default function Tables() {
       // setIsLinkDisabled(true); later enable it. Now debugging.
       // This is when no items added
       setShowMenu(true);
-      setShowEditBtn(false);
-      //   console.log("set to false from table when status is status");
       setShowEditControls(true);
     }
   };
@@ -235,7 +231,7 @@ export default function Tables() {
     setOrders(
       orders.map((order) =>
         order.orderNumber === orderNumber
-          ? { ...order, status: "Cancelled", cancellationTime: timeString }
+          ? { ...order, status: "Cancelled", cancellationTime: timeString, showEditBtn: false, }
           : order
       )
     );
@@ -257,29 +253,30 @@ export default function Tables() {
         ...prevSelectedOrder,
         status: "Cancelled",
         cancellationTime: timeString,
+        showEditBtn: false,
       };
     });
   };
-  useEffect(() => {
-    if (
-      selectedOrder &&
-      (selectedOrder.status === "Paid" ||
-        selectedOrder.status === "Completed" ||
-        selectedOrder.status === "Cancelled")
-    ) {
-      setShowEditBtn(false);
-      // console.log("Set to false from useEffect");
-    } else if (
-      selectedOrder.status === "Status" &&
-      selectedOrder.orderNumber !== "Order Number" &&
-      selectedOrder.orderTime === null 
-    ) {
-      setShowEditBtn(true);
-      console.log("showEditBtn Ran from useEffect")
-    } else if (selectedOrder.status ==="Placed Order"){
-      setShowEditBtn(true);
-    }
-  }, [selectedOrder, showMenu]);
+  // useEffect(() => {
+  //   if (
+  //     selectedOrder &&
+  //     (selectedOrder.status === "Paid" ||
+  //       selectedOrder.status === "Completed" ||
+  //       selectedOrder.status === "Cancelled")
+  //   ) {
+  //     setShowEditBtn(false);
+  //     // console.log("Set to false from useEffect");
+  //   } else if (
+  //     selectedOrder.status === "Status" &&
+  //     selectedOrder.orderNumber !== "Order Number" &&
+  //     selectedOrder.orderTime === null 
+  //   ) {
+  //     setShowEditBtn(true);
+  //     console.log("showEditBtn Ran from useEffect")
+  //   } else if (selectedOrder.status ==="Placed Order"){
+  //     setShowEditBtn(true);
+  //   }
+  // }, [selectedOrder, showMenu]);
 
   useEffect(() => {
     if (todayRegistered.openForRegister === false) {
@@ -316,7 +313,7 @@ export default function Tables() {
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              setShowEditBtn={setShowEditBtn}
+              // setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
@@ -332,7 +329,7 @@ export default function Tables() {
               menu={menu}
               orderType="Dine-In"
               selectedCategory={selectedCategory}
-              setShowEditBtn={setShowEditBtn}
+              // setShowEditBtn={setShowEditBtn}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setShowRemarksBtn={setShowRemarksBtn}
@@ -370,8 +367,8 @@ export default function Tables() {
           orderType="Dine-In"
           showMenu={showMenu}
           setShowMenu={setShowMenu}
-          showEditBtn={showEditBtn}
-          setShowEditBtn={setShowEditBtn}
+          // showEditBtn={showEditBtn}
+          // setShowEditBtn={setShowEditBtn}
           showEditControls={showEditControls}
           setShowEditControls={setShowEditControls}
           tempCartItems={tempCartItems}
@@ -395,7 +392,7 @@ export default function Tables() {
         isConfirmCloseModal={isConfirmCloseModal}
         setIsConfirmCloseModal={setIsConfirmCloseModal}
         setShowMenu={setShowMenu}
-        setShowEditBtn={setShowEditBtn}
+        // setShowEditBtn={setShowEditBtn}
         setShowEditControls={setShowEditControls}
         tempCartItems={tempCartItems}
         orderType="Dine-In"
@@ -409,7 +406,7 @@ export default function Tables() {
         isPayModalOpen={isPayModalOpen}
         setPayModalOpen={setPayModalOpen}
         orderType="Dine-In"
-        setShowEditBtn={setShowEditBtn}
+        // setShowEditBtn={setShowEditBtn}
       />
       <CheckOutModal
         isCheckOutModalOpen={isCheckOutModalOpen}

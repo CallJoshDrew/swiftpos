@@ -14,4 +14,5 @@ export const selectedTakeAwayOrderAtom = atomWithStorage("selectedTakeAwayOrder"
   quantity: 0,
   paymentMethod: "",
   remarks: "No Remarks",
+  showEditBtn: false,
 });

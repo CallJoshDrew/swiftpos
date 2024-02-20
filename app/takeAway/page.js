@@ -33,7 +33,6 @@ export default function TakeAwayOverview() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const [showEditBtn, setShowEditBtn] = useState(true);
   const [showEditControls, setShowEditControls] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -89,7 +88,7 @@ export default function TakeAwayOverview() {
     setSelectedCategory("All");
     setTempCartItems([]);
     setShowMenu(true);
-    setShowEditBtn(false);
+    // setShowEditBtn(false);
     setShowEditControls(true);
     let orderNumber;
     const generatedOrderID = () => {
@@ -111,6 +110,7 @@ export default function TakeAwayOverview() {
       quantity: 0,
       paymentMethod: "",
       remarks: "No Remarks",
+      showEditBtn: false,
     };
     setSelectedOrder(newOrder);
     setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
@@ -122,13 +122,13 @@ export default function TakeAwayOverview() {
     }));
     setSelectedOrder(order);
     setTempCartItems(itemsWithOrderID);
-    if (order.status === "Paid" || order.status === "Completed" || order.status === "Cancelled") {
-      setShowEditBtn(false);
-      setShowEditControls(false);
-    } else {
-      setShowEditBtn(true);
-      setShowEditControls(false);
-    }
+    // if (order.status === "Paid" || order.status === "Completed" || order.status === "Cancelled") {
+    //   setShowEditBtn(false);
+    //   setShowEditControls(false);
+    // } else {
+    //   setShowEditBtn(true);
+    //   setShowEditControls(false);
+    // }
   };
 
   const getFormattedTime = () => {
@@ -149,7 +149,7 @@ export default function TakeAwayOverview() {
     setOrders(
       orders.map((order) =>
         order.orderNumber === orderNumber
-          ? { ...order, status: "Cancelled", cancellationTime: timeString }
+          ? { ...order, status: "Cancelled", cancellationTime: timeString, showEditBtn: false }
           : order
       )
     );
@@ -158,6 +158,7 @@ export default function TakeAwayOverview() {
         ...prevSelectedOrder,
         status: "Cancelled",
         cancellationTime: timeString,
+        showEditBtn: false,
       };
     });
   };
@@ -197,7 +198,6 @@ export default function TakeAwayOverview() {
               setShowMenu={setShowMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              setShowEditBtn={setShowEditBtn}
               setShowEditControls={setShowEditControls}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
@@ -213,7 +213,6 @@ export default function TakeAwayOverview() {
               menu={menu}
               orderType="TakeAway"
               selectedCategory={selectedCategory}
-              setShowEditBtn={setShowEditBtn}
               tempCartItems={tempCartItems}
               setTempCartItems={setTempCartItems}
               setShowRemarksBtn={setShowRemarksBtn}
@@ -304,8 +303,6 @@ export default function TakeAwayOverview() {
         <OrderDetails
           orderType="TakeAway"
           setShowMenu={setShowMenu}
-          showEditBtn={showEditBtn}
-          setShowEditBtn={setShowEditBtn}
           showEditControls={showEditControls}
           setShowEditControls={setShowEditControls}
           tempCartItems={tempCartItems}
@@ -329,7 +326,6 @@ export default function TakeAwayOverview() {
         isConfirmCloseModal={isConfirmCloseModal}
         setIsConfirmCloseModal={setIsConfirmCloseModal}
         setShowMenu={setShowMenu}
-        setShowEditBtn={setShowEditBtn}
         setShowEditControls={setShowEditControls}
         tempCartItems={tempCartItems}
         orderType="TakeAway"
@@ -343,7 +339,6 @@ export default function TakeAwayOverview() {
         isPayModalOpen={isPayModalOpen}
         setPayModalOpen={setPayModalOpen}
         orderType="TakeAway"
-        setShowEditBtn={setShowEditBtn}
       />
       <CancelModal
         isCancelModalOpen={isCancelModalOpen}

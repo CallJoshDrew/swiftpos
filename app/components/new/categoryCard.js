@@ -28,7 +28,7 @@ function CategoryCard({
   setShowMenu,
   selectedCategory,
   setSelectedCategory,
-  setShowEditBtn,
+  // setShowEditBtn,
   setShowEditControls,
   tempCartItems,
   setTempCartItems,
@@ -124,7 +124,15 @@ function CategoryCard({
     ) {
       // setIsLinkDisabled(false);Debugging now, thus disabled this.
       setShowMenu(false);
-      setShowEditBtn(true);
+      setSelectedOrder((prevSelectedOrder) => {
+        const updatedOrder = {
+          ...prevSelectedOrder,
+          showEditBtn: true,
+        };
+        setOrders((prevOrders) => updateOrders(prevOrders, updatedOrder));
+        return updatedOrder;
+      });
+      // setShowEditBtn(true);
       console.log("Set to true from closeMenu");
       setShowEditControls(false);
       setShowRemarksBtn(false);
@@ -186,7 +194,7 @@ function CategoryCard({
       
       // setIsLinkDisabled(false); Debugging now, thus disabled this.
       setShowMenu(false);
-      setShowEditBtn(false);
+      // setShowEditBtn(false);
       console.log("set to false from category");
       setShowEditControls(false);
       setShowRemarksBtn(false);

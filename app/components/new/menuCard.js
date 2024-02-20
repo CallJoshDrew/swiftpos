@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MenuItem from "./menuItem";
 import SelectionModal from "../modal/selectionModal";
 
-function MenuCard({ menu, orderType, selectedCategory, setShowEditBtn, tempCartItems, setTempCartItems, setShowRemarksBtn, }) {
+function MenuCard({ menu, orderType, selectedCategory, tempCartItems, setTempCartItems, setShowRemarksBtn, }) {
   const [isSelectionModalOpen, setSelectionModalOpen] = useState(false);
   const [selectionModal, setSelectionModal] = useState({
     item: "",
@@ -33,7 +33,6 @@ function MenuCard({ menu, orderType, selectedCategory, setShowEditBtn, tempCartI
           item={item}
           orderType={orderType}
           handleItemSelection={handleItemSelection}
-          setShowEditBtn={setShowEditBtn}
           tempCartItems={tempCartItems}
           setTempCartItems={setTempCartItems}
           setShowRemarksBtn={setShowRemarksBtn}

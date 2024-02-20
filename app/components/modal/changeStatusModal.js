@@ -1,4 +1,4 @@
-import React, { useState, useEffect,} from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
@@ -14,7 +14,7 @@ export default function ChangeStatusModal({
   const [tables, setTables] = useAtom(tablesAtom);
   console.log(selectedOrder?.tableName);
   useEffect(() => {
-    console.log("Tables Now is ", tables)
+    console.log("Tables Now is ", tables);
   }, [tables]);
   let statusChangeTo;
   if (selectedOrder?.status === "Cancelled") {
@@ -29,23 +29,24 @@ export default function ChangeStatusModal({
           return {
             ...order,
             status: statusChangeTo,
+            showEditBtn: true,
           };
         } else {
           return order;
         }
       });
     });
-    if (selectedOrder?.orderType === "Dine-In" && statusChangeTo ==="Placed Order") {
+    if (selectedOrder?.orderType === "Dine-In" && statusChangeTo === "Placed Order") {
       setTables((prevTables) => {
         return prevTables.map((table) => {
           if (table.name === selectedOrder?.tableName) {
-            return { ...table, occupied: true, orderNumber:selectedOrder?.orderNumber };
+            return { ...table, occupied: true, orderNumber: selectedOrder?.orderNumber };
           } else {
             return table;
           }
         });
       });
-    }    
+    }
     setChangeStatusModalOpen(false);
     setEditOrderModalOpen(false);
     toast.success(`Status Changed to ${statusChangeTo}`, {

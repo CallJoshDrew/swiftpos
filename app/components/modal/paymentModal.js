@@ -10,7 +10,7 @@ import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
 function PaymentModal({
   isPayModalOpen,
   setPayModalOpen,
-  setShowEditBtn,
+  // setShowEditBtn,
   orderType,
 }) {
   const [, setOrders] = useAtom(ordersAtom);
@@ -78,6 +78,7 @@ function PaymentModal({
             amountReceived: newAmountReceived,
             amountChange: newAmountChange,
             paymentTime: `${timeString}, ${dateString}`,
+            showEditBtn: false,
           };
         } else {
           return order;
@@ -93,13 +94,14 @@ function PaymentModal({
         amountReceived: newAmountReceived,
         amountChange: newAmountChange,
         paymentTime: `${timeString}, ${dateString}`,
+        showEditBtn: false,
       };
       console.log(newOrder); // Log the new order
       return newOrder;
     });
     setIsLinkDisabled(false);
     setPayModalOpen(false);
-    setShowEditBtn(false);
+    // setShowEditBtn(false);
     console.log("set to false from payment");
     // Reset the payment method back to "Cash"
     setPaymentMethod("Cash");
