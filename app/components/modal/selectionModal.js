@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
@@ -14,6 +14,28 @@ function SelectionModal({
   setSelectionModal,
   orderType,
 }) {
+  const [remarks, setRemarks] = useState("");
+  const textareaRef = useRef(null);
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [remarks]);
+  const options = ["No Vegetables", "No Coriander", "More Onion"];
+
+  const handleAddRemarks = (option) => {
+    setRemarks((prevRemarks) => {
+      // Check if the option already exists in remarks
+      if (!prevRemarks.includes(option)) {
+        // If it doesn't exist, add it
+        return `${prevRemarks} ${option},`;
+      }
+      // If it does exist, return the previous remarks without changes
+      return prevRemarks;
+    });
+  };
+
   const [orders, setOrders] = useAtom(ordersAtom);
 
   function useSelectedOrder(orderType) {
@@ -32,7 +54,7 @@ function SelectionModal({
     const orderIndex = prevOrders.findIndex(
       (order) => order.orderNumber === updatedOrder.orderNumber
     );
-  
+
     if (orderIndex === -1) {
       return [...prevOrders, updatedOrder];
     } else {
@@ -40,7 +62,7 @@ function SelectionModal({
       updatedOrders[orderIndex] = updatedOrder;
       return updatedOrders;
     }
-  };  
+  };
 
   const handleSelectionBtn = () => {
     // Generate a unique ID based on the current time and a random number
@@ -115,7 +137,7 @@ function SelectionModal({
     <>
       <div className="fixed inset-0 bg-black opacity-70 z-40"></div>
       <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-[400px]">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-[600px]">
           <div className="flex flex-col gap-4">
             {selectionModal.item && (
               <div key={selectionModal.item.id} className="border rounded-md p-2 shadow-sm my-2">
@@ -196,13 +218,32 @@ function SelectionModal({
               </div>
             )}
           </div>
+          <div className="flex flex-col items-center">
+            <div className="mb-1 w-full">
+              {options.map((option, index) => (
+                <button
+                  key={index}
+                  className="bg-yellow-500 hover:bg-green-800 text-white text-sm font-bold py-2 px-4 rounded m-2"
+                  onClick={() => handleAddRemarks(option)}>
+                  {option}
+                </button>
+              ))}
+            </div>
+            <textarea
+              ref={textareaRef}
+              className="form-textarea mt-1 block w-full rounded-md border-gray-300 text-gray-500 p-2"
+              rows="2"
+              placeholder="Select or type remarks here..."
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+            />
+          </div>
           <div className="flex w-full space-x-2 my-2 justify-center items-center">
             <button
               className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={handleSelectionBtn}>
               Confirm
             </button>
-            {/* <div className="text-center text-white">OR</div> */}
             <button
               className="flex-1 bg-gray-700 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={handleModalClose}>

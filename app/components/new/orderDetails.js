@@ -508,7 +508,7 @@ function OrderDetails({
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
   useEffect(() => {
     // selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
-    // console.log("Orders Now is", orders);
+    console.log("Orders Now is", orders);
     // console.log("Tables Now is", tables);
     // console.log("Order Counter Now is", orderCounter);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
@@ -545,7 +545,7 @@ function OrderDetails({
               )}
             </div>
             <div className="flex">
-              {Array.isArray(selectedOrder?.items) &&
+              {/* {Array.isArray(selectedOrder?.items) &&
                 selectedOrder?.showEditBtn === false &&
                 showRemarksBtn &&
                 selectedOrder?.items.length > 0 &&
@@ -570,7 +570,7 @@ function OrderDetails({
                       />
                     </svg>
                   </div>
-                )}
+                )} */}
               {Array.isArray(selectedOrder?.items) &&
                 selectedOrder?.showEditBtn == true && 
                 selectedOrder?.tableName !=="" &&
