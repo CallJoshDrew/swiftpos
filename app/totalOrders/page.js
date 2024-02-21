@@ -25,16 +25,29 @@ export default function TotalOrders() {
   const handleCalendarBtn = () => {
     setCalendarModalOpen(true);
   };
-  const [selectedOrderType, setSelectedOrderType] = useState("Dine-In");
+  const [selectedOrderType, setSelectedOrderType] = useState("All");
 
   const handleOrderTypeClick = (orderType) => {
     setSelectedOrderType(orderType);
   };
+  // So, when you see return false;, it means “exclude this order from the filteredOrders array and move on to the next one”. When you see return true;, it means “include this order in the filteredOrders array and move on to the next one”.
+  const filteredOrders = orders.filter((order) => {
+    // Filter out orders that are not "Completed" or "Cancelled"
+    if (order.status !== "Completed" && order.status !== "Cancelled") {
+      return false;
+    }
+    // Filter out orders that do not match the selected date
+    if (new Date(order.orderDate).toDateString() !== selectedDate.toDateString()) {
+      return false;
+    }
+    // If the selected order type is "All", include all orders
+    if (selectedOrderType === "All") {
+      return true;
+    }
+    // Otherwise, only include orders that match the selected order type
+    return order.orderType === selectedOrderType;
+  });
 
-  const filteredOrders = orders
-    .filter((order) => order.status === "Completed" || order.status === "Cancelled")
-    .filter((order) => order.orderType === selectedOrderType);
-  console.log(filteredOrders);
   const handleSelectedOrderBtn = (orderNumber) => {
     const selectedOrder = orders.find((order) => order.orderNumber === orderNumber);
     // const itemsWithOrderID = selectedOrder.items.map((item) => ({
@@ -73,21 +86,27 @@ export default function TotalOrders() {
       <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
         <div className="flex justify-between w-full items-center">
           <div className="flex items-center">
-          <div className="pb-1 ml-2 text-lg text-green-800 font-bold">Today&apos;s Orders</div>
-          <button
-            className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
-              selectedOrderType === "Dine-In" ? "bg-green-800" : "bg-yellow-500"
-            }`}
-            onClick={() => handleOrderTypeClick("Dine-In")}>
-            Dine-In
-          </button>
-          <button
-            className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
-              selectedOrderType === "TakeAway" ? "bg-green-800" : "bg-yellow-500"
-            }`}
-            onClick={() => handleOrderTypeClick("TakeAway")}>
-            Take Away
-          </button>
+            <button
+              className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
+                selectedOrderType === "All" ? "bg-green-800" : "bg-yellow-500"
+              }`}
+              onClick={() => handleOrderTypeClick("All")}>
+              Today&apos;s Orders
+            </button>
+            <button
+              className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
+                selectedOrderType === "Dine-In" ? "bg-green-800" : "bg-yellow-500"
+              }`}
+              onClick={() => handleOrderTypeClick("Dine-In")}>
+              Dine-In
+            </button>
+            <button
+              className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
+                selectedOrderType === "TakeAway" ? "bg-green-800" : "bg-yellow-500"
+              }`}
+              onClick={() => handleOrderTypeClick("TakeAway")}>
+              Take Away
+            </button>
           </div>
           <button
             className="text-xs py-2 px-4 bg-green-700 text-white rounded-md"
