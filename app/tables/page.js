@@ -147,8 +147,6 @@ export default function Tables() {
   const selectedTable = (tableIndex) => {
     if (!tables) {
       console.error("Tables is undefined");
-    } else {
-      console.log(tables);
     }
     setSelectedCategory("All");
     setTableIndex(tableIndex);
@@ -164,11 +162,15 @@ export default function Tables() {
     if (tables[tableIndex].occupied) {
       // Find the order with the same orderNumber as the occupied table
       const existingOrder = findOrder(tables[tableIndex].orderNumber);
+      // console.log(tables[tableIndex].orderNumber)
       if (existingOrder) {
         setSelectedOrder(existingOrder);
-        console.log(existingOrder);
         setTempCartItems(existingOrder.items);
         setShowEditControls(false);
+        setSelectedOrder({
+          ...selectedOrder,
+          showEditBtn: true,
+        });
         //   setRemarks((prevRemarks) => selectedOrder.remarks);
       } else {
         console.error("No order found with orderNumber:", tables[tableIndex].orderNumber);
@@ -191,10 +193,10 @@ export default function Tables() {
         remarks: "No Remarks",
         showEditBtn: false,
       };
-
       setSelectedOrder(newOrder);
       setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
       setTempCartItems([]);
+      
       setTables((prevTables) =>
         prevTables.map((table, index) =>
           index === tableIndex

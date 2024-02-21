@@ -133,7 +133,7 @@ function CategoryCard({
         return updatedOrder;
       });
       // setShowEditBtn(true);
-      console.log("Set to true from closeMenu");
+      // console.log("Set to true from closeMenu");
       setShowEditControls(false);
       setShowRemarksBtn(false);
       if (remarks === "" && tempRemarks === "") {
@@ -152,19 +152,19 @@ function CategoryCard({
       remarks === tempRemarks
     ) {
       setIsConfirmCloseModal(true);
-      console.log("items are not the same, but remarks the same");
+      // console.log("items are not the same, but remarks the same");
     } else if (
       selectedOrder?.status === "Placed Order" &&
       !compareQuantities(sortedTempCartItems, sortedSelectedOrderItems) &&
       remarks !== tempRemarks
     ) {
       setIsConfirmCloseModal(true);
-      console.log("items and remarks are not the same");
+      // console.log("items and remarks are not the same");
     } else if (
       selectedOrder?.status === "Status" &&
       compareQuantities(sortedTempCartItems, sortedSelectedOrderItems)
     ) {
-      console.log("items and remarks are the same");
+      // console.log("items and remarks are the same");
       setOrderCounter((prevOrderCounter) => prevOrderCounter - 1);
       // Below is only for setTables which need to be updated. TakeAway don't have tables.
       if (selectedOrder?.orderType === "Dine-In") {
@@ -195,7 +195,7 @@ function CategoryCard({
       // setIsLinkDisabled(false); Debugging now, thus disabled this.
       setShowMenu(false);
       // setShowEditBtn(false);
-      console.log("set to false from category");
+      // console.log("set to false from category");
       setShowEditControls(false);
       setShowRemarksBtn(false);
       setShowRemarksArea(false);

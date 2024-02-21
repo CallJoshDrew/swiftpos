@@ -513,7 +513,7 @@ function OrderDetails({
     // console.log("Order Counter Now is", orderCounter);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
     console.log("SelectedOrder Allow Edit is", selectedOrder.showEditBtn);
-    // console.log("SelectedOrder Now is", selectedOrder);
+    console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, orders, showEditControls, tempCartItems, remarks, orderCounter, tables]);
   return (
@@ -572,7 +572,8 @@ function OrderDetails({
                   </div>
                 )}
               {Array.isArray(selectedOrder?.items) &&
-                selectedOrder?.showEditBtn === true && 
+                selectedOrder?.showEditBtn == true && 
+                selectedOrder?.tableName !=="" &&
                 selectedOrder?.status !== "Paid" &&
                 selectedOrder?.status !== "Completed" &&
                 selectedOrder?.status !== "Cancelled" && (

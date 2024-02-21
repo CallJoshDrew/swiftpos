@@ -120,16 +120,18 @@ export default function TakeAwayOverview() {
     const itemsWithOrderID = order.items.map((item) => ({
       ...item,
     }));
+    // Add the showEditBtn key to the order object
+    order.showEditBtn = true;
     setSelectedOrder(order);
     setTempCartItems(itemsWithOrderID);
-    // if (order.status === "Paid" || order.status === "Completed" || order.status === "Cancelled") {
-    //   setShowEditBtn(false);
-    //   setShowEditControls(false);
-    // } else {
-    //   setShowEditBtn(true);
-    //   setShowEditControls(false);
-    // }
   };
+  // if (order.status === "Paid" || order.status === "Completed" || order.status === "Cancelled") {
+  //   setShowEditBtn(false);
+  //   setShowEditControls(false);
+  // } else {
+  //   setShowEditBtn(true);
+  //   setShowEditControls(false);
+  // }
 
   const getFormattedTime = () => {
     const now = new Date();
