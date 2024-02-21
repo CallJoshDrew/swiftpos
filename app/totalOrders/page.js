@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../components/atoms/ordersAtom";
-import EditOrderDetailsModal from "../components/modal/editOrderDetailsModal";
+import ViewOrderDetailsModal from "../components/modal/viewOrderDetailsModal";
 import OrdersCalendarModal from "../components/modal/ordersCalendarModal";
 import ChangeStatusModal from "../components/modal/changeStatusModal";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
 export default function TotalOrders() {
   const [orders, setOrders] = useAtom(ordersAtom);
+  console.log(orders);
   const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,16 @@ export default function TotalOrders() {
   const handleCalendarBtn = () => {
     setCalendarModalOpen(true);
   };
+  const [selectedOrderType, setSelectedOrderType] = useState("Dine-In");
 
+  const handleOrderTypeClick = (orderType) => {
+    setSelectedOrderType(orderType);
+  };
+
+  const filteredOrders = orders
+    .filter((order) => order.status === "Completed" || order.status === "Cancelled")
+    .filter((order) => order.orderType === selectedOrderType);
+  console.log(filteredOrders);
   const handleSelectedOrderBtn = (orderNumber) => {
     const selectedOrder = orders.find((order) => order.orderNumber === orderNumber);
     // const itemsWithOrderID = selectedOrder.items.map((item) => ({
@@ -58,18 +68,29 @@ export default function TotalOrders() {
     );
   }
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      (order.status === "Completed" || order.status === "Cancelled") &&
-      new Date(order.orderDate).toDateString() === selectedDate.toDateString()
-  );
   return (
     <>
       <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 pt-10 px-4 z-9">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full items-center">
+          <div className="flex items-center">
           <div className="pb-1 ml-2 text-lg text-green-800 font-bold">Today&apos;s Orders</div>
           <button
-            className="text-xs py-2 px-4 bg-green-800 text-white rounded-md"
+            className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
+              selectedOrderType === "Dine-In" ? "bg-green-800" : "bg-yellow-500"
+            }`}
+            onClick={() => handleOrderTypeClick("Dine-In")}>
+            Dine-In
+          </button>
+          <button
+            className={` hover:bg-green-800 text-xs text-white font-bold py-2 px-4 rounded m-2 ${
+              selectedOrderType === "TakeAway" ? "bg-green-800" : "bg-yellow-500"
+            }`}
+            onClick={() => handleOrderTypeClick("TakeAway")}>
+            Take Away
+          </button>
+          </div>
+          <button
+            className="text-xs py-2 px-4 bg-green-700 text-white rounded-md"
             onClick={() => handleCalendarBtn()}>
             Calendar
           </button>
@@ -158,7 +179,7 @@ export default function TotalOrders() {
           </table>
         </div>
         {isEditOrderModalOpen && (
-          <EditOrderDetailsModal
+          <ViewOrderDetailsModal
             isEditOrderModalOpen={isEditOrderModalOpen}
             setEditOrderModalOpen={setEditOrderModalOpen}
             selectedOrder={selectedOrder}

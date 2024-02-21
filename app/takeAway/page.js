@@ -189,6 +189,10 @@ export default function TakeAwayOverview() {
       </div>
     );
   }
+  const filteredOrders = takeAwayOrders.filter(
+    (order) => order.status !== "Completed" && order.status !== "Cancelled"
+  );
+
   return (
     <>
       {showMenu ? (
@@ -242,14 +246,14 @@ export default function TakeAwayOverview() {
                 </tr>
               </thead>
               <tbody>
-                {takeAwayOrders.length === 0 ? (
+                {filteredOrders.length === 0 ? (
                   <tr className="bg-white">
                     <td colSpan="4" className="text-center py-4 text-gray-500">
-                      No data is available / Please place your first order.
+                      No data is available / Please place order.
                     </td>
                   </tr>
                 ) : (
-                  takeAwayOrders.reverse().map((order, index) => (
+                  filteredOrders.reverse().map((order, index) => (
                     <tr
                       key={index}
                       className={`${

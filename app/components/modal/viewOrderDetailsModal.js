@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 
-function EditOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder, setChangeStatusModalOpen }) {
+function ViewOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, selectedOrder, setChangeStatusModalOpen }) {
   console.log(selectedOrder);
   const totalItems = selectedOrder?.items?.length;
   const totalQuantity = selectedOrder?.items?.reduce(
@@ -151,8 +151,8 @@ function EditOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, se
           </div>
         </div>
         <div className="w-2/6 h-full rounded-r-lg shadow-lg bg-gray-100 mt-10 mr-4 pt-6 px-4">
-          <div className={`flex ${selectedOrder?.status === "Cancelled" ? "justify-between" : "justify-end"}`}>
-          {selectedOrder?.status === "Cancelled" && (
+          <div className={`flex ${selectedOrder?.status === "Cancelled" ? "justify-end" : "justify-end"}`}>
+          {/* {selectedOrder?.status === "Cancelled" && (
               <button
                 className="text-sm text-white bg-green-800 px-4 py-2 rounded-lg"
                 onClick={() => {
@@ -160,7 +160,7 @@ function EditOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, se
                 }}>
                 Change Status
               </button>
-            )}
+            )} */}
             <button
               className="text-sm text-white bg-red-700 px-4 py-2 rounded-lg"
               onClick={() => {
@@ -271,7 +271,7 @@ function EditOrderDetailsModal({ isEditOrderModalOpen, setEditOrderModalOpen, se
   );
 }
 
-export default React.memo(EditOrderDetailsModal);
+export default React.memo(ViewOrderDetailsModal);
 
 // showEditBtn
 // Status === "Placed Order" && payment !=="Paid"

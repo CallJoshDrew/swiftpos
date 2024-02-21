@@ -309,13 +309,13 @@ function OrderDetails({
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
     setSelectedOrder(newOrder);
     setTempCartItems(newOrder.items);
-    
+
     setOrders((prevOrders) => {
       // Find the index of the order with the matching orderNumber
       const orderIndex = prevOrders.findIndex(
         (order) => order.orderNumber === selectedOrder?.orderNumber
       );
-    
+
       if (orderIndex === -1) {
         // If the order is not found, add it to prevOrders
         return [...prevOrders, newOrder];
@@ -326,7 +326,7 @@ function OrderDetails({
         return updatedOrders;
       }
     });
-    
+
     // setTables((prevTables) =>
     //   prevTables.map((table) =>
     //     table.name === tableName
@@ -572,8 +572,8 @@ function OrderDetails({
                   </div>
                 )} */}
               {Array.isArray(selectedOrder?.items) &&
-                selectedOrder?.showEditBtn == true && 
-                selectedOrder?.tableName !=="" &&
+                selectedOrder?.showEditBtn == true &&
+                selectedOrder?.tableName !== "" &&
                 selectedOrder?.status !== "Paid" &&
                 selectedOrder?.status !== "Completed" &&
                 selectedOrder?.status !== "Cancelled" && (
@@ -679,7 +679,8 @@ function OrderDetails({
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
             selectedOrder?.items.map((itemObj) => {
-              const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn } = itemObj; // Destructure from itemObj
+              const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn, remarks } =
+                itemObj; // Destructure from itemObj
               const itemTotalAddOn =
                 (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) : 0) +
                 (selectedMeatLevel && selectedMeatLevel.price
@@ -808,6 +809,12 @@ function OrderDetails({
                           clipRule="evenodd"
                         />
                       </svg>
+                    </div>
+                  )}
+                  {remarks && (
+                    <div className="flex justify-between px-2 mt-2">
+                      <div className="text-red-800 text-sm">Remarks:</div>
+                      <div className="text-gray-500 text-sm">{remarks}</div>
                     </div>
                   )}
                 </div>

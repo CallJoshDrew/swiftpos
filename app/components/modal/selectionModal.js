@@ -27,12 +27,13 @@ function SelectionModal({
   const handleAddRemarks = (option) => {
     setRemarks((prevRemarks) => {
       // Check if the option already exists in remarks
-      if (!prevRemarks.includes(option)) {
+      if (prevRemarks.includes(option)) {
+        // If it exists, remove it
+        return prevRemarks.replace(`${option},`, "");
+      } else {
         // If it doesn't exist, add it
         return `${prevRemarks} ${option},`;
       }
-      // If it does exist, return the previous remarks without changes
-      return prevRemarks;
     });
   };
 
@@ -107,6 +108,7 @@ function SelectionModal({
               selectedChoice: selectionModal.choice,
               selectedMeatLevel: selectionModal.meatLevel,
               selectedAddOn: selectionModal.addOn,
+              remarks,
             },
             ...prevOrder.items,
           ],
