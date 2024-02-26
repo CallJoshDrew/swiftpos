@@ -21,7 +21,7 @@ function SelectionModal({
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [remarks]);
+  }, []);
   const options = ["No Vegetables", "No Coriander", "More Onion"];
 
   const handleAddRemarks = (option) => {
@@ -118,6 +118,7 @@ function SelectionModal({
       return newOrder;
     });
     setSelectionModalOpen(false);
+    setRemarks("");
     toast.success("Added to cart!", {
       duration: 500,
       position: "top-center",

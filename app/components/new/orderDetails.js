@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
@@ -24,12 +24,12 @@ function OrderDetails({
   setTempCartItems,
   setPayModalOpen,
   setCheckOutModalOpen,
-  remarks,
-  setRemarks,
+  // remarks,
+  // setRemarks,
   remarkRows,
   setRemarkRows,
-  tempRemarks,
-  setTempRemarks,
+  // tempRemarks,
+  // setTempRemarks,
   showRemarksBtn,
   setShowRemarksBtn,
   showRemarksArea,
@@ -39,6 +39,7 @@ function OrderDetails({
   const [orders, setOrders] = useAtom(ordersAtom);
   const [tables, setTables] = useAtom(tablesAtom);
   // console.log(tableName);
+  const [remarks, setRemarks] = useState({});
 
   function useOrderCounter(orderType) {
     const [tableOrderCounter, setTableOrderCounter] = useAtom(tableOrderCountAtom);
@@ -174,41 +175,86 @@ function OrderDetails({
       reverseOrder: false,
     });
   };
-  const handleAddRemarks = () => {
-    setSelectedOrder({
-      ...selectedOrder,
-      // reason why it is empty string is convenience for user to type straight away wihtout removing the words
-      remarks: "",
+
+  const handleRemarksChange = (e, itemId) => {
+    // Create a new array with the updated remarks
+    const newItems = selectedOrder.items.map((itemObj) => {
+      if (itemObj.item.id === itemId) {
+        return { ...itemObj, remarks: e.target.value };
+      } else {
+        return itemObj;
+      }
     });
-    setShowRemarksArea(true);
-    setShowRemarksBtn(false);
-    toast.success("Added to Remarks", {
-      duration: 1000,
-      position: "top-center",
-      reverseOrder: false,
-    });
+
+    // Update the selectedOrder state
+    setSelectedOrder({ ...selectedOrder, items: newItems });
   };
-  const handleRemoveRemarks = () => {
-    // setSelectedOrder((prevOrder) => {
-    //   if (prevOrder) {
-    //     const newOrder = { ...prevOrder };
-    //     delete newOrder.remarks;
-    //     return newOrder;
-    //   }
-    //   return {};
-    // });
-    setSelectedOrder({
-      ...selectedOrder,
-      remarks: "No Remarks",
-    });
-    setShowRemarksArea(false);
-    setShowRemarksBtn(true);
-    toast.error("Remarks is removed", {
-      duration: 1000,
-      position: "top-center",
-      reverseOrder: false,
-    });
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [tempRemarks, setTempRemarks] = useState("");
+  const [currentItemId, setCurrentItemId] = useState(null);
+
+  const openModal = (remarks, itemId) => {
+    setTempRemarks(remarks);
+    setCurrentItemId(itemId);
+    setModalIsOpen(true);
   };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const handleEditRemarks = (itemId) => {
+    console.log(itemId);
+    // Update the remarks for the item
+    const newItems = selectedOrder.items.map((itemObj) => {
+      if (itemObj.item.id === itemId) {
+        return { ...itemObj, remarks: tempRemarks };
+      } else {
+        return itemObj;
+      }
+    });
+
+    setSelectedOrder({ ...selectedOrder, items: newItems });
+
+    // Close the modal
+    closeModal();
+  };
+  // const handleAddRemarks = () => {
+  //   setSelectedOrder({
+  //     ...selectedOrder,
+  //     // reason why it is empty string is convenience for user to type straight away wihtout removing the words
+  //     remarks: "",
+  //   });
+  //   setShowRemarksArea(true);
+  //   setShowRemarksBtn(false);
+  //   toast.success("Added to Remarks", {
+  //     duration: 1000,
+  //     position: "top-center",
+  //     reverseOrder: false,
+  //   });
+  // };
+  // const handleRemoveRemarks = () => {
+  //   // setSelectedOrder((prevOrder) => {
+  //   //   if (prevOrder) {
+  //   //     const newOrder = { ...prevOrder };
+  //   //     delete newOrder.remarks;
+  //   //     return newOrder;
+  //   //   }
+  //   //   return {};
+  //   // });
+  //   setSelectedOrder({
+  //     ...selectedOrder,
+  //     remarks: "No Remarks",
+  //   });
+  //   setShowRemarksArea(false);
+  //   setShowRemarksBtn(true);
+  //   toast.error("Remarks is removed", {
+  //     duration: 1000,
+  //     position: "top-center",
+  //     reverseOrder: false,
+  //   });
+  // };
   const handleEditOrder = () => {
     // setIsLinkDisabled(true);Debugging now, thus disabled this.
     setSelectedOrder({
@@ -303,7 +349,7 @@ function OrderDetails({
       totalPrice,
       quantity: totalQuantity,
       paymentMethod: "",
-      remarks: remarks === "" ? "No Remarks" : remarks,
+      // remarks: remarks === "" ? "No Remarks" : remarks,
       showEditBtn: true,
     };
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
@@ -392,7 +438,7 @@ function OrderDetails({
       serviceCharge,
       totalPrice,
       quantity: totalQuantity,
-      remarks,
+      // remarks,
       showEditBtn: true,
     };
     // setIsLinkDisabled(false);Debugging now, thus disabled this.
@@ -408,7 +454,7 @@ function OrderDetails({
             serviceCharge,
             totalPrice,
             quantity: totalQuantity,
-            remarks: remarks === "" ? "No Remarks" : remarks,
+            // remarks: remarks === "" ? "No Remarks" : remarks,
             showEditBtn: true,
           };
         } else {
@@ -452,12 +498,10 @@ function OrderDetails({
     handleMethod = "Disabled";
   } else if (selectedOrder?.status == "Placed Order" && selectedOrder?.showEditBtn === false) {
     orderStatus = "Update Order & Print";
-    isSameItems && remarks === tempRemarks
-      ? (orderStatusCSS = "bg-gray-500")
-      : (orderStatusCSS = "bg-green-800");
-    isSameItems && remarks === tempRemarks
-      ? (handleMethod = "Disabled")
-      : (handleMethod = handleUpdateOrderBtn);
+    // isSameItems && remarks === tempRemarks
+    isSameItems ? (orderStatusCSS = "bg-gray-500") : (orderStatusCSS = "bg-green-800");
+    // isSameItems && remarks === tempRemarks
+    isSameItems ? (handleMethod = "Disabled") : (handleMethod = handleUpdateOrderBtn);
   } else if (selectedOrder?.status == "Placed Order") {
     orderStatus = "Make Payment";
     orderStatusCSS = "bg-green-800";
@@ -480,29 +524,29 @@ function OrderDetails({
     handleMethod = "Disabled";
   }
 
-  useEffect(() => {
-    // console.log("Remarks Btn initial is false NOW is", showRemarksBtn)
-    if (selectedOrder?.remarks === "No Remarks") {
-      setShowRemarksBtn(true);
-      setShowRemarksArea(false);
-    } else {
-      setShowRemarksArea(true);
-    }
-  }, [selectedOrder?.remarks, setShowRemarksArea, setShowRemarksBtn, showRemarksBtn]);
+  // useEffect(() => {
+  //   // console.log("Remarks Btn initial is false NOW is", showRemarksBtn)
+  //   if (selectedOrder?.remarks === "No Remarks") {
+  //     setShowRemarksBtn(true);
+  //     setShowRemarksArea(false);
+  //   } else {
+  //     setShowRemarksArea(true);
+  //   }
+  // }, [selectedOrder?.remarks, setShowRemarksArea, setShowRemarksBtn, showRemarksBtn]);
 
   // Status => Placed Order => Make Payment => Check Out => Completed
-  useEffect(() => {
-    // console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
-    // console.log("Remarks Now is", remarks);
-    // console.log("tempRemarks Now is", tempRemarks);
+  // useEffect(() => {
+  //   // console.log("SelectedOrder Remarks Now is", selectedOrder.remarks);
+  //   // console.log("Remarks Now is", remarks);
+  //   // console.log("tempRemarks Now is", tempRemarks);
 
-    if (selectedOrder && selectedOrder.remarks !== tempRemarks) {
-      setRemarks((prevRemarks) => selectedOrder.remarks);
-      setTempRemarks((prevRemarks) => selectedOrder.remarks);
-    }
-  }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, setShowRemarksArea]);
+  //   // if (selectedOrder && selectedOrder.remarks !== tempRemarks) {
+  //   //   setRemarks((prevRemarks) => selectedOrder.remarks);
+  //   //   setTempRemarks((prevRemarks) => selectedOrder.remarks);
+  //   // }
+  // }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, setShowRemarksArea]);
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
-  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
+  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, remarks:"No Vegetables", quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
@@ -515,7 +559,7 @@ function OrderDetails({
     console.log("SelectedOrder Allow Edit is", selectedOrder.showEditBtn);
     console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
-  }, [selectedOrder, orders, showEditControls, tempCartItems, remarks, orderCounter, tables]);
+  }, [selectedOrder, orders, showEditControls, tempCartItems, orderCounter, tables]);
   return (
     <div className="pb-6 w-2/6 flex-auto flex flex-col relative z-20 shadow-md">
       {/* pb-60 is the setting of the bottom */}
@@ -613,7 +657,8 @@ function OrderDetails({
               : selectedOrder?.paymentTime}
           </div>
         </div>
-        {showRemarksArea && (
+        {/* Disabled remarks*/}
+        {/* {showRemarksArea && (
           <div className={`bg-gray-100 rounded-md ${showEditControls === true ? "p-2" : "p-0"}`}>
             <textarea
               rows={remarkRows}
@@ -675,21 +720,21 @@ function OrderDetails({
               </div>
             )}
           </div>
-        )}
+        )} */}
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
-            selectedOrder?.items.map((itemObj) => {
+            selectedOrder?.items.map((itemObj, index) => {
               const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn, remarks } =
                 itemObj; // Destructure from itemObj
+              const itemRemarks = remarks || "";
               const itemTotalAddOn =
                 (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) : 0) +
                 (selectedMeatLevel && selectedMeatLevel.price
                   ? parseFloat(selectedMeatLevel.price)
                   : 0) +
                 (selectedAddOn && selectedAddOn.price ? parseFloat(selectedAddOn.price) : 0);
-
               return (
-                <div key={`${item.id}-${uniqueId}`} className="border rounded-md p-2 shadow-sm">
+                <div key={`${item.id}-${uniqueId}`} className="border rounded-md px-2 pt-2 shadow-sm">
                   <div className="flex">
                     <Image
                       src={item.image}
@@ -812,16 +857,63 @@ function OrderDetails({
                     </div>
                   )}
                   {remarks && (
-                    <div className="flex justify-between px-2 mt-2">
-                      <div className="text-red-800 text-sm">Remarks:</div>
-                      <div className="text-gray-500 text-sm">{remarks}</div>
-                    </div>
+                    <textarea
+                    className={`w-full px-4 py-2 mt-2 border rounded-md text-white text-sm border-gray-100 ${
+                      showEditControls ? "bg-yellow-500" : "bg-gray-400"
+                    }`}
+                      value={remarks || ""}
+                      rows="1"
+                      onClick={() => {
+                        openModal(remarks, item.id);
+                        console.log(item.id);
+                      }}
+                      readOnly
+                      disabled={showEditControls ? false : true}
+                    />
                   )}
                 </div>
               );
             })}
         </div>
       </div>
+      {modalIsOpen && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              &#8203;
+            </span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <textarea
+                  className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
+                  rows="4"
+                  defaultValue={tempRemarks}
+                  onBlur={(e) => setTempRemarks(e.target.value)}
+                />
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => handleEditRemarks(currentItemId)}>
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={closeModal}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="fixed w-2/6 bottom-0 overflow-y-scroll bg-gray-100 mt-8 pt-3 px-6">
         <div className="bg-gray-100 py-2 rounded-md">
           <div className="flex justify-between items-center">
