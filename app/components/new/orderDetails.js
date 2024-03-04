@@ -93,6 +93,38 @@ function OrderDetails({
       };
     });
   };
+  const handleFlavorChange = (itemId, flavorName) => {
+    // Update the item's selected choice
+    setSelectedOrder((prevOrder) => {
+      return {
+        ...prevOrder,
+        items: prevOrder.items.map((itemObj) =>
+          itemObj.item.id === itemId
+            ? {
+                ...itemObj,
+                selectedFlavor: itemObj.item.flavor.find((flavor) => flavor.name === flavorName),
+              }
+            : itemObj
+        ),
+      };
+    });
+  };
+  const handleTypeChange = (itemId, typeName) => {
+    // Update the item's selected choice
+    setSelectedOrder((prevOrder) => {
+      return {
+        ...prevOrder,
+        items: prevOrder.items.map((itemObj) =>
+          itemObj.item.id === itemId
+            ? {
+                ...itemObj,
+                selectedType: itemObj.item.types.find((type) => type.name === typeName),
+              }
+            : itemObj
+        ),
+      };
+    });
+  };
 
   // Function to handle the change of an item's meat level
   const handleMeatLevel = (itemId, level) => {
@@ -405,7 +437,7 @@ function OrderDetails({
     });
   };
 
-  function compareQuantities(items1, items2) {
+  function compareItems(items1, items2) {
     if (items1.length !== items2.length) {
       return false;
     }
@@ -416,18 +448,28 @@ function OrderDetails({
       if (!correspondingItem || items1[i].quantity !== correspondingItem.quantity) {
         return false;
       }
+      // Compare selectedChoice, selectedFlavor, selectedType, selectedMeatLevel, and selectedAddOn
+      if (JSON.stringify(items1[i].selectedChoice) !== JSON.stringify(correspondingItem.selectedChoice) ||
+          JSON.stringify(items1[i].selectedFlavor) !== JSON.stringify(correspondingItem.selectedFlavor) ||
+          JSON.stringify(items1[i].selectedType) !== JSON.stringify(correspondingItem.selectedType) ||
+          JSON.stringify(items1[i].selectedMeatLevel) !== JSON.stringify(correspondingItem.selectedMeatLevel) ||
+          JSON.stringify(items1[i].selectedAddOn) !== JSON.stringify(correspondingItem.selectedAddOn)) {
+        return false;
+      }
     }
-    // If we've made it this far, the quantities are the same for all items
+    // If we've made it this far, the quantities and selections are the same for all items
     return true;
   }
+  
   let isSameItems = false;
-
+  
   if (tempCartItems && selectedOrder && selectedOrder.items) {
     const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
     const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
-
-    isSameItems = compareQuantities(sortedTempCartItems, sortedSelectedOrderItems);
+  
+    isSameItems = compareItems(sortedTempCartItems, sortedSelectedOrderItems);
   }
+  
 
   const handleUpdateOrderBtn = () => {
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
@@ -546,7 +588,7 @@ function OrderDetails({
   //   // }
   // }, [selectedOrder, setRemarks, remarks, tempRemarks, setTempRemarks, setShowRemarksArea]);
   // selectedOrder Object is this {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 2, name: 'UFO Tart', category: 'Cakes', price: 2.6, image: '/ufoTart.png'}, quantity: 1}]
-  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, remarks:"No Vegetables", quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available"}]}
+  //   {orderNumber: '#Table1-0001', tableName: 'Table1', items:[0: {item: {id: 17, name: 'Goreng Kering', category: 'Dish', price: 9, image: '/gorengKering.png', price:"9", selection:true}, remarks:"No Vegetables", quantity: 1, selectedChoice: {name: 'Campur', price: 0}, selectedMeatLevel: 'Not Available', selectedAddOn:"Not Available", selectedFlavor: {name: 'Teh Kahwin'}, selectedType: {name: 'Cold', price: 1}}]}
   // items is an array of objects, and each object has an item property which itself is an object with an id property.
   // To access the id of each item, you would need to first iterate over the items array, then access the item property of each object in the array, and finally access the id property of the item object.
   // method: selectedOrder.items.map(itemObject => console.log(itemObject.item.id));
@@ -724,17 +766,19 @@ function OrderDetails({
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
             selectedOrder?.items.map((itemObj, index) => {
-              const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn, remarks } =
+              const { item, quantity, selectedChoice, selectedFlavor, selectedType, selectedMeatLevel, selectedAddOn, remarks } =
                 itemObj; // Destructure from itemObj
               const itemRemarks = remarks || "";
               const itemTotalAddOn =
                 (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) : 0) +
+                (selectedFlavor && selectedFlavor.price ? parseFloat(selectedFlavor.price) : 0)  +
+                (selectedType && selectedType.price ? parseFloat(selectedType.price) : 0)  +
                 (selectedMeatLevel && selectedMeatLevel.price
                   ? parseFloat(selectedMeatLevel.price)
                   : 0) +
                 (selectedAddOn && selectedAddOn.price ? parseFloat(selectedAddOn.price) : 0);
               return (
-                <div key={`${item.id}-${uniqueId}`} className="border rounded-md px-2 pt-2 shadow-sm">
+                <div key={`${item.id}-${uniqueId}`} className="border rounded-md p-2 shadow-sm">
                   <div className="flex">
                     <Image
                       src={item.image}
@@ -806,6 +850,36 @@ function OrderDetails({
                       ))}
                     </select>
                   )}
+                  <div className="flex space-x-1">
+                  {item.flavor && (
+                    <select
+                      id="type"
+                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      onChange={(e) => handleFlavorChange(item.id, e.target.value)}
+                      value={selectedFlavor.name}
+                      disabled={showEditControls ? false : true}>
+                      {item.flavor.map((flavor, index) => (
+                        <option key={index} value={flavor.name}>
+                          {flavor.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {item.types && (
+                    <select
+                      id="type"
+                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      onChange={(e) => handleTypeChange(item.id, e.target.value)}
+                      value={selectedType.name}
+                      disabled={showEditControls ? false : true}>
+                      {item.types.map((type, index) => (
+                        <option key={index} value={type.name}>
+                          {type.name} RM {type.price.toFixed(0)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  </div>
                   {selectedChoice && (
                     <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
                       Add On x {quantity}: RM {(parseFloat(itemTotalAddOn) * quantity).toFixed(2)}

@@ -106,6 +106,8 @@ function SelectionModal({
               },
               quantity: 1,
               selectedChoice: selectionModal.choice,
+              selectedFlavor: selectionModal.flavor,
+              selectedType: selectionModal.type,
               selectedMeatLevel: selectionModal.meatLevel,
               selectedAddOn: selectionModal.addOn,
               remarks,
@@ -180,6 +182,44 @@ function SelectionModal({
                     ))}
                   </select>
                 )}
+                <div className="flex space-x-2">
+                {selectionModal.item.flavor && (
+                  <select
+                    id="flavor"
+                    className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                    onChange={(e) => {
+                      const selectedFlavor = selectionModal.item.flavor[e.target.selectedIndex];
+                      setSelectionModal((prevSelectionModal) => ({
+                        ...prevSelectionModal,
+                        flavor: selectedFlavor,
+                      }));
+                    }}>
+                    {selectionModal.item.flavor.map((flavor, index) => (
+                      <option key={index} value={flavor.name}>
+                        {flavor.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {selectionModal.item.types && (
+                  <select
+                    id="flavor"
+                    className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                    onChange={(e) => {
+                      const selectedType = selectionModal.item.types[e.target.selectedIndex];
+                      setSelectionModal((prevSelectionModal) => ({
+                        ...prevSelectionModal,
+                        type: selectedType,
+                      }));
+                    }}>
+                    {selectionModal.item.types.map((type, index) => (
+                      <option key={index} value={type.name}>
+                        {type.name} + RM {type.price.toFixed(2)}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                </div>
                 {selectionModal.item.meat && (
                   <select
                     id="meat"
