@@ -25,29 +25,29 @@ let menu = [
     { id: 23, name: "Chocolate Chip", category: "Cakes", price:4.20, image: "/cakes/chocolateChip.png"},
     { id: 24, name: "Sponge Cake", category: "Cakes", price:2.00, image: "/cakes/spongeCake.png"},
 
-    { id: 50, name: "Teh", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Teh C"},{name: "Teh Nai"}, {name: "Teh Kahwin"}, {name: "Teh Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 50, name: "Teh", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Teh C"},{name: "Teh O"},{name: "Teh Nai"}, {name: "Teh Kahwin"}, {name: "Teh Kosong"}, {name: "Teh Sang Suk Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
-    { id: 51, name: "Teh C", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 52, name: "Teh Nai", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 53, name: "Teh Kahwin", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 54, name: "Lemon Teh", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 55, name: "Lemon Sui", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 56, name: "Nescafe Nai", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 57, name: "Milo Nai", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 58, name: "Milo C", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 59, name: "Nestum Nai", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 60, name: "Nestum C", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 61, name: "Kitcai Ping", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
-    { id: 62, name: "Teh C Special", category: "Drinks", price:4.00, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.50}]},
+    { id: 51, name: "Kopi", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Kopi C"},{name: "Kopi O"},{name: "Kopi Nai"}, {name: "Kopi Kahwin"}, {name: "Kopi Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 52, name: "Milo", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Milo C"},{name: "Milo Nai"}, {name: "Milo Kahwin"}, {name: "Milo Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 53, name: "Lemon", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Lemon Sui"},{name: "Lemon Teh"}, {name: "Lemon Sui Asam"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 54, name: "Nescafe", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Nescafe C"},{name: "Nescafe Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 55, name: "Nestum", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Nestum C"},{name: "Nestum Nai"}, {name: "Nestum Sang Suk Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 56, name: "Kitcai", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Kitcai"},{name: "Kitcai Asam"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+
+    { id: 57, name: "Sang Suk Lai", category: "Drinks", price:2.50, image: "/drinks/sangSukLai.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
+
+    { id: 58, name: "Teh C Special", category: "Drinks", price:4.00, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.50}]},
+
     { id: 63, name: "Liong Fun", category: "Drinks", price:3.80, image: "/pandan.png"},
     { id: 64, name: "Lo Han Kuo", category: "Drinks", price:3.00, image: "/drinks/loHanKuo.png"},
     { id: 65, name: "Air Bunga", category: "Drinks", price:3.00, image: "/pandan.png"},
-    
-    { id: 66, name: "Kopi O", category: "Drinks", price:1.80, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00}, {name: "Cold", price: 2.50}]},
     { id: 67, name: "Pandan Soy Milk", category: "Drinks", price:3.00, image: "/drinks/pandanSoya.png", selection:true, choices: [{name: "with Sugar", price: 0.00}, {name: "No Sugar", price: 0.50}]},
-    { id: 68, name: "Teh O", category: "Drinks", price:1.80, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.70}]},
     { id: 69, name: "Chinese Teh", category: "Drinks", price:0.50, image: "/drinks/chineseTeh.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.00}]},
-    { id: 70, name: "Sang Suk Lai", category: "Drinks", price:2.50, image: "/drinks/sangSukLai.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
     { id: 71, name: "Lai Lo Fa", category: "Drinks", price:4.00, image: "/drinks/laiLoFa.png"},
     { id: 72, name: "100 Plus", category: "Drinks", price:2.50, image: "/drinks/100Plus.png"},
     { id: 73, name: "Coca Cola", category: "Drinks", price:2.50, image: "/drinks/cocaCola.png"},
