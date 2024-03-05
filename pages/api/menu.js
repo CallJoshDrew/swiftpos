@@ -25,15 +25,15 @@ let menu = [
     { id: 23, name: "Chocolate Chip", category: "Cakes", price:4.20, image: "/cakes/chocolateChip.png"},
     { id: 24, name: "Sponge Cake", category: "Cakes", price:2.00, image: "/cakes/spongeCake.png"},
 
-    { id: 50, name: "Teh", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Teh C"},{name: "Teh O"},{name: "Teh Nai"}, {name: "Teh Kahwin"}, {name: "Teh Kosong"}, {name: "Teh Sang Suk Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 50, name: "Teh", category: "Drinks", price:2.50, image: "/drinks/teh.png", selection:true, flavor: [{name: "Teh C"},{name: "Teh O"},{name: "Teh Nai"}, {name: "Teh Kahwin"}, {name: "Teh Kosong"}, {name: "Teh Sang Suk Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
-    { id: 51, name: "Kopi", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Kopi C"},{name: "Kopi O"},{name: "Kopi Nai"}, {name: "Kopi Kahwin"}, {name: "Kopi Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 51, name: "Kopi", category: "Drinks", price:2.50, image: "/drinks/kopi.png", selection:true, flavor: [{name: "Kopi C"},{name: "Kopi O"},{name: "Kopi Nai"}, {name: "Kopi Kahwin"}, {name: "Kopi Kosong"}, {name: "Kopi Cham C"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
-    { id: 52, name: "Milo", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Milo C"},{name: "Milo Nai"}, {name: "Milo Kahwin"}, {name: "Milo Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 52, name: "Milo", category: "Drinks", price:2.50, image: "/drinks/milo.png", selection:true, flavor: [{name: "Milo C"},{name: "Milo Nai"}, {name: "Milo Kahwin"}, {name: "Milo Kosong"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
-    { id: 53, name: "Lemon", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Lemon Sui"},{name: "Lemon Teh"}, {name: "Lemon Sui Asam"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 53, name: "Lemon", category: "Drinks", price:2.50, image: "/drinks/lemon.png", selection:true, flavor: [{name: "Lemon Sui"},{name: "Lemon Teh"}, {name: "Lemon Sui Asam"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
-    { id: 54, name: "Nescafe", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Nescafe C"},{name: "Nescafe Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
+    { id: 54, name: "Nescafe", category: "Drinks", price:2.50, image: "/drinks/nescafe.png", selection:true, flavor: [{name: "Nescafe C"},{name: "Nescafe Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
     { id: 55, name: "Nestum", category: "Drinks", price:2.50, image: "/pandan.png", selection:true, flavor: [{name: "Nestum C"},{name: "Nestum Nai"}, {name: "Nestum Sang Suk Nai"}], types: [{name:"Hot", price: 0.00},{name:"Cold", price: 1.00}]},
 
@@ -41,9 +41,9 @@ let menu = [
 
     { id: 57, name: "Sang Suk Lai", category: "Drinks", price:2.50, image: "/drinks/sangSukLai.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 1.00}]},
 
-    { id: 58, name: "Teh C Special", category: "Drinks", price:4.00, image: "/pandan.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.50}]},
+    { id: 58, name: "Teh C Special", category: "Drinks", price:4.00, image: "/drinks/tehCSpecial.png", selection:true, choices: [{name: "Hot", price: 0.00},{name: "Cold", price: 0.50}]},
 
-    { id: 63, name: "Liong Fun", category: "Drinks", price:3.80, image: "/pandan.png"},
+    { id: 63, name: "Liong Fun", category: "Drinks", price:3.80, image: "/drinks/liongFun.png"},
     { id: 64, name: "Lo Han Kuo", category: "Drinks", price:3.00, image: "/drinks/loHanKuo.png"},
     { id: 65, name: "Air Bunga", category: "Drinks", price:3.00, image: "/pandan.png"},
     { id: 67, name: "Pandan Soy Milk", category: "Drinks", price:3.00, image: "/drinks/pandanSoya.png", selection:true, choices: [{name: "with Sugar", price: 0.00}, {name: "No Sugar", price: 0.50}]},

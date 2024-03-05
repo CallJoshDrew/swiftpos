@@ -301,15 +301,19 @@ function OrderDetails({
   let serviceCharge = 0;
   let totalPrice = 0;
 
+  
+
   // Calculate the subtotal, service charge, and total if there are items in the cart
   if (selectedOrder && selectedOrder.items && selectedOrder.items.length > 0) {
     // Check whether selectedChoice, selectedMeatLevel, and selectedAddOn exist and have a price property before trying to parse it as a float. If they don’t exist or don’t have a price property, I’m defaulting to 0.
     subTotal = selectedOrder.items.reduce((total, itemObj) => {
-      const { item, quantity, selectedChoice, selectedMeatLevel, selectedAddOn } = itemObj;
+      const { item, quantity, selectedChoice, selectedFlavor, selectedType, selectedMeatLevel, selectedAddOn } = itemObj;
       return (
         total +
         parseFloat(item.price) * quantity +
         (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) * quantity : 0) +
+        (selectedFlavor && selectedFlavor.price ? parseFloat(selectedFlavor.price) : 0) +
+        (selectedType && selectedType.price ? parseFloat(selectedType.price) : 0) +
         (selectedMeatLevel && selectedMeatLevel.price
           ? parseFloat(selectedMeatLevel.price) * quantity
           : 0) +
@@ -449,27 +453,31 @@ function OrderDetails({
         return false;
       }
       // Compare selectedChoice, selectedFlavor, selectedType, selectedMeatLevel, and selectedAddOn
-      if (JSON.stringify(items1[i].selectedChoice) !== JSON.stringify(correspondingItem.selectedChoice) ||
-          JSON.stringify(items1[i].selectedFlavor) !== JSON.stringify(correspondingItem.selectedFlavor) ||
-          JSON.stringify(items1[i].selectedType) !== JSON.stringify(correspondingItem.selectedType) ||
-          JSON.stringify(items1[i].selectedMeatLevel) !== JSON.stringify(correspondingItem.selectedMeatLevel) ||
-          JSON.stringify(items1[i].selectedAddOn) !== JSON.stringify(correspondingItem.selectedAddOn)) {
+      if (
+        JSON.stringify(items1[i].selectedChoice) !==
+          JSON.stringify(correspondingItem.selectedChoice) ||
+        JSON.stringify(items1[i].selectedFlavor) !==
+          JSON.stringify(correspondingItem.selectedFlavor) ||
+        JSON.stringify(items1[i].selectedType) !== JSON.stringify(correspondingItem.selectedType) ||
+        JSON.stringify(items1[i].selectedMeatLevel) !==
+          JSON.stringify(correspondingItem.selectedMeatLevel) ||
+        JSON.stringify(items1[i].selectedAddOn) !== JSON.stringify(correspondingItem.selectedAddOn)
+      ) {
         return false;
       }
     }
     // If we've made it this far, the quantities and selections are the same for all items
     return true;
   }
-  
+
   let isSameItems = false;
-  
+
   if (tempCartItems && selectedOrder && selectedOrder.items) {
     const sortedTempCartItems = [...tempCartItems].sort((a, b) => a.item.id - b.item.id);
     const sortedSelectedOrderItems = [...selectedOrder.items].sort((a, b) => a.item.id - b.item.id);
-  
+
     isSameItems = compareItems(sortedTempCartItems, sortedSelectedOrderItems);
   }
-  
 
   const handleUpdateOrderBtn = () => {
     const totalQuantity = calculateTotalQuantity(selectedOrder?.items);
@@ -766,13 +774,21 @@ function OrderDetails({
         <div className="flex flex-col gap-4">
           {Array.isArray(selectedOrder?.items) &&
             selectedOrder?.items.map((itemObj, index) => {
-              const { item, quantity, selectedChoice, selectedFlavor, selectedType, selectedMeatLevel, selectedAddOn, remarks } =
-                itemObj; // Destructure from itemObj
+              const {
+                item,
+                quantity,
+                selectedChoice,
+                selectedFlavor,
+                selectedType,
+                selectedMeatLevel,
+                selectedAddOn,
+                remarks,
+              } = itemObj; // Destructure from itemObj
               const itemRemarks = remarks || "";
               const itemTotalAddOn =
                 (selectedChoice && selectedChoice.price ? parseFloat(selectedChoice.price) : 0) +
-                (selectedFlavor && selectedFlavor.price ? parseFloat(selectedFlavor.price) : 0)  +
-                (selectedType && selectedType.price ? parseFloat(selectedType.price) : 0)  +
+                (selectedFlavor && selectedFlavor.price ? parseFloat(selectedFlavor.price) : 0) +
+                (selectedType && selectedType.price ? parseFloat(selectedType.price) : 0) +
                 (selectedMeatLevel && selectedMeatLevel.price
                   ? parseFloat(selectedMeatLevel.price)
                   : 0) +
@@ -851,34 +867,34 @@ function OrderDetails({
                     </select>
                   )}
                   <div className="flex space-x-1">
-                  {item.flavor && (
-                    <select
-                      id="type"
-                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
-                      onChange={(e) => handleFlavorChange(item.id, e.target.value)}
-                      value={selectedFlavor?.name}
-                      disabled={showEditControls ? false : true}>
-                      {item.flavor.map((flavor, index) => (
-                        <option key={index} value={flavor.name}>
-                          {flavor.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                  {item.types && (
-                    <select
-                      id="type"
-                      className="w-[200px] block appearance-none my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
-                      onChange={(e) => handleTypeChange(item.id, e.target.value)}
-                      value={selectedType?.name}
-                      disabled={showEditControls ? false : true}>
-                      {item.types.map((type, index) => (
-                        <option key={index} value={type.name}>
-                          {type.name} RM {type.price.toFixed(2)}
-                        </option>
-                      ))}
-                    </select>
-                  )}
+                    {item.flavor && (
+                      <select
+                        id="type"
+                        className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                        onChange={(e) => handleFlavorChange(item.id, e.target.value)}
+                        value={selectedFlavor?.name}
+                        disabled={showEditControls ? false : true}>
+                        {item.flavor.map((flavor, index) => (
+                          <option key={index} value={flavor.name}>
+                            {flavor.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    {item.types && (
+                      <select
+                        id="type"
+                        className="w-[200px] block appearance-none my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                        onChange={(e) => handleTypeChange(item.id, e.target.value)}
+                        value={selectedType?.name}
+                        disabled={showEditControls ? false : true}>
+                        {item.types.map((type, index) => (
+                          <option key={index} value={type.name}>
+                            {type.name} RM {type.price.toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                   {selectedChoice && (
                     <div className="text-green-800 text-sm font-bold text-right px-2 pt-2">
@@ -932,9 +948,9 @@ function OrderDetails({
                   )}
                   {remarks && (
                     <textarea
-                    className={`w-full px-4 py-2 mt-2 border rounded-md text-white text-sm border-gray-100 ${
-                      showEditControls ? "bg-yellow-500" : "bg-gray-400"
-                    }`}
+                      className={`w-full px-4 py-2 mt-2 border rounded-md text-white text-sm border-gray-100 ${
+                        showEditControls ? "bg-yellow-500" : "bg-gray-400"
+                      }`}
                       value={remarks || ""}
                       rows="1"
                       onClick={() => {
