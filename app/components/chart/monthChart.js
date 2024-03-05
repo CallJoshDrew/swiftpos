@@ -1,6 +1,6 @@
 import { Bar } from "react-chartjs-2";
 
-export default function MonthChart({ SalesData, selectedYear, selectedMonthName }) {
+export default function MonthChart({ salesData, selectedYear, selectedMonthName }) {
   const monthNames = [
     "Jan",
     "Feb",
@@ -27,12 +27,17 @@ export default function MonthChart({ SalesData, selectedYear, selectedMonthName 
   for (let i = 0; i < daysInMonth; i++) {
     const monthDay = new Date(selectedYear, selectedMonthNumber, i + 1);
 
-    const monthDayString = `${monthDay.getMonth() + 1}/${monthDay.getDate()}/${String(monthDay.getFullYear()).slice(2)}`;
+    const monthDayString = `${monthDay.getMonth() + 1}/${monthDay.getDate()}/${String(
+      monthDay.getFullYear()
+    ).slice(2)}`;
 
     // Get the sales data for the selected day
-    const monthDaySalesData = SalesData[selectedYear][selectedMonthName]?.find(
+    let monthDaySalesData;
+    if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+      monthDaySalesData = salesData[selectedYear][selectedMonthName].find(
         (data) => data.date === monthDayString
       );
+    }
 
     if (monthDaySalesData) {
       // Flatten the orders array and filter to only include those with a status of "Completed"

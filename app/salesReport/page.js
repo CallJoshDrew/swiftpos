@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
-import { SalesData } from "../data/salesData";
+// import { SalesData } from "../data/salesData";
 import Daychart from "../components/chart/dayChart";
 import WeekChart from "../components/chart/weekChart";
 import YearChart from "../components/chart/yearChart";
@@ -13,6 +13,7 @@ import SalesCalendarModal from "../components/modal/salesCalendarModal";
 import MonthChart from "../components/chart/monthChart";
 import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 import { useRouter } from "next/navigation";
+import { salesDataAtom } from "../components/atoms/salesDataAtom";
 
 export default function SalesReport() {
   const [selectedBtn, setSelectedBtn] = useState("today");
@@ -25,6 +26,8 @@ export default function SalesReport() {
   const [isSalesCalendarModalOpen, setSalesCalendarModalOpen] = useState(false);
 
   const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const [salesData, setSalesData] = useAtom(salesDataAtom);
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   // Map the month number to the month name
@@ -53,9 +56,12 @@ export default function SalesReport() {
   ).slice(2)}`;
 
   // Find the sales data for the selected date
-  const selectedSalesData = SalesData[selectedYear][selectedMonthName].find(
-    (data) => data.date === selectedDateString
-  );
+  let selectedSalesData;
+  if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+    selectedSalesData = salesData[selectedYear][selectedMonthName].find(
+      (data) => data.date === selectedDateString
+    );
+  }
 
   let totalSalesSelectedDate = 0;
   if (selectedSalesData) {
@@ -85,9 +91,14 @@ export default function SalesReport() {
       const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
         weekDay.getFullYear()
       ).slice(2)}`;
-      const weekDaySalesData = SalesData[selectedYear][selectedMonthName].find(
-        (data) => data.date === weekDayString
-      );
+
+      let weekDaySalesData;
+      if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+        weekDaySalesData = salesData[selectedYear][selectedMonthName].find(
+          (data) => data.date === weekDayString
+        );
+      }
+
       if (weekDaySalesData) {
         weekDaySalesData.orders.forEach((order) => {
           if (order.status === "Completed") {
@@ -100,33 +111,40 @@ export default function SalesReport() {
 
   // Monthly sales
   let totalSalesMonth = 0;
-  SalesData[selectedYear][selectedMonthName].forEach((day) => {
-    if (day.date.startsWith(String(selectedMonth))) {
-      day.orders.forEach((order) => {
-        if (order.status === "Completed") {
-          totalSalesMonth += order.totalPrice;
-        }
-      });
-    }
-  });
+  if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+    salesData[selectedYear][selectedMonthName].forEach((day) => {
+      if (day.date.startsWith(String(selectedMonth))) {
+        day.orders.forEach((order) => {
+          if (order.status === "Completed") {
+            totalSalesMonth += order.totalPrice;
+          }
+        });
+      }
+    });
+  }
 
   let totalSalesYear = 0;
-  Object.values(SalesData[selectedYear]).forEach((month) => {
-    month.forEach((day) => {
-      day.orders.forEach((order) => {
-        if (order.status === "Completed") {
-          totalSalesYear += order.totalPrice;
-        }
+  if (salesData && salesData[selectedYear]) {
+    Object.values(salesData[selectedYear]).forEach((month) => {
+      month.forEach((day) => {
+        day.orders.forEach((order) => {
+          if (order.status === "Completed") {
+            totalSalesYear += order.totalPrice;
+          }
+        });
       });
     });
-  });
+  }
 
   // Calculate Top Items List
   // Function to get orders for today
   function getTodayOrders() {
-    const todaySalesData = SalesData[selectedYear][selectedMonthName].find(
-      (data) => data.date === selectedDateString
-    );
+    let todaySalesData;
+    if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+      todaySalesData = salesData[selectedYear][selectedMonthName].find(
+        (data) => data.date === selectedDateString
+      );
+    }
     return todaySalesData ? todaySalesData.orders : [];
   }
 
@@ -137,29 +155,31 @@ export default function SalesReport() {
     const endOfWeekDate = new Date(startOfWeek);
     endOfWeekDate.setDate(startOfWeekDate.getDate() + 6); // 6 days after the start of the week
 
-    Object.values(SalesData[selectedYear]).forEach((month) => {
-      month.forEach((day) => {
-        const dayDate = new Date(day.date);
-        if (dayDate >= startOfWeekDate && dayDate <= endOfWeekDate) {
-          // Filter out orders where status !== "Completed"
-          const completedOrders = day.orders.filter((order) => order.status === "Completed");
-          weekOrders = weekOrders.concat(completedOrders);
-        }
+    if (salesData && salesData[selectedYear]) {
+      Object.values(salesData[selectedYear]).forEach((month) => {
+        month.forEach((day) => {
+          const dayDate = new Date(day.date);
+          if (dayDate >= startOfWeekDate && dayDate <= endOfWeekDate) {
+            // Filter out orders where status !== "Completed"
+            const completedOrders = day.orders.filter((order) => order.status === "Completed");
+            weekOrders = weekOrders.concat(completedOrders);
+          }
+        });
       });
-    });
-
+    }    
     return weekOrders;
   }
 
   // Function to get orders for this month
   function getMonthOrders() {
     let monthOrders = [];
-
-    SalesData[selectedYear][selectedMonthName].forEach((day) => {
+    if (salesData && salesData[selectedMonthName]) {
+    salesData[selectedYear][selectedMonthName].forEach((day) => {
       if (day.date.startsWith(String(selectedMonth))) {
         monthOrders = monthOrders.concat(day.orders);
       }
     });
+  }    
     return monthOrders;
   }
 
@@ -211,15 +231,18 @@ export default function SalesReport() {
 
   function getYearOrders() {
     let yearOrders = [];
-
-    Object.values(SalesData[selectedYear]).forEach((month) => {
-      month.forEach((day) => {
-        yearOrders = yearOrders.concat(day.orders);
+  
+    if (salesData && salesData[selectedYear]) {
+      Object.values(salesData[selectedYear]).forEach((month) => {
+        month.forEach((day) => {
+          yearOrders = yearOrders.concat(day.orders);
+        });
       });
-    });
-
+    }
+  
     return yearOrders;
   }
+  
 
   const topYearItems = calculateTopItems(getYearOrders());
   const allYearItems = calculateAllItems(getYearOrders());
@@ -429,7 +452,7 @@ export default function SalesReport() {
         <div className="space-y-4">
           {selectedBtn === "today" && (
             <Daychart
-              SalesData={SalesData}
+              salesData={salesData}
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               selectedDateString={selectedDateString}
@@ -438,7 +461,7 @@ export default function SalesReport() {
           )}
           {selectedBtn === "weekly" && (
             <WeekChart
-              SalesData={SalesData}
+              salesData={salesData}
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               startOfWeek={startOfWeek}
@@ -447,18 +470,18 @@ export default function SalesReport() {
           )}
           {selectedBtn === "monthly" && (
             <MonthChart
-              SalesData={SalesData}
+              salesData={salesData}
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               monthNames={monthNames}
             />
           )}
           {selectedBtn === "yearly" && (
-            <YearChart SalesData={SalesData} selectedYear={selectedYear} monthNames={monthNames} />
+            <YearChart salesData={salesData} selectedYear={selectedYear} monthNames={monthNames} />
           )}
           {selectedBtn === "calendar" && (
             <Daychart
-              SalesData={SalesData}
+              salesData={salesData}
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               selectedDateString={selectedDateString}

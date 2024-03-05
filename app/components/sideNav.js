@@ -14,6 +14,7 @@ import { selectedTableOrderAtom } from "./atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "./atoms/selectedTakeAwayOrderAtom";
 import { selectedTableIndexAtom } from "./atoms/selectedTableIndexAtom";
 import { todayRegisteredAtom } from "./atoms/todayRegisteredAtom";
+import { salesDataAtom } from "./atoms/salesDataAtom";
 
 export default function SideNav() {
   const path = usePathname();
@@ -26,7 +27,8 @@ export default function SideNav() {
   const [, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
   const [, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
   const [, setTableIndex] = useAtom(selectedTableIndexAtom);
-  const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const [, setTodayRegistered] = useAtom(todayRegisteredAtom);
+  const [, setSalesData] = useAtom(salesDataAtom);
 
   const [passwordInput, setPasswordInput] = useState("");
 
@@ -40,6 +42,7 @@ export default function SideNav() {
       // setLoading(true);
       // Clear local storage
       setOrders([]);
+      setSalesData({});
       setTables([]); // Reset to initial value
       setTableIndex(null);
       setTodayRegistered({ openForRegister: false });
@@ -316,8 +319,39 @@ export default function SideNav() {
             </div>
           </div>
         )}
-        {isSettingsModalOpen && (
-          <div className="fixed z-10 inset-0 overflow-y-auto">
+      </div>
+      {/* <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
+        <Link
+          href="/"
+          className={
+            path === "/logout"
+              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
+          }>
+          <svg
+            className={
+              path === "/logout" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"
+            }
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <div
+            className={
+              path === "/logout" ? "text-white text-sm " : "text-black text-sm"
+            }>
+            唔好走
+          </div>
+        </Link>
+      </div> */}
+      {isLinkDisabled && <div className="absolute inset-0 bg-gray-300 opacity-70"></div>}
+      {isSettingsModalOpen && (
+          <div className="fixed z-50 inset-0 overflow-y-auto">
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
               <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -383,7 +417,6 @@ export default function SideNav() {
                     }}>
                     Confirm
                   </button>
-
                   <button
                     type="button"
                     className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
@@ -395,37 +428,6 @@ export default function SideNav() {
             </div>
           </div>
         )}
-      </div>
-      {/* <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
-        <Link
-          href="/"
-          className={
-            path === "/logout"
-              ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
-              : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
-          }>
-          <svg
-            className={
-              path === "/logout" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"
-            }
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor">
-            <path
-              fillRule="evenodd"
-              d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <div
-            className={
-              path === "/logout" ? "text-white text-sm " : "text-black text-sm"
-            }>
-            唔好走
-          </div>
-        </Link>
-      </div> */}
-      {isLinkDisabled && <div className="absolute inset-0 bg-gray-300 opacity-70"></div>}
       {showConfirmModal && (
         <div className="fixed z-50 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

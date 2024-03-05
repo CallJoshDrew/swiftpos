@@ -1,7 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function WeekChart({ SalesData, selectedYear, selectedMonthName, startOfWeek }) {
+export default function WeekChart({ salesData, selectedYear, selectedMonthName, startOfWeek }) {
 
   // Initialize an array to store the total sales for each day of the week
   let totalSalesWeek = Array(7).fill(0);
@@ -24,25 +24,28 @@ export default function WeekChart({ SalesData, selectedYear, selectedMonthName, 
     const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
       weekDay.getFullYear()
     ).slice(2)}`;
-
-    // Get the sales data for the selected day
-    const weekDaySalesData = SalesData[selectedYear][selectedMonthName].find(
-      (data) => data.date === weekDayString
-    );
-
+  
+    let weekDaySalesData;
+    if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+      weekDaySalesData = salesData[selectedYear][selectedMonthName].find(
+        (data) => data.date === weekDayString
+      );
+    }
+  
     if (weekDaySalesData) {
       // Flatten the orders array and filter to only include those with a status of "Completed"
       const completedOrders = weekDaySalesData.orders.flatMap((order) =>
         order.status === "Completed" ? order : []
       );
-
+  
       // Sum up the total price of the completed orders
       totalSalesWeek[i] = completedOrders.reduce((total, order) => total + order.totalPrice, 0);
     }
-
+  
     // Create labels for the chart
     labelsWeek[i] = `${weekDay.toLocaleDateString('en-US', { weekday: 'short' })}_${weekDay.getDate()}${getOrdinalSuffix(weekDay)}`;
   }
+  
 
   // Now totalSalesWeek is an array where each element is the total sales for a day of the week
   const chartData = {

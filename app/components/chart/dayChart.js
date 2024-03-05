@@ -1,43 +1,50 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function Daychart({ SalesData, selectedYear, selectedMonthName, selectedDateString }) {
+export default function Daychart({
+  salesData,
+  selectedYear,
+  selectedMonthName,
+  selectedDateString,
+}) {
   // First, map over the days in the month and then flatten the orders arrays into a single array
-  const flattenedOrders = SalesData[selectedYear][selectedMonthName].flatMap((day) => {
-    if (day.date === selectedDateString && day.orders) {
-      return day.orders;
-    } else {
-      return [];
-    }
-  });
+  let flattenedOrders = [];
+  if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+    flattenedOrders = salesData[selectedYear][selectedMonthName].flatMap((day) => {
+      if (day.date === selectedDateString && day.orders) {
+        return day.orders;
+      } else {
+        return [];
+      }
+    });
+  }
 
   // Filter the orders to only include those with a status of "Completed"
   const completedOrders = flattenedOrders.filter((order) => order.status === "Completed");
   // Function to categorize the orders based on the hour of paymentTime
   function categorizeByHour(paymentTime) {
     // Extract the hours from the paymentTime string
-    const timeString = paymentTime.split(',')[0]; // e.g., "02:10 AM"
+    const timeString = paymentTime.split(",")[0]; // e.g., "02:10 AM"
     let [hours, minutes, period] = timeString.split(/[:\s]/); // e.g., ["02", "10", "AM"]
-  
+
     // Convert the hours to a 24-hour format
     hours = parseInt(hours);
-    if (period === 'PM' && hours !== 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-  
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+
     // Categorize the hours
-    // "9:00 AM" means from 9:00 oclock until 9:59 AM. 
-    if (hours < 9) return '8 AM';
-    else if (hours < 10) return '9 AM';
-    else if (hours < 11) return '10 AM';
-    else if (hours < 12) return '11 AM';
-    else if (hours < 13) return '12 PM';
-    else if (hours < 14) return '1 PM';
-    else if (hours < 15) return '2 PM';
-    else if (hours < 16) return '3 PM';
-    else if (hours < 17) return '4 PM';
-    else return '5 PM';
+    // "9:00 AM" means from 9:00 oclock until 9:59 AM.
+    if (hours < 9) return "8 AM";
+    else if (hours < 10) return "9 AM";
+    else if (hours < 11) return "10 AM";
+    else if (hours < 12) return "11 AM";
+    else if (hours < 13) return "12 PM";
+    else if (hours < 14) return "1 PM";
+    else if (hours < 15) return "2 PM";
+    else if (hours < 16) return "3 PM";
+    else if (hours < 17) return "4 PM";
+    else return "5 PM";
   }
-  
 
   // Create an object to store the total sales for each category
   let totalSalesByCategory = {

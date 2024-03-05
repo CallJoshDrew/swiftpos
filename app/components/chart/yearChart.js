@@ -1,7 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function YearChart({ SalesData, selectedYear, monthNames }) {
+export default function YearChart({ salesData, selectedYear, monthNames }) {
 
 // Initialize an array to store the total sales for each month
 let totalSalesMonth = Array(12).fill(0);
@@ -10,7 +10,10 @@ for (let i = 0; i < 12; i++) {
   const monthName = monthNames[i];
 
   // Get the sales data for the selected month
-  const monthSalesData = SalesData[selectedYear][monthName];
+  let monthSalesData;
+  if (salesData && salesData[selectedYear] && salesData[selectedYear][monthName]) {
+    monthSalesData = salesData[selectedYear][monthName];
+  }
 
   if (monthSalesData) {
     // Flatten the orders array and filter to only include those with a status of "Completed"
