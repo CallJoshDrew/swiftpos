@@ -28,6 +28,11 @@ export default function SideNav() {
   const [, setTableIndex] = useAtom(selectedTableIndexAtom);
   const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
 
+  const [passwordInput, setPasswordInput] = useState("");
+
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isReportsModalOpen, setIsReportsModalOpen] = useState(false);
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClearLocalStorage = () => {
@@ -37,7 +42,7 @@ export default function SideNav() {
       setOrders([]);
       setTables([]); // Reset to initial value
       setTableIndex(null);
-      setTodayRegistered({openForRegister: false});
+      setTodayRegistered({ openForRegister: false });
       setTableOrderCounter(1);
       setTakeAwayOrderCounter(1);
       setSelectedTableOrder({
@@ -89,8 +94,6 @@ export default function SideNav() {
     }
   };
 
-  
-
   return (
     <div className="py-10 w-1/6 flex-auto relative">
       <div className="fixed flex flex-col w-1/6 px-6">
@@ -111,7 +114,8 @@ export default function SideNav() {
             <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
           </svg>
           <div className={path === "/tables" ? "text-white text-sm " : "text-black text-sm"}>
-            来吹水
+            Table
+            {/* 来吹水 */}
           </div>
         </Link>
         <Link
@@ -129,7 +133,8 @@ export default function SideNav() {
             <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
           </svg>
           <div className={path === "/takeAway" ? "text-white text-sm " : "text-black text-sm"}>
-            来打包
+            Tapao
+            {/* 来打包 */}
           </div>
         </Link>
         <Link
@@ -153,7 +158,8 @@ export default function SideNav() {
             />
           </svg>
           <div className={path === "/totalOrders" ? "text-white text-sm " : "text-black text-sm"}>
-            天下订单
+            Orders
+            {/* 天下订单 */}
           </div>
         </Link>
         <Link
@@ -163,6 +169,7 @@ export default function SideNav() {
               ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
           }>
+          {/* // onClick={() => setIsReportsModalOpen(true)}> Later then change Link tag to button*/}
           <svg
             className={path === "/salesReport" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
@@ -176,16 +183,18 @@ export default function SideNav() {
             />
           </svg>
           <div className={path === "/salesReport" ? "text-white text-sm " : "text-black text-sm"}>
-            招財貓
+            Report
+            {/* 招財貓 */}
           </div>
         </Link>
-        <Link
+        <button
           href="/setting"
           className={
             path === "/setting"
               ? "bg-green-800 rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
               : "rounded-lg py-4 px-4 flex flex-col items-center mx-auto my-1 w-5/6 group"
-          }>
+          }
+          onClick={() => setIsSettingsModalOpen(true)}>
           <svg
             className={path === "/setting" ? "w-8 h-8 text-white" : "w-8 h-8 text-green-800"}
             xmlns="http://www.w3.org/2000/svg"
@@ -204,9 +213,10 @@ export default function SideNav() {
             />
           </svg>
           <div className={path === "/setting" ? "text-white text-sm " : "text-black text-sm"}>
-            唔好按
+            Settings
+            {/* 唔好按 */}
           </div>
-        </Link>
+        </button>
         <div
           className="flex flex-col items-center mt-6 hover:bg-red-700 hover:rounded-md py-2 group"
           onClick={handleClearLocalStorage}>
@@ -223,8 +233,168 @@ export default function SideNav() {
               d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
             />
           </svg>
-          <div className="text-sm text-black group-hover:text-gray-100">清除存储</div>
+          <div className="text-sm text-black group-hover:text-gray-100">
+            Clear
+            {/* 清除存储 */}
+          </div>
         </div>
+        {isReportsModalOpen && (
+          <div className="fixed z-10 inset-0 overflow-y-auto">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              </div>
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true">
+                ​
+              </span>
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Settings
+                      </h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
+                          Please enter your password to proceed.
+                        </p>
+                        <input
+                          type="password"
+                          className="mt-2 border rounded-md p-2 w-full text-gray-800"
+                          value={passwordInput}
+                          onChange={(e) => setPasswordInput(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => {
+                      // Check password here
+                      if (passwordInput === "SMH888") {
+                        toast.success("Password is correct!", {
+                          duration: 1000,
+                          position: "top-center",
+                          reverseOrder: false,
+                        });
+                        setTimeout(() => {
+                          // If password is correct, navigate to the settings page
+                          router.push("/salesReport");
+                          setIsReportsModalOpen(false);
+                          setPasswordInput("");
+                        }, 1500);
+                      } else {
+                        setTimeout(() => {
+                          // Close the modal
+                          setIsReportsModalOpen(false);
+                          // Clear the password input
+                          setPasswordInput("");
+                        }, 1500);
+
+                        toast.error("Wrong Password!", {
+                          duration: 1000,
+                          position: "top-center",
+                          reverseOrder: false,
+                        });
+                      }
+                    }}>
+                    Confirm
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    onClick={() => setIsReportsModalOpen(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {isSettingsModalOpen && (
+          <div className="fixed z-10 inset-0 overflow-y-auto">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              </div>
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true">
+                ​
+              </span>
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Settings
+                      </h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
+                          Please enter your password to proceed.
+                        </p>
+                        <input
+                          type="password"
+                          className="mt-2 border rounded-md p-2 w-full text-gray-800"
+                          value={passwordInput}
+                          onChange={(e) => setPasswordInput(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => {
+                      // Check password here
+                      if (passwordInput === "SMH888") {
+                        toast.success("Password is correct!", {
+                          duration: 1000,
+                          position: "top-center",
+                          reverseOrder: false,
+                        });
+                        setTimeout(() => {
+                          // If password is correct, navigate to the settings page
+                          router.push("/setting");
+                          setIsSettingsModalOpen(false);
+                          setPasswordInput("");
+                        }, 1500);
+                      } else {
+                        setTimeout(() => {
+                          // Close the modal
+                          setIsSettingsModalOpen(false);
+                          // Clear the password input
+                          setPasswordInput("");
+                        }, 1500);
+
+                        toast.error("Wrong Password!", {
+                          duration: 1000,
+                          position: "top-center",
+                          reverseOrder: false,
+                        });
+                      }
+                    }}>
+                    Confirm
+                  </button>
+
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    onClick={() => setIsSettingsModalOpen(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       {/* <div className="fixed flex flex-col w-1/6 px-6 bottom-0">
         <Link
