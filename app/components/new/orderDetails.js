@@ -856,7 +856,7 @@ function OrderDetails({
                       id="type"
                       className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                       onChange={(e) => handleFlavorChange(item.id, e.target.value)}
-                      value={selectedFlavor.name}
+                      value={selectedFlavor?.name}
                       disabled={showEditControls ? false : true}>
                       {item.flavor.map((flavor, index) => (
                         <option key={index} value={flavor.name}>
@@ -868,13 +868,13 @@ function OrderDetails({
                   {item.types && (
                     <select
                       id="type"
-                      className="block appearance-none w-full my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
+                      className="w-[200px] block appearance-none my-2 py-2 text-right bg-white border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-600 text-sm text-gray-600 focus:bg-white"
                       onChange={(e) => handleTypeChange(item.id, e.target.value)}
-                      value={selectedType.name}
+                      value={selectedType?.name}
                       disabled={showEditControls ? false : true}>
                       {item.types.map((type, index) => (
                         <option key={index} value={type.name}>
-                          {type.name} RM {type.price.toFixed(0)}
+                          {type.name} RM {type.price.toFixed(2)}
                         </option>
                       ))}
                     </select>
