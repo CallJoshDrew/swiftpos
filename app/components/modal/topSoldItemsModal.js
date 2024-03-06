@@ -15,7 +15,8 @@ function TopSoldItemsModal({
   selectedYearBtn,
 }) {
   const [selectedTime, setSelectedTime] = useState("today");
-
+  // console.log(allTodayItems);
+  // console.log(allWeekItems);
   let showAllItems;
   if (selectedTime === "today") {
     showAllItems = allTodayItems;

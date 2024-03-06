@@ -9,16 +9,24 @@ export default function Daychart({
 }) {
   // First, map over the days in the month and then flatten the orders arrays into a single array
   let flattenedOrders = [];
+  // console.log(salesData[selectedYear][selectedMonthName])
+  // console.log(selectedDateString)
   if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
     flattenedOrders = salesData[selectedYear][selectedMonthName].flatMap((day) => {
-      if (day.date === selectedDateString && day.orders) {
+      // Create a new Date object from day.date
+      const dateObject = new Date(day.date);
+      // Format the date to match selectedDateString
+      const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(dateObject.getFullYear()).slice(2)}`;
+  
+      if (formattedDate === selectedDateString && day.orders) {
         return day.orders;
       } else {
         return [];
       }
     });
   }
-
+  
+  // console.log(flattenedOrders)
   // Filter the orders to only include those with a status of "Completed"
   const completedOrders = flattenedOrders.filter((order) => order.status === "Completed");
   // Function to categorize the orders based on the hour of paymentTime

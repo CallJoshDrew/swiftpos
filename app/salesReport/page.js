@@ -54,13 +54,20 @@ export default function SalesReport() {
   const selectedDateString = `${selectedMonth}/${selectedDate.getDate()}/${String(
     selectedDate.getFullYear()
   ).slice(2)}`;
-
+  // console.log(selectedDateString);
   // Find the sales data for the selected date
   let selectedSalesData;
   if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
-    selectedSalesData = salesData[selectedYear][selectedMonthName].find(
-      (data) => data.date === selectedDateString
-    );
+    selectedSalesData = salesData[selectedYear][selectedMonthName].find((data) => {
+      // Create a new Date object from data.date
+      const dateObject = new Date(data.date);
+      // Format the date to match selectedDateString
+      const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(
+        dateObject.getFullYear()
+      ).slice(2)}`;
+
+      return formattedDate === selectedDateString;
+    });
   }
 
   let totalSalesSelectedDate = 0;
@@ -94,9 +101,16 @@ export default function SalesReport() {
 
       let weekDaySalesData;
       if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
-        weekDaySalesData = salesData[selectedYear][selectedMonthName].find(
-          (data) => data.date === weekDayString
-        );
+        weekDaySalesData = salesData[selectedYear][selectedMonthName].find((data) => {
+          // Create a new Date object from data.date
+          const dateObject = new Date(data.date);
+          // Format the date to match weekDayString
+          const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(
+            dateObject.getFullYear()
+          ).slice(2)}`;
+
+          return formattedDate === weekDayString;
+        });
       }
 
       if (weekDaySalesData) {
@@ -141,9 +155,16 @@ export default function SalesReport() {
   function getTodayOrders() {
     let todaySalesData;
     if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
-      todaySalesData = salesData[selectedYear][selectedMonthName].find(
-        (data) => data.date === selectedDateString
-      );
+      todaySalesData = salesData[selectedYear][selectedMonthName].find((data) => {
+        // Create a new Date object from data.date
+        const dateObject = new Date(data.date);
+        // Format the date to match selectedDateString
+        const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(
+          dateObject.getFullYear()
+        ).slice(2)}`;
+
+        return formattedDate === selectedDateString;
+      });
     }
     return todaySalesData ? todaySalesData.orders : [];
   }
@@ -166,20 +187,25 @@ export default function SalesReport() {
           }
         });
       });
-    }    
+    }
     return weekOrders;
   }
 
   // Function to get orders for this month
   function getMonthOrders() {
     let monthOrders = [];
-    if (salesData && salesData[selectedMonthName]) {
-    salesData[selectedYear][selectedMonthName].forEach((day) => {
-      if (day.date.startsWith(String(selectedMonth))) {
-        monthOrders = monthOrders.concat(day.orders);
-      }
-    });
-  }    
+    if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
+      salesData[selectedYear][selectedMonthName].forEach((day) => {
+        // Create a new Date object from day.date
+        const dateObject = new Date(day.date);
+        // Format the date to match selectedMonth
+        const formattedDate = `${dateObject.getMonth() + 1}`;
+
+        if (formattedDate.startsWith(String(selectedMonth))) {
+          monthOrders = monthOrders.concat(day.orders);
+        }
+      });
+    }
     return monthOrders;
   }
 
@@ -231,7 +257,7 @@ export default function SalesReport() {
 
   function getYearOrders() {
     let yearOrders = [];
-  
+
     if (salesData && salesData[selectedYear]) {
       Object.values(salesData[selectedYear]).forEach((month) => {
         month.forEach((day) => {
@@ -239,10 +265,9 @@ export default function SalesReport() {
         });
       });
     }
-  
+
     return yearOrders;
   }
-  
 
   const topYearItems = calculateTopItems(getYearOrders());
   const allYearItems = calculateAllItems(getYearOrders());
@@ -456,7 +481,6 @@ export default function SalesReport() {
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               selectedDateString={selectedDateString}
-              s
             />
           )}
           {selectedBtn === "weekly" && (
@@ -479,14 +503,14 @@ export default function SalesReport() {
           {selectedBtn === "yearly" && (
             <YearChart salesData={salesData} selectedYear={selectedYear} monthNames={monthNames} />
           )}
-          {selectedBtn === "calendar" && (
+          {/* {selectedBtn === "calendar" && (
             <Daychart
               salesData={salesData}
               selectedYear={selectedYear}
               selectedMonthName={selectedMonthName}
               selectedDateString={selectedDateString}
             />
-          )}
+          )} */}
         </div>
         <div className="flex justify-between items-end mt-3 mb-2">
           <div className="text-lg text-black mx-2">{topFiveText}</div>

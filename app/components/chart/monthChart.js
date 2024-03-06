@@ -35,7 +35,14 @@ export default function MonthChart({ salesData, selectedYear, selectedMonthName 
     let monthDaySalesData;
     if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
       monthDaySalesData = salesData[selectedYear][selectedMonthName].find(
-        (data) => data.date === monthDayString
+        (data) => {const dateObject = new Date(data.date);
+        // Format the date to match weekDayString
+        const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(
+          dateObject.getFullYear()
+        ).slice(2)}`;
+
+        return formattedDate ===  monthDayString;
+        }
       );
     }
 

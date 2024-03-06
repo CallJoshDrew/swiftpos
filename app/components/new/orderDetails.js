@@ -606,7 +606,7 @@ function OrderDetails({
     // console.log("Tables Now is", tables);
     // console.log("Order Counter Now is", orderCounter);
     // console.log("showEdit Button Initial State is True But Now is", showEditControls);
-    console.log("SelectedOrder Allow Edit is", selectedOrder.showEditBtn);
+    // console.log("SelectedOrder Allow Edit is", selectedOrder.showEditBtn);
     console.log("SelectedOrder Now is", selectedOrder);
     // console.log("TempCartItems Now is", tempCartItems);
   }, [selectedOrder, orders, showEditControls, tempCartItems, orderCounter, tables]);

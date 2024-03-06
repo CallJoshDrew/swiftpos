@@ -2,19 +2,22 @@ import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
 export default function WeekChart({ salesData, selectedYear, selectedMonthName, startOfWeek }) {
-
   // Initialize an array to store the total sales for each day of the week
   let totalSalesWeek = Array(7).fill(0);
-  let labelsWeek = Array(7).fill('');
+  let labelsWeek = Array(7).fill("");
 
   function getOrdinalSuffix(date) {
     const dayOfMonth = date.getDate();
-    if (dayOfMonth > 3 && dayOfMonth < 21) return 'th';
+    if (dayOfMonth > 3 && dayOfMonth < 21) return "th";
     switch (dayOfMonth % 10) {
-      case 1:  return "st";
-      case 2:  return "nd";
-      case 3:  return "rd";
-      default: return "th";
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
   }
 
@@ -24,28 +27,36 @@ export default function WeekChart({ salesData, selectedYear, selectedMonthName, 
     const weekDayString = `${weekDay.getMonth() + 1}/${weekDay.getDate()}/${String(
       weekDay.getFullYear()
     ).slice(2)}`;
-  
+
     let weekDaySalesData;
     if (salesData && salesData[selectedYear] && salesData[selectedYear][selectedMonthName]) {
-      weekDaySalesData = salesData[selectedYear][selectedMonthName].find(
-        (data) => data.date === weekDayString
-      );
+      weekDaySalesData = salesData[selectedYear][selectedMonthName].find((data) => {
+        // Create a new Date object from data.date
+        const dateObject = new Date(data.date);
+        // Format the date to match weekDayString
+        const formattedDate = `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${String(
+          dateObject.getFullYear()
+        ).slice(2)}`;
+
+        return formattedDate === weekDayString;
+      });
     }
-  
+
     if (weekDaySalesData) {
       // Flatten the orders array and filter to only include those with a status of "Completed"
       const completedOrders = weekDaySalesData.orders.flatMap((order) =>
         order.status === "Completed" ? order : []
       );
-  
+
       // Sum up the total price of the completed orders
       totalSalesWeek[i] = completedOrders.reduce((total, order) => total + order.totalPrice, 0);
     }
-  
+
     // Create labels for the chart
-    labelsWeek[i] = `${weekDay.toLocaleDateString('en-US', { weekday: 'short' })}_${weekDay.getDate()}${getOrdinalSuffix(weekDay)}`;
+    labelsWeek[i] = `${weekDay.toLocaleDateString("en-US", {
+      weekday: "short",
+    })}_${weekDay.getDate()}${getOrdinalSuffix(weekDay)}`;
   }
-  
 
   // Now totalSalesWeek is an array where each element is the total sales for a day of the week
   const chartData = {
@@ -65,10 +76,9 @@ export default function WeekChart({ salesData, selectedYear, selectedMonthName, 
 
   return (
     <div className="w-full h-[430px] p-6 shadow-sm bg-white rounded-md">
-      <div style={{ width: '100%', height: '100%' }}>
+      <div style={{ width: "100%", height: "100%" }}>
         <Bar title="week" data={chartData} options={{ maintainAspectRatio: false }} />
       </div>
     </div>
   );
 }
-
