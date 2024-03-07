@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
 import { ordersAtom } from "../atoms/ordersAtom";
 import { isLinkDisabledAtom } from "../atoms/linkDisableAtom";
 import { selectedTableOrderAtom } from "../atoms/selectedTableOrderAtom";
 import { selectedTakeAwayOrderAtom } from "../atoms/selectedTakeAwayOrderAtom";
+import { salesDataAtom } from "../atoms/salesDataAtom";
 
 function PaymentModal({
   isPayModalOpen,
@@ -13,24 +14,29 @@ function PaymentModal({
   // setShowEditBtn,
   orderType,
 }) {
-  const [, setOrders] = useAtom(ordersAtom);
-  const [, setIsLinkDisabled] =useAtom(isLinkDisabledAtom);
+  const [orders, setOrders] = useAtom(ordersAtom);
+  const [, setIsLinkDisabled] = useAtom(isLinkDisabledAtom);
+  const [, setSalesData] = useAtom(salesDataAtom);
+
   function useSelectedOrder(orderType) {
     const [selectedTableOrder, setSelectedTableOrder] = useAtom(selectedTableOrderAtom);
     const [selectedTakeAwayOrder, setSelectedTakeAwayOrder] = useAtom(selectedTakeAwayOrderAtom);
-  
+
     const selectedOrder = orderType === "Dine-In" ? selectedTableOrder : selectedTakeAwayOrder;
     const setSelectedOrder =
       orderType === "Dine-In" ? setSelectedTableOrder : setSelectedTakeAwayOrder;
-  
+
     return [selectedOrder, setSelectedOrder];
   }
   const [selectedOrder, setSelectedOrder] = useSelectedOrder(orderType);
+
+  const [isDoubleConfirmModalOpen, setIsDoubleConfirmModalOpen] = useState(false);
 
   // Initialize state variables for payment method, amount received, amount change, and input value
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [amountReceived, setAmountReceived] = useState(0);
   const [inputValue, setInputValue] = useState(0);
+  const [paymentHandled, setPaymentHandled] = useState(false);
 
   // Use an effect hook to update the amount received and input value when the selected order changes
   useEffect(() => {
@@ -105,6 +111,7 @@ function PaymentModal({
     console.log("set to false from payment");
     // Reset the payment method back to "Cash"
     setPaymentMethod("Cash");
+    setPaymentHandled(true);
     toast.success("Payment was successful!", {
       duration: 1000,
       position: "top-center",
@@ -112,6 +119,66 @@ function PaymentModal({
     });
   };
 
+  const addOrdersToSalesData = useCallback(() => {
+    const today = new Date();
+    let year = today.getFullYear().toString(); // Convert the year to a string
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    let monthString = monthNames[today.getMonth()]; // Get the month name
+    const month = today.getMonth() + 1; // JavaScript months are 0-based
+    const date = today.getDate();
+  
+    // Create a new object for today's orders
+    const newOrder = {
+      date: `${month}/${date}/${year}`,
+      orders: [...orders],
+    };
+  
+    // Add today's orders to the sales data
+    setSalesData((prevSalesData) => {
+      const updatedSalesData = { ...prevSalesData };
+      if (!updatedSalesData[year]) {
+        updatedSalesData[year] = {};
+      }
+      if (!updatedSalesData[year][monthString]) {
+        updatedSalesData[year][monthString] = [];
+      }
+  
+      // Find the index of the existing order for today
+      const existingOrderIndex = updatedSalesData[year][monthString].findIndex(
+        (order) => order.date === newOrder.date
+      );
+  
+      if (existingOrderIndex !== -1) {
+        // If the order for today already exists, replace it
+        updatedSalesData[year][monthString][existingOrderIndex] = newOrder;
+      } else {
+        // If the order for today doesn't exist, add it
+        updatedSalesData[year][monthString].push(newOrder);
+      }
+  
+      return updatedSalesData;
+    });
+  }, [orders]); // Include orders in the dependency array
+  useEffect(() => {
+    if (paymentHandled) {
+      addOrdersToSalesData();
+      // Reset paymentHandled back to false
+      setPaymentHandled(false);
+    }
+  }, [paymentHandled, addOrdersToSalesData]); // Run this effect when paymentHandled changes
   // Define a function to close the payment modal
   const handleModalClose = () => {
     setPayModalOpen(false);
@@ -167,12 +234,7 @@ function PaymentModal({
             <button
               className="flex-1 bg-green-800 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={() => {
-                const newAmountReceived = Number(Number(inputValue).toFixed(2));
-                const newAmountChange = Number(
-                  (Number(inputValue) - Number(selectedOrder?.totalPrice)).toFixed(2)
-                );
-                handlePaymentStatus(newAmountReceived, newAmountChange);
-                setAmountReceived(newAmountReceived);
+                setIsDoubleConfirmModalOpen(true);
               }}>
               Yes
             </button>
@@ -180,13 +242,65 @@ function PaymentModal({
               className="flex-1 bg-gray-500 text-sm text-white font-bold py-3 px-4 rounded-md"
               onClick={() => {
                 handleModalClose();
-                setAmountReceived(amountReceived);
-                setInputValue(amountReceived);
+                setPaymentMethod("Cash");
               }}>
               No
             </button>
           </div>
         </div>
+        {isDoubleConfirmModalOpen && (
+          <div className="fixed z-10 inset-0 overflow-y-auto">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              </div>
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true">
+                ​
+              </span>
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Please double confirm
+                      </h3>
+                      <div className="text-sm mt-2 w-full text-gray-800">
+                        This action cannot be undone. The order will be completed and added into the report. Are you sure?
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => {
+                      const newAmountReceived = Number(Number(inputValue).toFixed(2));
+                      const newAmountChange = Number(
+                        (Number(inputValue) - Number(selectedOrder?.totalPrice)).toFixed(2)
+                      );
+                      handlePaymentStatus(newAmountReceived, newAmountChange);
+                      setAmountReceived(newAmountReceived);
+                    }}>
+                    Confirm
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    onClick={() => {
+                      setIsDoubleConfirmModalOpen(false);
+                      setAmountReceived(amountReceived);
+                      setInputValue(amountReceived);
+                    }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
