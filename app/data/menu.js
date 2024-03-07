@@ -1,4 +1,4 @@
-let menu = [
+const menu = [
     { id: 1, name: "Egg Tart", category: "Cakes", price:2.40, image: "/cakes/eggTart.png"},
     { id: 2, name: "UFO Tart", category: "Cakes", price:2.60, image: "/cakes/ufoTart.png"},
     { id: 3, name: "HawFlake Cake", category: "Cakes", price:4.20, image: "/cakes/hawFlakeCake.png"},
@@ -75,22 +75,4 @@ let menu = [
     { id: 109, name: "Sui Kau", category: "Dish", price:9.00, image: "/dish/suiKau.png"},
   ];
   
-  export default async function handler(req, res) {
-    if (req.method === "POST") {
-      const { name, category } = req.body;
-  
-      // create a new id for the new menu item
-      const id = menu.length + 1;
-  
-      // add the new menu item to the menu array
-      menu.push({ id, name, category });
-  
-      res.status(200).json({ message: "Menu Item added successfully" });
-    } else if (req.method === "GET") {
-      // if the request method is GET, return the menu
-      res.status(200).json(menu);
-    } else {
-      res.status(405).json({ message: "Method not allowed" });
-    }
-  }
-  
+  export default menu;

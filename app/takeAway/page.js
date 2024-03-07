@@ -7,6 +7,7 @@ import { takeAwayOrderCountAtom } from "../components/atoms/takeAwayOrderCountAt
 import { isLinkDisabledAtom } from "../components/atoms/linkDisableAtom";
 import { selectedTakeAwayOrderAtom } from "../components/atoms/selectedTakeAwayOrderAtom";
 
+import menuData from "../data/menu"
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
@@ -18,10 +19,9 @@ import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
 export default function TakeAwayOverview() {
   const [menu, setMenu] = useState([]);
+  // Load the menu data when the component mounts
   useEffect(() => {
-    fetch("/api/menu")
-      .then((response) => response.json())
-      .then((data) => setMenu(data));
+    setMenu(menuData);
   }, []);
 
   const [showMenu, setShowMenu] = useState(false);

@@ -90,10 +90,10 @@ function CategoryCard({
 
   // If the category already exists in the counts object, increment its count by 1
   // If the category doesn't exist in the counts object, initialize it with a count of 1
-  let itemCounts = menu.reduce((counts, item) => {
+  let itemCounts = menu ? menu.reduce((counts, item) => {
     counts[item.category] = (counts[item.category] || 0) + 1;
     return counts;
-  }, {});
+  }, {}) : [];
   // Helper function to update orders
   const updateOrders = (prevOrders, updatedOrder) => {
     const orderIndex = prevOrders.findIndex(

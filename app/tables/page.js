@@ -11,6 +11,7 @@ import { selectedTableOrderAtom } from "../components/atoms/selectedTableOrderAt
 import { selectedTableIndexAtom } from "../components/atoms/selectedTableIndexAtom";
 import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
+import menuData from "../data/menu.js"
 import CategoryCard from "../components/new/categoryCard";
 import MenuCard from "../components/new/menuCard.js";
 import ConfirmCloseModal from "../components/modal/confirmCloseModal";
@@ -22,13 +23,10 @@ import { useRouter } from "next/navigation";
 
 export default function Tables() {
   const [menu, setMenu] = useState([]); // Stores the menu items
-  // Fetch the menu data when the component mounts
+  // Load the menu data when the component mounts
   useEffect(() => {
-    fetch("/api/menu")
-      .then((response) => response.json())
-      .then((data) => setMenu(data));
+    setMenu(menuData);
   }, []);
-
   const [showMenu, setShowMenu] = useState(false);
 
   const [showEditControls, setShowEditControls] = useState(false);
@@ -192,7 +190,7 @@ export default function Tables() {
       setSelectedOrder(newOrder);
       setOrders((prevOrders) => updateOrders(prevOrders, newOrder));
       setTempCartItems([]);
-      
+
       setTables((prevTables) =>
         prevTables.map((table, index) =>
           index === tableIndex
@@ -229,7 +227,7 @@ export default function Tables() {
     setOrders(
       orders.map((order) =>
         order.orderNumber === orderNumber
-          ? { ...order, status: "Cancelled", cancellationTime: timeString, showEditBtn: false, }
+          ? { ...order, status: "Cancelled", cancellationTime: timeString, showEditBtn: false }
           : order
       )
     );
@@ -267,7 +265,7 @@ export default function Tables() {
   //   } else if (
   //     selectedOrder.status === "Status" &&
   //     selectedOrder.orderNumber !== "Order Number" &&
-  //     selectedOrder.orderTime === null 
+  //     selectedOrder.orderTime === null
   //   ) {
   //     setShowEditBtn(true);
   //     console.log("showEditBtn Ran from useEffect")
