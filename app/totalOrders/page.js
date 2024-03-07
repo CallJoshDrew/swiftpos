@@ -11,7 +11,7 @@ import { todayRegisteredAtom } from "../components/atoms/todayRegisteredAtom";
 
 export default function TotalOrders() {
   const [orders, setOrders] = useAtom(ordersAtom);
-  console.log(orders);
+  // console.log(orders);
   const [todayRegistered, setTodayRegistered] = useAtom(todayRegisteredAtom);
   const router = useRouter();
   const [loading, setLoading] = useState(false);

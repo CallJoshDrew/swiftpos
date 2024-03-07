@@ -26,6 +26,7 @@ export default function Home() {
 
   // Use the helper function when setting the initial state
   const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" });
+  // This is to show the formData in the input. 
   const [formData, setFormData] = useState({
     availableCash: "",
     boostCash: "",
@@ -48,7 +49,7 @@ export default function Home() {
     // Format the date and time before saving
     setTodayRegistered({
       ...formData,
-      timeAndDate: formatDateTime(new Date(formData.timeAndDate)),
+      OpenedTimeAndDate: formatDateTime(new Date(formData.timeAndDate)),
       openForRegister: true,
     });
     setShowModal(false);

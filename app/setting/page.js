@@ -38,7 +38,7 @@ export default function Setting() {
     let monthString = monthNames[today.getMonth()]; // Get the month name
     const month = today.getMonth() + 1; // JavaScript months are 0-based
     const date = today.getDate();
-  
+    
     // Create a new object for today's orders
     const newOrder = {
       date: `${month}/${date}/${year}`,
@@ -71,8 +71,15 @@ export default function Setting() {
       return updatedSalesData;
     });
   };
-  
-
+  const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" });
+  const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
   useEffect(() => {
     if (todayRegistered.openForRegister === false) {
       setLoading(true);
@@ -100,7 +107,7 @@ export default function Setting() {
 
   return (
     <div className="bg-gray-100 w-5/6 flex-auto flex flex-col gap-2 py-10 px-4">
-      <CategoryForm />
+      {/* <CategoryForm /> */}
       <button
         className="bg-red-800 rounded-lg px-4 py-2 flex items-center w-[180px] space-x-2 my-1"
         onClick={() => setIsCloseRegModalOpen(true)}>
@@ -158,6 +165,11 @@ export default function Setting() {
                       reverseOrder: false,
                     });
                     console.log(salesData);
+                    setTodayRegistered(prevState => ({
+                      ...prevState,
+                      ClosedTimeAndDate: formatDateTime(new Date(now)),
+                      openForRegister: false,
+                    }));
                   }}>
                   Confirm
                 </button>
