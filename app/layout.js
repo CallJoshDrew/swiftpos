@@ -14,6 +14,10 @@ export const metadata = {
   description: "Customisable according to your working environment",
 };
 
+export const viewport = {
+  themeColor: "#000"
+}
+
 export default function RootLayout({ children }) {
   
   return (
