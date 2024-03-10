@@ -9,8 +9,9 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "SwiftPro",
-  description: "POS System",
+  manifest:"/manifest.json",
+  title: "JS Studio",
+  description: "Customisable according to your working environment",
 };
 
 export default function RootLayout({ children }) {
