@@ -1,13 +1,14 @@
 {
-  "theme_color": "#000",
-  "background_color": "#fff",
-  "display": "standalone",
-  "orientation": "landscape",
-  "scope": "/",
-  "start_url": "/",
-  "name": "JSPOS",
+  "name": "JS POS System",
   "short_name": "JSPOS",
   "description": "The fastest growing of POS system which improve your operations performance according to your working culture! This is from Sabah, a local entrepreneur aims to make a big differences in the space of technologies and businesses.",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "theme_color": "#000",
+  "background_color": "#fff",
+  "scope": "/",
+  "start_url": "/",
+ 
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
