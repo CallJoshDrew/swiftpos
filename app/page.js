@@ -90,12 +90,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <link rel="shortcut icon" href="/images/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
-      </Head>
       <div className="relative w-full">
         <div className="bg-gray-100 w-[1024px] min-h-screen absolute -left-[147px] top-0 ">
           <div className="min-h-screen flex flex-col items-center justify-center px-10">
