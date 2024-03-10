@@ -1,24 +1,23 @@
 {
-    "theme_color": "#000",
-    "background_color": "#fff",
-    "display": "standalone",
-    "orientation": "landscape",
-    "scope": "/",
-    "start_url": "/",
-    "name": "JSPOS",
-    "short_name": "JSPOS",
-    "description": "The fastest growing of POS system which improve your operations performance according to your working culture! This is from Sabah, a local entrepreneur aims to make a big differences in the space of technologies and businesses.",
-    "icons": [
-      {
-        "src": "/android-chrome-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "/android-chrome-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
-  
+  "theme_color": "#000",
+  "background_color": "#fff",
+  "display": "standalone",
+  "orientation": "landscape",
+  "scope": "/",
+  "start_url": "/",
+  "name": "JSPOS",
+  "short_name": "JSPOS",
+  "description": "The fastest growing of POS system which improve your operations performance according to your working culture! This is from Sabah, a local entrepreneur aims to make a big differences in the space of technologies and businesses.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
